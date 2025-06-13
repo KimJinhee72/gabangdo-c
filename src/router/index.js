@@ -31,6 +31,8 @@ import Workers from "../pages/admin/Workers.vue";
 import Reservations from "../pages/admin/Reservations.vue";
 import SaleStatus from "@/pages/admin/SaleStatus.vue";
 const routes = [
+  { path: "/:locale" }, // ex) /en, /ko
+
   { path: "/", component: Home },
   { path: "/bangbeob2", component: Bangbeob2 },
   { path: "/yeyak", component: Yeyak },

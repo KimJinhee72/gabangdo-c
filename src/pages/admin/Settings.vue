@@ -158,7 +158,7 @@
                 {{ t("settings.system.language.description") }}
               </p>
             </div>
-            <select v-model="settings.language" @change="onLanguageSelect($event.target.value)"
+            <select v-model="settings.language" @change="updateLanguage"
               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
               <option value="ko">한국어</option>
               <option value="en">English</option>
@@ -231,15 +231,9 @@ import { useI18n } from "vue-i18n";
 import { ref, watch, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useAppStore } from "@/stores/useAppStore";
-import { changeLanguage } from "@/i18n/changeLanguage";
-function onLanguageSelect(lang) {
-  changeLanguage(lang);
-}
 
 // i18n 설정
-const { t, locale } = useI18n({
-  useScope: 'global',  // 전역 i18n 사용 시
-});
+const { t, locale } = useI18n();
 
 // 토스트 메시지 표시 여부
 const showToast = ref(false);
@@ -281,7 +275,6 @@ const updateColorTheme = (color) => {
 const updateLanguage = () => {
   locale.value = settings.value.language;
 };
-
 
 // 언어 변경 감지
 watch(() => settings.value.language, (newLang) => {
