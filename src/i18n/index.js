@@ -1,5 +1,6 @@
 import { createI18n } from "vue-i18n";
 
+
 // ✅ 언어별 메시지 정의
 const messages = {
   ko: {

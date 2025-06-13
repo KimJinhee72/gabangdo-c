@@ -237,7 +237,9 @@ function onLanguageSelect(lang) {
 }
 
 // i18n 설정
-const { t, locale } = useI18n();
+const { t, locale } = useI18n({
+  useScope: 'global',  // 전역 i18n 사용 시
+});
 
 // 토스트 메시지 표시 여부
 const showToast = ref(false);
