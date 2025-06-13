@@ -19,3 +19,9 @@ app.mount("#app");
 if (import.meta.env.PROD) {
   app.config.devtools = false;
 }
+function changeLanguage(lang) {
+  if (SUPPORTED_LANGUAGES.includes(lang)) {
+    i18n.global.locale.value = lang;      // 현재 언어 변경
+    localStorage.setItem("language", lang); // 저장
+  }
+}

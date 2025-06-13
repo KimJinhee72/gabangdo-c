@@ -231,6 +231,7 @@ import { useI18n } from "vue-i18n";
 import { ref, watch, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useAppStore } from "@/stores/useAppStore";
+import { changeLanguage } from "@/i18n/changeLanguage";
 
 // i18n 설정
 const { t, locale } = useI18n();
@@ -275,6 +276,7 @@ const updateColorTheme = (color) => {
 const updateLanguage = () => {
   locale.value = settings.value.language;
 };
+
 
 // 언어 변경 감지
 watch(() => settings.value.language, (newLang) => {

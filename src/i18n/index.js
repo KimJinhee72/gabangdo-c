@@ -176,8 +176,8 @@ const messages = {
 };
 
 // ✅ 지원 언어 및 기본 언어
-const SUPPORTED_LANGUAGES = ["ko", "en", "ja"];
-const DEFAULT_LANGUAGE = "ko";
+export const SUPPORTED_LANGUAGES = ["ko", "en", "ja"];
+export const DEFAULT_LANGUAGE = "ko";
 
 // ✅ 저장된 언어 또는 기본값 설정
 const savedLanguage = localStorage.getItem("language");
@@ -185,7 +185,7 @@ const locale = SUPPORTED_LANGUAGES.includes(savedLanguage)
   ? savedLanguage
   : DEFAULT_LANGUAGE;
 
-// ✅ 저장된 값이 없다면 기본값으로 설정
+// 저장된 값이 없다면 기본값으로 저장
 if (!savedLanguage || !SUPPORTED_LANGUAGES.includes(savedLanguage)) {
   localStorage.setItem("language", DEFAULT_LANGUAGE);
 }
