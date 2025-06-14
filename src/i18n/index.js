@@ -1,7 +1,7 @@
 import { createI18n } from "vue-i18n";
 
 const DEFAULT_LANGUAGE = "ko";
-const SUPPORTED_LANGUAGES = ["ko", "en", "ja"];
+export const SUPPORTED_LANGUAGES = ["ko", "en", "ja"];
 
 const ko = {
   settings: {
@@ -179,23 +179,34 @@ const ja = {
 
 const messages = { ko, en, ja };
 
+function getCookie(name) {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? decodeURIComponent(match[2]) : null;
+}
+
 function getSavedLanguage() {
-  if (typeof window !== "undefined" && window.localStorage) {
-    const saved = localStorage.getItem("language");
-    if (saved && SUPPORTED_LANGUAGES.includes(saved)) {
-      return saved;
-    }
+  if (typeof window !== "undefined") {
+    // 1순위: localStorage
+    const localLang = localStorage.getItem("language");
+    if (localLang && SUPPORTED_LANGUAGES.includes(localLang)) return localLang;
+
+    // 2순위: 쿠키
+    const cookieLang = getCookie("language");
+    if (cookieLang && SUPPORTED_LANGUAGES.includes(cookieLang)) return cookieLang;
+
+    // 없으면 기본값 저장 & 반환
     localStorage.setItem("language", DEFAULT_LANGUAGE);
     return DEFAULT_LANGUAGE;
   }
-  return DEFAULT_LANGUAGE; // SSR에서는 기본값 리턴
+  return DEFAULT_LANGUAGE;
 }
 
 const locale = getSavedLanguage();
 
 const i18n = createI18n({
   legacy: false,
-  locale: locale,
+  locale, // 초기값에 getSavedLanguage 결과를 넣음
   fallbackLocale: DEFAULT_LANGUAGE,
   messages,
 });
@@ -212,6 +223,7 @@ if (typeof window !== "undefined") {
  * 언어 변경 함수 (localStorage + 쿠키 저장)
  * @param {string} lang - 변경할 언어 코드
  */
+
 export function changeLanguage(lang) {
   if (SUPPORTED_LANGUAGES.includes(lang)) {
     i18n.global.locale.value = lang;
@@ -224,5 +236,5 @@ export function changeLanguage(lang) {
   }
 }
 
-export { SUPPORTED_LANGUAGES };
+
 export default i18n;
