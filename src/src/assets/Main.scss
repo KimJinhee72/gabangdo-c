@@ -1,0 +1,52 @@
+@use "/src/assets/Reset.scss" as *;
+@use "/src/assets/Variables" as *;
+@use "/src/assets/Home.scss" as *;
+@use "/src/assets/scroll.scss" as *;
+
+// 푸터 .fixed-buttons 영역을 클릭 투명하게
+:deep(.fixed-buttons) {
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+// 푸터 안의 a, button 만 클릭 허용
+:deep(.fixed-buttons) a,
+:deep(.fixed-buttons) button {
+  pointer-events: auto !important;
+}
+
+// 폰트
+body {
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+
+// 전체
+.wrap_total {
+  padding-top: 100px;
+  padding-bottom: 100px;
+  min-height: 100vh;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  flex-direction: column;
+  font-family: $font-family;
+  box-sizing: border-box;
+}
+
+@media screen and (max-width: 390px) {
+  .title_txt1 h1 {
+    font-size: 30px !important;
+  }
+  .inquiry-btn > img {
+    width: 60px !important;
+  }
+}
