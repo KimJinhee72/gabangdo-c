@@ -189,9 +189,9 @@ function getSavedLanguage() {
     localStorage.setItem("language", DEFAULT_LANGUAGE);
     return DEFAULT_LANGUAGE;
   }
-  // SSR 환경에서는 기본 언어 반환
-  return DEFAULT_LANGUAGE;
+  return DEFAULT_LANGUAGE; // SSR에서는 기본값 리턴
 }
+
 
 const locale = getSavedLanguage();
 
@@ -201,12 +201,12 @@ const i18n = createI18n({
   fallbackLocale: DEFAULT_LANGUAGE,
   messages,
 });
+
+// 클라이언트에서만 동작
 if (typeof window !== "undefined") {
-  const saved = localStorage.getItem("language");
-  if (saved && SUPPORTED_LANGUAGES.includes(saved)) {
+  const saved = getSavedLanguage();
+  if (saved !== i18n.global.locale.value) {
     i18n.global.locale.value = saved;
-  } else {
-    localStorage.setItem("language", DEFAULT_LANGUAGE);
   }
 }
 
