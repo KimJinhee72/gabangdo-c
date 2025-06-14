@@ -1,4 +1,7 @@
 import { createI18n } from "vue-i18n";
+import cookie from 'cookie';
+import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from './constants'; // 언어 상수 임포트
+
 
 const DEFAULT_LANGUAGE = "ko";
 export const SUPPORTED_LANGUAGES = ["ko", "en", "ja"];
@@ -176,6 +179,19 @@ const ja = {
     savedMessage: "設定が保存されました。",
   },
 };
+
+
+export function getLanguageFromRequest(req) {
+  if (!req || !req.headers) return DEFAULT_LANGUAGE;
+
+  const cookies = cookie.parse(req.headers.cookie || '');
+  const lang = cookies.language;
+
+  if (lang && SUPPORTED_LANGUAGES.includes(lang)) {
+    return lang;
+  }
+  return DEFAULT_LANGUAGE;
+}
 
 const messages = { ko, en, ja };
 
