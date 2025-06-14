@@ -1,5 +1,4 @@
 import { createI18n } from "vue-i18n";
-import { onMounted } from "vue";
 
 const DEFAULT_LANGUAGE = "ko";
 const SUPPORTED_LANGUAGES = ["ko", "en", "ja"];
@@ -192,17 +191,16 @@ function getSavedLanguage() {
   return DEFAULT_LANGUAGE; // SSR에서는 기본값 리턴
 }
 
-
 const locale = getSavedLanguage();
 
 const i18n = createI18n({
   legacy: false,
-  locale: DEFAULT_LANGUAGE, // 초기값은 기본언어
+  locale: locale,
   fallbackLocale: DEFAULT_LANGUAGE,
   messages,
 });
 
-// 클라이언트에서만 동작
+// 클라이언트에서만 동작 (SSR 방지)
 if (typeof window !== "undefined") {
   const saved = getSavedLanguage();
   if (saved !== i18n.global.locale.value) {
@@ -210,12 +208,21 @@ if (typeof window !== "undefined") {
   }
 }
 
+/**
+ * 언어 변경 함수 (localStorage + 쿠키 저장)
+ * @param {string} lang - 변경할 언어 코드
+ */
+export function changeLanguage(lang) {
+  if (SUPPORTED_LANGUAGES.includes(lang)) {
+    i18n.global.locale.value = lang;
+    localStorage.setItem("language", lang);
 
-onMounted(() => {
-  const saved = localStorage.getItem("language");
-  if (saved && SUPPORTED_LANGUAGES.includes(saved)) {
-    i18n.global.locale.value = saved;
+    // 쿠키에 저장 (서버사이드 렌더링시 서버에서 읽을 수 있도록)
+    document.cookie = `language=${lang}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`;
+  } else {
+    console.warn(`Unsupported language: ${lang}`);
   }
-});
+}
 
+export { SUPPORTED_LANGUAGES };
 export default i18n;
