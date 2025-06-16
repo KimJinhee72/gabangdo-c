@@ -9,10 +9,8 @@
       "destination": "/index.html"
     },
     {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
+      "source": "/(.*)",
+      "destination": "/"
+    }
   ]
 }
-  ]
-}
-
