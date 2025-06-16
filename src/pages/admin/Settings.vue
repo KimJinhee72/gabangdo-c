@@ -231,7 +231,7 @@ import { useI18n } from "vue-i18n";
 import { ref, watch, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useAppStore } from "@/stores/useAppStore";
-import { changeLanguage } from "@/utils/changeLanguage";
+import { changeLanguage } from "@/i18n/changeLanguage";
 
 // i18n 설정
 const { t, locale } = useI18n();
