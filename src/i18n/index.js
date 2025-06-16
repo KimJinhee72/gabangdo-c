@@ -199,5 +199,5 @@ const i18n = createI18n({
   fallbackLocale: DEFAULT_LANGUAGE,
   messages,
 });
-export { SUPPORTED_LANGUAGES };
 export default i18n;
+export { SUPPORTED_LANGUAGES };
