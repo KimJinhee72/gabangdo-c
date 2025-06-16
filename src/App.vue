@@ -10,51 +10,52 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from "vue";
-import { useI18n } from 'vue-i18n'
+import { useI18n } from 'vue-i18n';
 import { useRoute } from "vue-router";
-import Header_subtypeAll from "./components/Header_subtypeAll.vue"; // 공백 제거
+import Header_subtypeAll from "./components/Header_subtypeAll.vue";
 import Footer from "./components/Footer.vue";
 
-// 언어설정
-const { locale } = useI18n()
+// i18n 언어 설정
+const { locale } = useI18n();
 
-onMounted(() => {
-  const saved = localStorage.getItem('language')
-  if (saved) {
-    locale.value = saved
-  }
-})
+// window width 감지
+const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1024);
 
-// 현재 라우트 정보
-const route = useRoute();
-
-// 반응형 window width 추적
-const windowWidth = ref(window.innerWidth);
 const handleResize = () => {
-  windowWidth.value = window.innerWidth;
+  if (typeof window !== 'undefined') {
+    windowWidth.value = window.innerWidth;
+  }
 };
 
 onMounted(() => {
-  window.addEventListener("resize", handleResize);
+  if (typeof window !== 'undefined') {
+    window.addEventListener("resize", handleResize);
+
+    // 언어 설정
+    const saved = localStorage.getItem('language');
+    if (saved) {
+      locale.value = saved;
+    }
+  }
 });
 
 onUnmounted(() => {
-  window.removeEventListener("resize", handleResize);
+  if (typeof window !== 'undefined') {
+    window.removeEventListener("resize", handleResize);
+  }
 });
 
-// isWorkerPage: 특정 경로이거나, 모바일에서 로그인일 경우
+const route = useRoute();
 const isWorkerPage = computed(() => {
   const isMobile = windowWidth.value <= 768;
-
   return (
-    route.path.startsWith("/worker") || // /worker 하위
-    route.path.startsWith("/admin") || // /worker 하위
-    // (isMobile && route.path.startsWith("/login")) ||         // 모바일 + /login
-    // route.path.startsWith("/signup") ||                      // /signup
-    route.meta.hideLayout // 라우트 메타에서 숨김 처리
+    route.path.startsWith("/worker") ||
+    route.path.startsWith("/admin") ||
+    route.meta.hideLayout
   );
 });
 </script>
+
 
 <style lang="scss" scoped>
 .wrap {
