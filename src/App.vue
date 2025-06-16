@@ -10,9 +10,20 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from "vue";
+import { useI18n } from 'vue-i18n'
 import { useRoute } from "vue-router";
 import Header_subtypeAll from "./components/Header_subtypeAll.vue"; // 공백 제거
 import Footer from "./components/Footer.vue";
+
+// 언어설정
+const { locale } = useI18n()
+
+onMounted(() => {
+  const saved = localStorage.getItem('language')
+  if (saved) {
+    locale.value = saved
+  }
+})
 
 // 현재 라우트 정보
 const route = useRoute();
