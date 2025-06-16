@@ -179,11 +179,17 @@ const messages = {
 };
 
 const getInitialLocale = () => {
-  if (typeof window !== 'undefined') {
-    const saved = localStorage.getItem("language");
-    if (SUPPORTED_LANGUAGES.includes(saved)) return saved;
-    localStorage.setItem("language", DEFAULT_LANGUAGE);
+  if (typeof window === 'undefined') {
+    // SSR 환경이면 기본 언어로
+    return DEFAULT_LANGUAGE;
   }
+
+  const saved = localStorage.getItem("language");
+  if (SUPPORTED_LANGUAGES.includes(saved)) {
+    return saved;
+  }
+
+  localStorage.setItem("language", DEFAULT_LANGUAGE);
   return DEFAULT_LANGUAGE;
 };
 
@@ -193,5 +199,5 @@ const i18n = createI18n({
   fallbackLocale: DEFAULT_LANGUAGE,
   messages,
 });
-
+export { SUPPORTED_LANGUAGES };
 export default i18n;

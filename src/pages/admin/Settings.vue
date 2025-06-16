@@ -158,7 +158,7 @@
                 {{ t("settings.system.language.description") }}
               </p>
             </div>
-            <select v-model="settings.language" @change="setLanguage(selectedLang)"
+            <select v-model="selectedLang" @change="setLanguage(selectedLang)"
               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
               <option value="ko">한국어</option>
               <option value="en">English</option>
