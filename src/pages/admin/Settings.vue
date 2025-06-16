@@ -231,6 +231,7 @@ import { useI18n } from "vue-i18n";
 import { ref, watch, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useAppStore } from "@/stores/useAppStore";
+import { changeLanguage } from "@/utils/changeLanguage";
 
 // i18n 설정
 const { t, locale } = useI18n();
@@ -238,14 +239,10 @@ const { t, locale } = useI18n();
 // 토스트 메시지 표시 여부
 const showToast = ref(false);
 
-
-// 사용자 선택 시 언어 변경 및 localStorage 저장
 const setLanguage = (lang) => {
-  locale.value = lang;
-  localStorage.setItem('language', lang);
+  changeLanguage(lang);
   selectedLang.value = lang;
 };
-
 // Pinia 스토어
 const appStore = useAppStore();
 const { isDarkMode, settings } = storeToRefs(appStore);
