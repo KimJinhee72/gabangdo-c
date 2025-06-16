@@ -1,0 +1,57 @@
+{
+  "settings": {
+    "title": "設定",
+    "notifications": {
+      "title": "通知設定",
+      "email": {
+        "title": "メール通知",
+        "description": "新しい予約や変更をメールで受け取ります。"
+      },
+      "push": {
+        "title": "プッシュ通知",
+        "description": "リアルタイムの予約通知を受け取ります。"
+      },
+      "cancel": {
+        "title": "キャンセル通知",
+        "description": "予約キャンセル時に通知を受け取ります。"
+      }
+    },
+    "theme": {
+      "title": "テーマ設定",
+      "darkMode": {
+        "title": "ダークモード",
+        "description": "暗いテーマに切り替えます。"
+      },
+      "colorTheme": {
+        "title": "カラーテーマ",
+        "description": "インターフェースのメインカラーを選択します。"
+      }
+    },
+    "system": {
+      "title": "システム設定",
+      "autoSave": {
+        "title": "自動保存",
+        "description": "変更を自動的に保存します。"
+      },
+      "language": {
+        "title": "言語",
+        "description": "インターフェースの言語を選択します。"
+      }
+    },
+    "data": {
+      "title": "データ管理",
+      "backup": {
+        "title": "データバックアップ",
+        "description": "すべてのデータをバックアップします。",
+        "button": "バックアップ"
+      },
+      "restore": {
+        "title": "データ復元",
+        "description": "バックアップしたデータを復元します。",
+        "button": "復元"
+      }
+    },
+    "saveButton": "設定を保存",
+    "savedMessage": "設定が保存されました。"
+  }
+}
