@@ -244,14 +244,20 @@ const appStore = useAppStore();
 const { isDarkMode, settings } = storeToRefs(appStore);
 
 
-// 색상 테마 목록
+// 테마 색상 목록
 const colorThemes = [
-  { value: "#3498db", label: "파란색" },
-  { value: "#2ecc71", label: "초록색" },
-  { value: "#e74c3c", label: "빨간색" },
-  { value: "#f1c40f", label: "노란색" },
-  { value: "#9b59b6", label: "보라색" },
+  { name: "Blue", value: "#3B82F6" },
+  { name: "Green", value: "#10B981" },
+  { name: "Red", value: "#EF4444" },
+  { name: "Purple", value: "#8B5CF6" },
+  { name: "Orange", value: "#F97316" },
 ];
+
+// 테마 색상 업데이트
+const updateColorTheme = (color) => {
+  settings.value.colorTheme = color;
+  document.documentElement.style.setProperty("--color-primary", color);
+};
 
 // ✅ 다크모드 클래스 HTML에 적용
 
@@ -265,13 +271,10 @@ watch(isDarkMode, (enabled) => {
 
 // 다크모드 토글
 const toggleDarkMode = () => {
-  appStore.toggleDarkMode();
+  appStore.toggleDarkMode(settings.value.darkMode);
 };
 
-// 색상 테마 업데이트
-const updateColorTheme = (color) => {
-  appStore.updateSettings({ colorTheme: color });
-};
+
 
 // 언어 변경 반영
 const updateLanguage = () => {
@@ -341,6 +344,11 @@ const saveSettings = () => {
     showToast.value = false;
   }, 3000);
 };
+// 초기 mount 시 언어 반영
+onMounted(() => {
+  locale.value = settings.value.language;
+  document.documentElement.style.setProperty("--color-primary", settings.value.colorTheme);
+});
 </script>
 
 <style scoped>

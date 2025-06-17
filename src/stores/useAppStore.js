@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 
 export const useAppStore = defineStore("app", () => {
+
   // 다크모드 설정 (기본값: true)
   const isDarkMode = ref(true);
 
@@ -15,7 +16,19 @@ export const useAppStore = defineStore("app", () => {
     autoSave: true,
     language: "ko",
   });
-
+ // 액션 함수들
+  function saveSettingsToStorage() {
+    localStorage.setItem('app-settings', JSON.stringify(settings.value));
+  }
+   function loadSettingsFromStorage() {
+    const saved = localStorage.getItem('app-settings');
+    if (saved) {
+      settings.value = JSON.parse(saved);
+      applyColorTheme(settings.value.colorTheme);
+    }
+  }
+ 
+;
   // 기본 데이터 배열들
   const customerNames = [
     "김철수",
