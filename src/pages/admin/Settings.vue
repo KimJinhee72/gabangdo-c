@@ -229,8 +229,9 @@
 <script setup>
 import { useI18n } from "vue-i18n";
 import { ref, watch, onMounted } from "vue";
-import { storeToRefs } from "pinia";
 import { useAppStore } from "@/stores/useAppStore";
+import { storeToRefs } from "pinia";
+
 
 // i18n 설정
 const { t, locale } = useI18n();
@@ -241,6 +242,7 @@ const showToast = ref(false);
 // Pinia 스토어
 const appStore = useAppStore();
 const { isDarkMode, settings } = storeToRefs(appStore);
+
 
 // 색상 테마 목록
 const colorThemes = [
@@ -301,18 +303,13 @@ const backupData = () => {
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
-  a.href = url;
-  a.download = `admin-backup-${new Date().toISOString().split('T')[0]}.json`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
 
   showToast.value = true;
   setTimeout(() => {
     showToast.value = false;
   }, 3000);
 };
+
 
 // 데이터 복원
 const restoreData = () => {
@@ -338,7 +335,7 @@ const restoreData = () => {
 
 // 설정 저장
 const saveSettings = () => {
-  appStore.saveSettingsToStorage(); // 또는 적절한 저장 메서드
+  appStore.saveSettingsToStorage(); // Pinia store에 저장하는 메서드 호출
   showToast.value = true;
   setTimeout(() => {
     showToast.value = false;
