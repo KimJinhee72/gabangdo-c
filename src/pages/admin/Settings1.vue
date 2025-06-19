@@ -1,12 +1,13 @@
 <template>
-  <div class="dark:bg-gray-900">
-    <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-8">
+  <div class="p-8 max-w-7xl dark:bg-gray-900">
+    <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-8">
       {{ t("settings.title") }}
     </h1>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
       <!-- 알림 설정 -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
         <div
           class="bg-gray-50 dark:bg-gray-700 p-6 border-b border-gray-200 dark:border-gray-600 flex items-center gap-4">
           <i class="fas fa-bell text-xl text-blue-500"></i>
@@ -25,10 +26,12 @@
               </p>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" v-model="settings.emailNotifications" class="sr-only peer" />
+              <input
+                type="checkbox"
+                v-model="settings.emailNotifications"
+                class="sr-only peer" />
               <div
-                class="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500">
-              </div>
+                class="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
             </label>
           </div>
 
@@ -42,10 +45,12 @@
               </p>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" v-model="settings.pushNotifications" class="sr-only peer" />
+              <input
+                type="checkbox"
+                v-model="settings.pushNotifications"
+                class="sr-only peer" />
               <div
-                class="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500">
-              </div>
+                class="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
             </label>
           </div>
 
@@ -59,17 +64,20 @@
               </p>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" v-model="settings.cancelNotifications" class="sr-only peer" />
+              <input
+                type="checkbox"
+                v-model="settings.cancelNotifications"
+                class="sr-only peer" />
               <div
-                class="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500">
-              </div>
+                class="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
             </label>
           </div>
         </div>
       </div>
 
       <!-- 테마 설정 -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
         <div
           class="bg-gray-50 dark:bg-gray-700 p-6 border-b border-gray-200 dark:border-gray-600 flex items-center gap-4">
           <i class="fas fa-palette text-xl text-blue-500"></i>
@@ -88,17 +96,12 @@
               </p>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" v-model="settings.darkMode" @change="toggleDarkMode" class="sr-only peer" />
-              <div class="w-11 h-6
-           bg-gray-200 peer-checked:bg-blue-600
-           dark:bg-gray-700 dark:peer-checked:bg-blue-500
-           rounded-full peer
-           after:content-[''] after:absolute after:top-[2px] after:left-[2px]
-           after:w-5 after:h-5 after:rounded-full
-           after:bg-white after:border after:border-gray-300
-           peer-checked:after:translate-x-full peer-checked:after:border-white
-           after:transition-all
-           dark:after:border-gray-600"></div>
+              <input
+                type="checkbox"
+                v-model="settings.darkMode"
+                class="sr-only peer" />
+              <div
+                class="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
             </label>
           </div>
 
@@ -112,18 +115,24 @@
               </p>
             </div>
             <div class="flex gap-3">
-              <div v-for="color in colorThemes" :key="color.value"
-                class="w-8 h-8 rounded-full cursor-pointer transition-transform hover:scale-110" :class="{
+              <div
+                v-for="color in colorThemes"
+                :key="color.value"
+                class="w-8 h-8 rounded-full cursor-pointer transition-transform hover:scale-110"
+                :class="{
                   'ring-2 ring-offset-2 ring-gray-800 dark:ring-white':
                     settings.colorTheme === color.value,
-                }" :style="{ backgroundColor: color.value }" @click="updateColorTheme(color.value)"></div>
+                }"
+                :style="{ backgroundColor: color.value }"
+                @click="settings.colorTheme = color.value"></div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- 시스템 설정 -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
         <div
           class="bg-gray-50 dark:bg-gray-700 p-6 border-b border-gray-200 dark:border-gray-600 flex items-center gap-4">
           <i class="fas fa-cog text-xl text-blue-500"></i>
@@ -142,10 +151,12 @@
               </p>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" v-model="settings.autoSave" class="sr-only peer" />
+              <input
+                type="checkbox"
+                v-model="settings.autoSave"
+                class="sr-only peer" />
               <div
-                class="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
-              </div>
+                class="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
             </label>
           </div>
 
@@ -158,7 +169,8 @@
                 {{ t("settings.system.language.description") }}
               </p>
             </div>
-            <select v-model="settings.language" @change="updateLanguage"
+            <select
+              v-model="settings.language"
               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
               <option value="ko">한국어</option>
               <option value="en">English</option>
@@ -169,7 +181,8 @@
       </div>
 
       <!-- 데이터 관리 -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
         <div
           class="bg-gray-50 dark:bg-gray-700 p-6 border-b border-gray-200 dark:border-gray-600 flex items-center gap-4">
           <i class="fas fa-database text-xl text-blue-500"></i>
@@ -187,7 +200,8 @@
                 {{ t("settings.data.backup.description") }}
               </p>
             </div>
-            <button @click="backupData"
+            <button
+              @click="backupData"
               class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
               {{ t("settings.data.backup.button") }}
             </button>
@@ -202,7 +216,9 @@
                 {{ t("settings.data.restore.description") }}
               </p>
             </div>
-            <button @click="restoreData"
+
+            <button
+              @click="restoreData"
               class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
               {{ t("settings.data.restore.button") }}
             </button>
@@ -212,158 +228,102 @@
     </div>
 
     <div class="flex justify-end">
-      <button @click="saveSettings"
+      <button
+        @click="saveSettings"
         class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
         {{ t("settings.saveButton") }}
       </button>
     </div>
 
     <!-- 토스트 메시지 -->
-    <div v-if="showToast"
+    <div
+      v-if="showToast"
       class="fixed bottom-8 right-8 px-6 py-3 bg-green-500 text-white rounded-lg shadow-lg animate-slide-in">
       {{ t("settings.savedMessage") }}
     </div>
   </div>
 </template>
-
 <script setup>
+// 언어설정 라이브러리
+// npm install vue-i18n@next - 설치
 import { useI18n } from "vue-i18n";
-import { ref, watch, onMounted } from "vue";
-import { useAppStore } from "@/stores/useAppStore";
-import { storeToRefs } from "pinia";
-
-
-// i18n 설정
+import { reactive, ref, watchEffect } from "vue";
 const { t, locale } = useI18n();
-
-// 토스트 메시지 표시 여부
 const showToast = ref(false);
+// 페이지 로드시 즉시 다크모드 설정 적용
+// localStorage에서 "darkMode" 가져옴(문자열 "true" 또는  "false")
+const isDarkMode = localStorage.getItem("darkMode") === "true";
+// 설정정보를 담고 있는 반응형 객체
+const settings = reactive({
+  emailNotifications: true, //이메일 알림 여부
+  pushNotifications: true,
+  cancelNotifications: false,
+  autoSave: true,
+  // 다크모드 설정
+  //  기본값 : localStorage에서 가져온 isDarkMode 값
+  // true면 다크모드 , false면 라이트 모드
+  darkMode: isDarkMode,
+  //   언어설정
+  language: localStorage.getItem("language") || "ko",
+});
 
-// Pinia 스토어
-const appStore = useAppStore();
-const { isDarkMode, settings } = storeToRefs(appStore);
+// 다크모드설정이 변경될때마다 실행시킴
+const lang = ref({ value: "ko" });
+watchEffect(() => {
+  // 언어 변경 감시
+  lang.value.value  = settings.language; // 설정 값으로 업데이트
+  locale.value = settings.language; // I18n 같은 곳에 적용
+  localStorage.setItem("language", settings.language); // 저장
+  //   사용자가 웹사이트에서 다크 모드 버튼을 클릭하면 settings.darkMode 값이 true 또는 false로 바뀝니다.
+  // 그 값에 따라:
 
+  // localStorage에 저장하여 새로고침해도 설정이 유지되도록 하고,
 
-// 테마 색상 목록
-const colorThemes = [
-  { name: "Blue", value: "#3B82F6" },
-  { name: "Green", value: "#10B981" },
-  { name: "Red", value: "#EF4444" },
-  { name: "Purple", value: "#8B5CF6" },
-  { name: "Orange", value: "#F97316" },
-];
-
-// 테마 색상 업데이트
-const updateColorTheme = (color) => {
-  settings.value.colorTheme = color;
-  document.documentElement.style.setProperty("--color-primary", color);
-};
-
-// ✅ 다크모드 클래스 HTML에 적용
-
-watch(isDarkMode, (enabled) => {
-  if (enabled) {
+  // HTML 문서에 .dark 클래스를 추가/삭제하여 실제 화면에 다크모드를 적용합니다.
+  //   다크모드 변경
+  const isDark = settings.darkMode;
+  localStorage.setItem("darkMode", isDark);
+  if (isDark) {
     document.documentElement.classList.add("dark");
   } else {
     document.documentElement.classList.remove("dark");
   }
-}, { immediate: true });
-
-// 다크모드 토글
-const toggleDarkMode = () => {
-  appStore.toggleDarkMode(settings.value.darkMode);
-};
-
-
-
-// 언어 변경 반영
-const updateLanguage = () => {
-  locale.value = settings.value.language;
-};
-
-// 언어 변경 감지
-watch(() => settings.value.language, (newLang) => {
-  locale.value = newLang;
 });
-
-// 데이터 백업
+// 선택할 수 있는 색상 테마 목록
+const colorThemes = [
+  { value: "#3498db", label: "파란색" },
+  { value: "#2ecc71", label: "초록색" },
+  { value: "#e74c3c", label: "빨간색" },
+  { value: "#f1c40f", label: "노란색" },
+  { value: "#9b59b6", label: "보라색" },
+];
+// 데이터 백업 함수(알림만 표시)
 const backupData = () => {
-  const data = {
-    settings: settings.value,
-    reservations: appStore.reservations,
-    workers: appStore.workers,
-    customers: appStore.customers,
-    transactions: appStore.transactions,
-    exportDate: new Date().toISOString(),
-  };
-
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `backup-${new Date().toISOString().split("T")[0]}.json`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-
-  showToast.value = true;
-  setTimeout(() => {
-    showToast.value = false;
-  }, 3000);
+  alert("데이터 백업이 시작되었습니다.");
 };
-
-
-// 데이터 복원
+// 데이터 복원 함수(알림만 표시)
 const restoreData = () => {
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = "application/json";
-
-  input.onchange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const text = await file.text();
-    try {
-      const parsed = JSON.parse(text);
-      appStore.restoreData(parsed); // Pinia 스토어에 복원용 메서드 추가 필요
-    } catch (error) {
-      alert("잘못된 파일입니다.");
-    }
-  };
-
-  input.click();
+  alert("데이터 복원이 시작되었습니다.");
 };
-
-// 설정 저장
+// 설정 저장시 호출되는 함수
 const saveSettings = () => {
-  appStore.saveSettingsToStorage(); // Pinia store에 저장하는 메서드 호출
   showToast.value = true;
   setTimeout(() => {
     showToast.value = false;
-  }, 3000);
+  }, 3000); //3초후에 숨김
 };
-// 초기 mount 시 언어 반영
-onMounted(() => {
-  locale.value = settings.value.language;
-  document.documentElement.style.setProperty("--color-primary", settings.value.colorTheme);
-});
 </script>
-
 <style scoped>
 @keyframes slide-in {
   from {
     transform: translateX(100%);
     opacity: 0;
   }
-
   to {
     transform: translateX(0);
     opacity: 1;
   }
 }
-
 .animate-slide-in {
   animation: slide-in 0.3s ease-out;
 }

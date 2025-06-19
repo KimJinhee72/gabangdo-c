@@ -309,7 +309,7 @@
                   <label class="w-32 text-sm font-medium text-gray-700"
                     >상태</label
                   >
-                  <span
+                   <span
                     :class="getStatusClass(selectedWorker.status)"
                     class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
                     {{ selectedWorker.status }}

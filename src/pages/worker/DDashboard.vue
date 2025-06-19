@@ -178,8 +178,8 @@
               <img
                 :src="
                   isAsc
-                    ? '/public/images/yr/delivery/asc_icon.png'
-                    : '/public/images/yr/delivery/desc_icon.png'
+                    ? '/images/yr/delivery/asc_icon.png'
+                    : '/images/yr/delivery/desc_icon.png'
                 "
                 alt="정렬 아이콘" />
             </button>
@@ -248,7 +248,7 @@ import { ref, computed } from "vue";
 
 // 카드컴포넌트
 // 전체
-import CardAll from "@/src/components/Cards/CardAll/CardAll.vue";
+import CardAll from "@/components/Cards/CardAll/CardAll.vue";
 // 대기중
 import CardWaiting from "@/components/CardWaiting.vue";
 

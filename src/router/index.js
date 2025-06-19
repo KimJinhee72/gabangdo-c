@@ -27,6 +27,7 @@ import AdminHome from "../pages/admin/AdminHome.vue";
 import Dashboard from "../pages/admin/Dashboard.vue";
 import Customers from "../pages/admin/Customers.vue";
 import Settings from "../pages/admin/Settings.vue";
+import Settings1 from "@/pages/admin/Settings1.vue";
 import Workers from "../pages/admin/Workers.vue";
 import Reservations from "../pages/admin/Reservations.vue";
 import SaleStatus from "@/pages/admin/SaleStatus.vue";
@@ -105,6 +106,10 @@ const routes = [
       {
         path: "settings",
         component: Settings,
+      },
+      {
+        path: "settings1",
+        component: Settings1,
       },
       {
         path: "workers",

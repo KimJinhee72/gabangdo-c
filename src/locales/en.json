@@ -1,0 +1,57 @@
+{
+  "settings": {
+    "title": "Settings",
+    "notifications": {
+      "title": "Notification Settings",
+      "email": {
+        "title": "Email Notifications",
+        "description": "Receive new reservations and changes via email."
+      },
+      "push": {
+        "title": "Push Notifications",
+        "description": "Receive real-time reservation notifications."
+      },
+      "cancel": {
+        "title": "Cancel Notifications",
+        "description": "Receive notifications when reservations are cancelled."
+      }
+    },
+    "theme": {
+      "title": "Theme Settings",
+      "darkMode": {
+        "title": "Dark Mode",
+        "description": "Switch to dark theme."
+      },
+      "colorTheme": {
+        "title": "Color Theme",
+        "description": "Select the main color of the interface."
+      }
+    },
+    "system": {
+      "title": "System Settings",
+      "autoSave": {
+        "title": "Auto Save",
+        "description": "Automatically save changes."
+      },
+      "language": {
+        "title": "Language",
+        "description": "Select interface language."
+      }
+    },
+    "data": {
+      "title": "Data Management",
+      "backup": {
+        "title": "Data Backup",
+        "description": "Backup all data.",
+        "button": "Backup"
+      },
+      "restore": {
+        "title": "Data Restore",
+        "description": "Restore backed up data.",
+        "button": "Restore"
+      }
+    },
+    "saveButton": "Save Settings",
+    "savedMessage": "Settings have been saved."
+  }
+}

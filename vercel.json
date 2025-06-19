@@ -1,12 +1,6 @@
 {
   "rewrites": [
-    {
-      "source": "/(en|ko)/:path*",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/:path*",
-      "destination": "/index.html"
-    }
+    { "source": "/(ko|en|ja)/:path*", "destination": "/index.html" },
+    { "source": "/:path*", "destination": "/index.html" }
   ]
 }

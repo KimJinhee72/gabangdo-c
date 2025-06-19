@@ -38,6 +38,7 @@ const links = [
     icon: "fas fas fa-dollar-sign",
   },
   { name: "설정", path: "/admin/settings", icon: "fas fa-cog" },
+  { name: "설정1", path: "/admin/settings1", icon: "fas fa-cog" },
 ];
 
 // 현재 경로에 따른 활성화 상태 계산
