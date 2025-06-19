@@ -362,5 +362,4 @@ const saveSettings = () => {
 .animate-slide-in {
   animation: slide-in 0.3s ease-out;
 }
-
 </style>

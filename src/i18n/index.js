@@ -183,14 +183,14 @@ const ja = {
 
 export function getLanguageFromRequest(req) {
   if (!req || !req.headers) return DEFAULT_LANGUAGE;
-
   const cookies = cookie.parse(req.headers.cookie || '');
   const lang = cookies.language;
+  return lang && SUPPORTED_LANGUAGES.includes(lang) ? lang : DEFAULT_LANGUAGE;
+}
 
-  if (lang && SUPPORTED_LANGUAGES.includes(lang)) {
-    return lang;
-  }
-  return DEFAULT_LANGUAGE;
+// 서버에서 호출
+export function createI18nWithLocale(locale) {
+  return createI18n({ legacy: false, locale, fallbackLocale: DEFAULT_LANGUAGE, messages });
 }
 
 const messages = { ko, en, ja };
