@@ -1,7 +1,7 @@
 <template>
   <div class="dark:bg-gray-900">
     <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-8">
-      {{ t("settings.title") }}
+      {{ $t("settings.title") }}
     </h1>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -11,17 +11,17 @@
           class="bg-gray-50 dark:bg-gray-700 p-6 border-b border-gray-200 dark:border-gray-600 flex items-center gap-4">
           <i class="fas fa-bell text-xl text-blue-500"></i>
           <h2 class="text-xl font-semibold text-gray-800 dark:text-white">
-            {{ t("settings.notifications.title") }}
+            {{ $t("settings.notifications.title") }}
           </h2>
         </div>
         <div class="p-6 space-y-6">
           <div class="flex justify-between items-center">
             <div>
               <h3 class="text-gray-800 dark:text-white font-medium">
-                {{ t("settings.notifications.email.title") }}
+                {{ $t("settings.notifications.email.title") }}
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ t("settings.notifications.email.description") }}
+                {{ $t("settings.notifications.email.description") }}
               </p>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
@@ -35,10 +35,10 @@
           <div class="flex justify-between items-center">
             <div>
               <h3 class="text-gray-800 dark:text-white font-medium">
-                {{ t("settings.notifications.push.title") }}
+                {{ $t("settings.notifications.push.title") }}
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ t("settings.notifications.push.description") }}
+                {{ $t("settings.notifications.push.description") }}
               </p>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
@@ -52,10 +52,10 @@
           <div class="flex justify-between items-center">
             <div>
               <h3 class="text-gray-800 dark:text-white font-medium">
-                {{ t("settings.notifications.cancel.title") }}
+                {{ $t("settings.notifications.cancel.title") }}
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ t("settings.notifications.cancel.description") }}
+                {{ vt("settings.notifications.cancel.description") }}
               </p>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
@@ -74,17 +74,17 @@
           class="bg-gray-50 dark:bg-gray-700 p-6 border-b border-gray-200 dark:border-gray-600 flex items-center gap-4">
           <i class="fas fa-palette text-xl text-blue-500"></i>
           <h2 class="text-xl font-semibold text-gray-800 dark:text-white">
-            {{ t("settings.theme.title") }}
+            {{ $t("settings.theme.title") }}
           </h2>
         </div>
         <div class="p-6 space-y-6">
           <div class="flex justify-between items-center">
             <div>
               <h3 class="text-gray-800 dark:text-white font-medium">
-                {{ t("settings.theme.darkMode.title") }}
+                {{ $t("settings.theme.darkMode.title") }}
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ t("settings.theme.darkMode.description") }}
+                {{ $t("settings.theme.darkMode.description") }}
               </p>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
@@ -105,10 +105,10 @@
           <div class="space-y-4">
             <div>
               <h3 class="text-gray-800 dark:text-white font-medium">
-                {{ t("settings.theme.colorTheme.title") }}
+                {{ $t("settings.theme.colorTheme.title") }}
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ t("settings.theme.colorTheme.description") }}
+                {{ $t("settings.theme.colorTheme.description") }}
               </p>
             </div>
             <div class="flex gap-3">
@@ -128,17 +128,17 @@
           class="bg-gray-50 dark:bg-gray-700 p-6 border-b border-gray-200 dark:border-gray-600 flex items-center gap-4">
           <i class="fas fa-cog text-xl text-blue-500"></i>
           <h2 class="text-xl font-semibold text-gray-800 dark:text-white">
-            {{ t("settings.system.title") }}
+            {{ $t("settings.system.title") }}
           </h2>
         </div>
         <div class="p-6 space-y-6">
           <div class="flex justify-between items-center">
             <div>
               <h3 class="text-gray-800 dark:text-white font-medium">
-                {{ t("settings.system.autoSave.title") }}
+                {{ $t("settings.system.autoSave.title") }}
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ t("settings.system.autoSave.description") }}
+                {{ $t("settings.system.autoSave.description") }}
               </p>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
@@ -152,10 +152,10 @@
           <div class="space-y-2">
             <div>
               <h3 class="text-gray-800 dark:text-white font-medium">
-                {{ t("settings.system.language.title") }}
+                {{ $t("settings.system.language.title") }}
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ t("settings.system.language.description") }}
+                {{ $t("settings.system.language.description") }}
               </p>
             </div>
             <select v-model="settings.language" @change="updateLanguage"
@@ -174,37 +174,37 @@
           class="bg-gray-50 dark:bg-gray-700 p-6 border-b border-gray-200 dark:border-gray-600 flex items-center gap-4">
           <i class="fas fa-database text-xl text-blue-500"></i>
           <h2 class="text-xl font-semibold text-gray-800 dark:text-white">
-            {{ t("settings.data.title") }}
+            {{ $t("settings.data.title") }}
           </h2>
         </div>
         <div class="p-6 space-y-6">
           <div class="flex justify-between items-center">
             <div>
               <h3 class="text-gray-800 dark:text-white font-medium">
-                {{ t("settings.data.backup.title") }}
+                {{ $t("settings.data.backup.title") }}
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ t("settings.data.backup.description") }}
+                {{ $t("settings.data.backup.description") }}
               </p>
             </div>
             <button @click="backupData"
               class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-              {{ t("settings.data.backup.button") }}
+              {{ $t("settings.data.backup.button") }}
             </button>
           </div>
 
           <div class="flex justify-between items-center">
             <div>
               <h3 class="text-gray-800 dark:text-white font-medium">
-                {{ t("settings.data.restore.title") }}
+                {{ $t("settings.data.restore.title") }}
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ t("settings.data.restore.description") }}
+                {{ $t("settings.data.restore.description") }}
               </p>
             </div>
             <button @click="restoreData"
               class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
-              {{ t("settings.data.restore.button") }}
+              {{ $t("settings.data.restore.button") }}
             </button>
           </div>
         </div>
@@ -214,14 +214,14 @@
     <div class="flex justify-end">
       <button @click="saveSettings"
         class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-        {{ t("settings.saveButton") }}
+        {{ $t("settings.saveButton") }}
       </button>
     </div>
 
     <!-- 토스트 메시지 -->
     <div v-if="showToast"
       class="fixed bottom-8 right-8 px-6 py-3 bg-green-500 text-white rounded-lg shadow-lg animate-slide-in">
-      {{ t("settings.savedMessage") }}
+      {{ $t("settings.savedMessage") }}
     </div>
   </div>
 </template>
