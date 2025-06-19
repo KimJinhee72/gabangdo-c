@@ -1,7 +1,7 @@
 <template>
   <div class="dark:bg-gray-900">
     <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-8">
-      {{ $t("settings.title") }}
+      {{ t("settings.title") }}
     </h1>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -11,17 +11,17 @@
           class="bg-gray-50 dark:bg-gray-700 p-6 border-b border-gray-200 dark:border-gray-600 flex items-center gap-4">
           <i class="fas fa-bell text-xl text-blue-500"></i>
           <h2 class="text-xl font-semibold text-gray-800 dark:text-white">
-            {{ $t("settings.notifications.title") }}
+            {{ t("settings.notifications.title") }}
           </h2>
         </div>
         <div class="p-6 space-y-6">
           <div class="flex justify-between items-center">
             <div>
               <h3 class="text-gray-800 dark:text-white font-medium">
-                {{ $t("settings.notifications.email.title") }}
+                {{ t("settings.notifications.email.title") }}
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ $t("settings.notifications.email.description") }}
+                {{ t("settings.notifications.email.description") }}
               </p>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
@@ -35,10 +35,10 @@
           <div class="flex justify-between items-center">
             <div>
               <h3 class="text-gray-800 dark:text-white font-medium">
-                {{ $t("settings.notifications.push.title") }}
+                {{ t("settings.notifications.push.title") }}
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ $t("settings.notifications.push.description") }}
+                {{ t("settings.notifications.push.description") }}
               </p>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
@@ -52,10 +52,10 @@
           <div class="flex justify-between items-center">
             <div>
               <h3 class="text-gray-800 dark:text-white font-medium">
-                {{ $t("settings.notifications.cancel.title") }}
+                {{ t("settings.notifications.cancel.title") }}
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ vt("settings.notifications.cancel.description") }}
+                {{ t("settings.notifications.cancel.description") }}
               </p>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
@@ -74,17 +74,17 @@
           class="bg-gray-50 dark:bg-gray-700 p-6 border-b border-gray-200 dark:border-gray-600 flex items-center gap-4">
           <i class="fas fa-palette text-xl text-blue-500"></i>
           <h2 class="text-xl font-semibold text-gray-800 dark:text-white">
-            {{ $t("settings.theme.title") }}
+            {{ t("settings.theme.title") }}
           </h2>
         </div>
         <div class="p-6 space-y-6">
           <div class="flex justify-between items-center">
             <div>
               <h3 class="text-gray-800 dark:text-white font-medium">
-                {{ $t("settings.theme.darkMode.title") }}
+                {{ t("settings.theme.darkMode.title") }}
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ $t("settings.theme.darkMode.description") }}
+                {{ t("settings.theme.darkMode.description") }}
               </p>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
@@ -105,10 +105,10 @@
           <div class="space-y-4">
             <div>
               <h3 class="text-gray-800 dark:text-white font-medium">
-                {{ $t("settings.theme.colorTheme.title") }}
+                {{ t("settings.theme.colorTheme.title") }}
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ $t("settings.theme.colorTheme.description") }}
+                {{ t("settings.theme.colorTheme.description") }}
               </p>
             </div>
             <div class="flex gap-3">
@@ -128,23 +128,23 @@
           class="bg-gray-50 dark:bg-gray-700 p-6 border-b border-gray-200 dark:border-gray-600 flex items-center gap-4">
           <i class="fas fa-cog text-xl text-blue-500"></i>
           <h2 class="text-xl font-semibold text-gray-800 dark:text-white">
-            {{ $t("settings.system.title") }}
+            {{ t("settings.system.title") }}
           </h2>
         </div>
         <div class="p-6 space-y-6">
           <div class="flex justify-between items-center">
             <div>
               <h3 class="text-gray-800 dark:text-white font-medium">
-                {{ $t("settings.system.autoSave.title") }}
+                {{ t("settings.system.autoSave.title") }}
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ $t("settings.system.autoSave.description") }}
+                {{ t("settings.system.autoSave.description") }}
               </p>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" v-model="settings.autoSave" class="sr-only peer" />
               <div
-                class="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
               </div>
             </label>
           </div>
@@ -152,10 +152,10 @@
           <div class="space-y-2">
             <div>
               <h3 class="text-gray-800 dark:text-white font-medium">
-                {{ $t("settings.system.language.title") }}
+                {{ t("settings.system.language.title") }}
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ $t("settings.system.language.description") }}
+                {{ t("settings.system.language.description") }}
               </p>
             </div>
             <select v-model="settings.language" @change="updateLanguage"
@@ -174,37 +174,37 @@
           class="bg-gray-50 dark:bg-gray-700 p-6 border-b border-gray-200 dark:border-gray-600 flex items-center gap-4">
           <i class="fas fa-database text-xl text-blue-500"></i>
           <h2 class="text-xl font-semibold text-gray-800 dark:text-white">
-            {{ $t("settings.data.title") }}
+            {{ t("settings.data.title") }}
           </h2>
         </div>
         <div class="p-6 space-y-6">
           <div class="flex justify-between items-center">
             <div>
               <h3 class="text-gray-800 dark:text-white font-medium">
-                {{ $t("settings.data.backup.title") }}
+                {{ t("settings.data.backup.title") }}
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ $t("settings.data.backup.description") }}
+                {{ t("settings.data.backup.description") }}
               </p>
             </div>
             <button @click="backupData"
               class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-              {{ $t("settings.data.backup.button") }}
+              {{ t("settings.data.backup.button") }}
             </button>
           </div>
 
           <div class="flex justify-between items-center">
             <div>
               <h3 class="text-gray-800 dark:text-white font-medium">
-                {{ $t("settings.data.restore.title") }}
+                {{ t("settings.data.restore.title") }}
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ $t("settings.data.restore.description") }}
+                {{ t("settings.data.restore.description") }}
               </p>
             </div>
             <button @click="restoreData"
               class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
-              {{ $t("settings.data.restore.button") }}
+              {{ t("settings.data.restore.button") }}
             </button>
           </div>
         </div>
@@ -214,14 +214,14 @@
     <div class="flex justify-end">
       <button @click="saveSettings"
         class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-        {{ $t("settings.saveButton") }}
+        {{ t("settings.saveButton") }}
       </button>
     </div>
 
     <!-- 토스트 메시지 -->
     <div v-if="showToast"
       class="fixed bottom-8 right-8 px-6 py-3 bg-green-500 text-white rounded-lg shadow-lg animate-slide-in">
-      {{ $t("settings.savedMessage") }}
+      {{ t("settings.savedMessage") }}
     </div>
   </div>
 </template>
@@ -229,12 +229,13 @@
 <script setup>
 import { useI18n } from "vue-i18n";
 import { ref, watch, onMounted } from "vue";
-import { useAppStore } from "@/stores/useAppStore";
 import { storeToRefs } from "pinia";
-
+import { useAppStore } from "@/stores/useAppStore";
 
 // i18n 설정
 const { t, locale } = useI18n();
+const translated = t('some.key');
+console.log(typeof t)
 
 // 토스트 메시지 표시 여부
 const showToast = ref(false);
@@ -243,21 +244,14 @@ const showToast = ref(false);
 const appStore = useAppStore();
 const { isDarkMode, settings } = storeToRefs(appStore);
 
-
-// 테마 색상 목록
+// 색상 테마 목록
 const colorThemes = [
-  { name: "Blue", value: "#3B82F6" },
-  { name: "Green", value: "#10B981" },
-  { name: "Red", value: "#EF4444" },
-  { name: "Purple", value: "#8B5CF6" },
-  { name: "Orange", value: "#F97316" },
+  { value: "#3498db", label: "파란색" },
+  { value: "#2ecc71", label: "초록색" },
+  { value: "#e74c3c", label: "빨간색" },
+  { value: "#f1c40f", label: "노란색" },
+  { value: "#9b59b6", label: "보라색" },
 ];
-
-// 테마 색상 업데이트
-const updateColorTheme = (color) => {
-  settings.value.colorTheme = color;
-  document.documentElement.style.setProperty("--color-primary", color);
-};
 
 // ✅ 다크모드 클래스 HTML에 적용
 
@@ -271,10 +265,13 @@ watch(isDarkMode, (enabled) => {
 
 // 다크모드 토글
 const toggleDarkMode = () => {
-  appStore.toggleDarkMode(settings.value.darkMode);
+  appStore.toggleDarkMode();
 };
 
-
+// 색상 테마 업데이트
+const updateColorTheme = (color) => {
+  appStore.updateSettings({ colorTheme: color });
+};
 
 // 언어 변경 반영
 const updateLanguage = () => {
@@ -306,13 +303,18 @@ const backupData = () => {
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
+  a.href = url;
+  a.download = `admin-backup-${new Date().toISOString().split('T')[0]}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 
   showToast.value = true;
   setTimeout(() => {
     showToast.value = false;
   }, 3000);
 };
-
 
 // 데이터 복원
 const restoreData = () => {
@@ -338,17 +340,12 @@ const restoreData = () => {
 
 // 설정 저장
 const saveSettings = () => {
-  appStore.saveSettingsToStorage(); // Pinia store에 저장하는 메서드 호출
+  appStore.saveSettingsToStorage(); // 또는 적절한 저장 메서드
   showToast.value = true;
   setTimeout(() => {
     showToast.value = false;
   }, 3000);
 };
-// 초기 mount 시 언어 반영
-onMounted(() => {
-  locale.value = settings.value.language;
-  document.documentElement.style.setProperty("--color-primary", settings.value.colorTheme);
-});
 </script>
 
 <style scoped>
