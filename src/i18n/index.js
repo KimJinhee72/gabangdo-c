@@ -188,9 +188,11 @@ localStorage.setItem("language", DEFAULT_LANGUAGE); // <= 이 줄 추가
 // ✅ 저장된 언어 불러오기 (기본값은 ko)
 const savedLanguage = localStorage.getItem("language");
 const locale = SUPPORTED_LANGUAGES.includes(savedLanguage) ? savedLanguage : DEFAULT_LANGUAGE;
+
+// ✅ 우선 i18n 인스턴스 생성
 const i18n = createI18n({
   legacy: false,
-  locale, // 초기값에 getSavedLanguage 결과를 넣음
+  locale: getSavedLanguage(),
   fallbackLocale: DEFAULT_LANGUAGE,
   messages,
 });
@@ -207,13 +209,13 @@ if (savedLanguage && SUPPORTED_LANGUAGES.includes(savedLanguage)) {
 
 
 
-// ✅ 저장된 언어 가져오기
+// ✅ getSavedLanguage 정의
 function getSavedLanguage() {
+  if (typeof window === "undefined") return DEFAULT_LANGUAGE;
   const saved = localStorage.getItem('language');
   return SUPPORTED_LANGUAGES.includes(saved) ? saved : DEFAULT_LANGUAGE;
 }
-
-// 클라이언트에서만 동작
+// ✅ 이제 i18n.locale을 수정하거나 다른 작업
 if (typeof window !== "undefined") {
   const saved = getSavedLanguage();
   if (saved !== i18n.global.locale.value) {
