@@ -27,7 +27,7 @@ export const useAppStore = defineStore("app", () => {
       applyColorTheme(settings.value.colorTheme);
     }
   }
- 
+
 ;
   // 기본 데이터 배열들
   const customerNames = [
@@ -446,7 +446,7 @@ function generateEmail(name) {
     const startDate = new Date(2025, 0, 1); // 2025-01-01부터 시작
 
     for (let i = 0; i < 120; i++) {
-      const id = `#${1001 + i}`;
+      const id = `${i+1}`;
       const customerName = customerNames[i % customerNames.length];
       const phone = `010-${getRandomInt(1000, 9999)}-${pad(1001 + i, 4)}`;
       const location = locations[i % locations.length];
@@ -809,6 +809,7 @@ function generateEmail(name) {
       inactiveCustomers,
       totalCustomers,
       totalRevenue,
+      workers,
       avgRating: avgRating.toFixed(1),
       revenueGrowth: 12.5,
       reservationGrowth: 8.3,

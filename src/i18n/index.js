@@ -206,9 +206,6 @@ if (savedLanguage && SUPPORTED_LANGUAGES.includes(savedLanguage)) {
   i18n.global.locale.value = savedLanguage;
 }
 
-
-
-
 // ✅ getSavedLanguage 정의
 function getSavedLanguage() {
   if (typeof window === "undefined") return DEFAULT_LANGUAGE;
