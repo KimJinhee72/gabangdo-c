@@ -8,77 +8,55 @@
     </div>
 
     <!-- 검색 select바 -->
-      <div
-        class="p-4 font-light text-sm text-gray-500 border-b dark:text-black border-gray-200 dark:bg-gray-600 flex flex-col md:flex-row gap-4">
-        <div class="flex flex-col md:flex-row justify-start gap-2">
-          <!-- 날짜 범위 선택 -->
-          <DateRangePicker
-          v-model:startDate="item.startDate"
-          v-model:endDate="item.endDate" />
-          <!-- 날짜 선택 인풋 -->
-          <SearchDateSelect
-          v-model="item.rangeType"
-          v-model:startDate="item.startDate"
-          v-model:endDate="item.endDate" />
-          <!-- 오늘/주/한달 선택  -->
-          <SearchSelect v-model="date" :options="dateOptions" class="max-[1010px]:hidden" />
-          <SearchSelect v-model="pickup" :options="pickupOptions" />
-          <SearchSelect v-model="area" :options="areaOptions" />
-          <SearchSelect v-model="status" :options="statusOptions" />
-          <button
-            class="px-4 py-1 bg-indigo-600 dark:bg-indigo-300 text-white dark:text-black rounded-md hover:bg-indigo-700">
-            검색
-          </button>
-        </div>
+    <div
+      class="p-4 font-light text-sm text-gray-500 border-b dark:text-black border-gray-200 dark:bg-gray-600 flex flex-col md:flex-row gap-4">
+      <div class="flex flex-col md:flex-row justify-start gap-2">
+        <!-- 날짜 선택 일일이 선택 -->
+        <SearchDateSelect v-model:startDate="items[index].startDate" v-model:endDate="items[index].endDate"
+          @change="handleDateSelect" />
+        <!-- 오늘/주/한달 선택  -->
+        <SearchSelect v-model="date" :options="dateOptions" @change="onDateChange" />
+        <!-- <SearchSelect v-model="pickup" :options="pickupOptions" /> -->
+        <!-- 담당구역 -->
+        <SearchSelect v-model="area" :options="areaOptions" />
+        <!-- 활동상태 -->
+        <SearchSelect v-model="status" :options="statusOptions" />
+        <button
+          class="px-4 py-1 bg-indigo-600 dark:bg-indigo-300 text-white dark:text-black rounded-md hover:bg-indigo-700">
+          검색
+        </button>
       </div>
+    </div>
     <!-- 기사 data -->
     <div class="overflow-x-auto">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr class="allpadding">
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               기사ID
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               이름
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               연락처
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               평점
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               현재상태
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               예약
             </th>
-            <th
-              class="w-[90px] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
+            <th class="w-[90px] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               액션
             </th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr
-            v-for="worker in paginatedWorkers"
-            :key="worker.id"
-            class="hover:bg-gray-50 allpadding"
-          >
+          <tr v-for="worker in paginatedWorkers" :key="worker.id" class="hover:bg-gray-50 allpadding">
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
               {{ worker.id }}
             </td>
@@ -86,8 +64,7 @@
               {{ worker.name }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              {{ windowWidth <= 830 ? worker.phone1 : worker.phone }}
-            </td>
+              {{ windowWidth <= 830 ? worker.phone1 : worker.phone }} </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
               <div class="flex items-center">
                 <span class="text-yellow-400 mr-1">
@@ -97,10 +74,8 @@
               </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <span
-                :class="getStatusClass(worker.status)"
-                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-xl"
-              >
+              <span :class="getStatusClass(worker.status)"
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-xl">
                 {{ worker.status }}
               </span>
             </td>
@@ -109,16 +84,12 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
               <div class="relative group inline-block mr-3">
-                <button
-                  @click="showWorkerDetails(worker)"
-                  class="text-indigo-600 hover:text-indigo-900 mr-3"
-                >
+                <button @click="showWorkerDetails(worker)" class="text-indigo-600 hover:text-indigo-900 mr-3">
                   <i class="fas fa-eye mr-1"></i>
                   <span class="max-[960px]:hidden">상세</span>
                 </button>
                 <div
-                  class="hidden max-[960px]:group-hover:block absolute left-1/2 -translate-x-1/2 top-full mt-1 w-max px-2 py-1 rounded bg-black/70 text-white text-xs z-10"
-                >
+                  class="hidden max-[960px]:group-hover:block absolute left-1/2 -translate-x-1/2 top-full mt-1 w-max px-2 py-1 rounded bg-black/70 text-white text-xs z-10">
                   상세보기
                 </div>
               </div>
@@ -128,35 +99,29 @@
                   <span class="max-[960px]:hidden">수정</span>
                 </button>
                 <div
-                  class="hidden max-[960px]:group-hover:block absolute left-1/2 -translate-x-1/2 top-full mt-1 w-max px-2 py-1 rounded bg-black/70 text-white text-xs z-10"
-                >
+                  class="hidden max-[960px]:group-hover:block absolute left-1/2 -translate-x-1/2 top-full mt-1 w-max px-2 py-1 rounded bg-black/70 text-white text-xs z-10">
                   수정클릭
                 </div>
               </div>
               <div @click="activeStatus(worker)" class="relative group inline-block">
-                <button
-                  :class="[
-                    'px-2 inline-flex items-center text-xs leading-5 font-semibold rounded-xl',
-                    worker.status === '대기중'
-                      ? 'text-green-600 hover:text-green-600'
-                      : 'text-red-600 hover:text-red-900',
-                  ]"
-                >
+                <button :class="[
+                  'px-2 inline-flex items-center text-xs leading-5 font-semibold rounded-xl',
+                  worker.status === '대기중'
+                    ? 'text-green-600 hover:text-green-600'
+                    : 'text-red-600 hover:text-red-900',
+                ]">
                   <i class="fas fa-ban mr-1"></i>
                   <span class="max-[960px]:hidden actionSpan ">{{
                     worker.status === '대기중' ? '활동중' : '대기중'
                   }}</span>
                 </button>
                 <div
-                  class="hidden group-hover:block absolute left-1/2 -translate-x-1/2 top-full mt-1 w-max px-2 py-1 rounded bg-black/80 text-white text-xs z-10"
-                >
-                  <span
-                    :class="[
-                      worker.status === '대기중'
-                        ? 'text-red-600 hover:text-red-900'
-                        : 'text-green-600 hover:text-green-600',
-                    ]"
-                  >
+                  class="hidden group-hover:block absolute left-1/2 -translate-x-1/2 top-full mt-1 w-max px-2 py-1 rounded bg-black/80 text-white text-xs z-10">
+                  <span :class="[
+                    worker.status === '대기중'
+                      ? 'text-red-600 hover:text-red-900'
+                      : 'text-green-600 hover:text-green-600',
+                  ]">
                     {{ worker.status === '대기중' ? '활동중지' : '활동클릭' }}
                   </span>
                 </div>
@@ -167,52 +132,36 @@
       </table>
 
       <!-- 페이지네이션 -->
-      <div
-        class=" w-full flex justify-between items-center bg-white rounded-lg shadow p-4 px-6 dark:bg-gray-600"
-      >
+      <div class=" w-full flex justify-between items-center bg-white rounded-lg shadow p-4 px-6 dark:bg-gray-600">
         <div
-          class=" pageNum w-full flex justify-between items-center max-[768px]:flex-1 max-[768px]:flex max-[768px]:items-center max-[768px]:justify-between"
-        >
+          class=" pageNum w-full flex justify-between items-center max-[768px]:flex-1 max-[768px]:flex max-[768px]:items-center max-[768px]:justify-between">
           <div class="block w-full">
             <p class="text-sm text-gray-700 dark:text-white">
               총 <span class="font-medium">{{ filteredWorkers.length }}</span>명 중
               <span class="font-medium">{{
                 (currentPage - 1) * itemsPerPage + 1
-              }}</span
-              >-
+              }}</span>-
               <span class="font-medium">{{
                 Math.min(currentPage * itemsPerPage, filteredWorkers.length)
-              }}</span
-              >개 표시
+              }}</span>개 표시
             </p>
           </div>
         </div>
         <div class="pageNum w-full flex gap-2 dark:text-white">
-          <button
-            @click="prevPage"
-            :disabled="currentPage === 1"
-            class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+          <button @click="prevPage" :disabled="currentPage === 1"
+            class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
             <i class="fas fa-chevron-left"></i>
           </button>
-          <button
-            v-for="page in totalPages"
-            :key="page"
-            @click="goToPage(page)"
-            class="px-3 py-1 border rounded"
+          <button v-for="page in totalPages" :key="page" @click="goToPage(page)" class="px-3 py-1 border rounded"
             :class="[
               currentPage === page
                 ? 'bg-indigo-600 text-white border-indigo-600'
                 : 'border-gray-300  text-gray-500 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-700',
-            ]"
-          >
+            ]">
             {{ page }}
           </button>
-          <button
-            @click="nextPage"
-            :disabled="currentPage === totalPages"
-            class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+          <button @click="nextPage" :disabled="currentPage === totalPages"
+            class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
             <i class="fas fa-chevron-right"></i>
           </button>
         </div>
@@ -224,7 +173,69 @@
 <script setup>
 import SearchDateSelect from "./SearchDateSelect.vue";
 import SearchSelect from "./SearchSelect.vue";
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, reactive, onMounted } from "vue";
+
+// 날짜 선택용 reactive 배열
+const items = reactive([
+  {
+    rangeType: "today",
+    startDate: formatDate(new Date()),
+    endDate: formatDate(new Date()),
+  },
+]);
+const index = 0;
+function updateDateRange(index) {
+  const item = items[index];
+  const today = new Date();
+
+  switch (item.rangeType) {
+    case "today":
+      item.startDate = formatDate(today);
+      item.endDate = formatDate(today);
+      break;
+    case "week":
+      const dayOfWeek = today.getDay(); // 0 (일) ~ 6 (토)
+      const sunday = new Date(today);
+      sunday.setDate(today.getDate() - dayOfWeek); // 이번 주 일요일
+      const saturday = new Date(sunday);
+      saturday.setDate(sunday.getDate() + 6); // 이번 주 토요일
+
+      item.startDate = formatDate(sunday);
+      item.endDate = formatDate(saturday);
+      break;
+    case "month":
+      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1); // 해당 달 1일
+      const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0); // 말일
+      item.startDate = formatDate(monthStart);
+      item.endDate = formatDate(monthEnd);
+      break;
+    case "year":
+      const yearStart = new Date(today.getFullYear(), 0, 1); // 해당 연도의 1월 1일
+      const yearEnd = new Date(today.getFullYear(), 11, 31); // 해당 연도 12월 31일
+      item.startDate = formatDate(yearStart);
+      item.endDate = formatDate(yearEnd);
+      break;
+    case "all":
+      item.startDate = "";
+      item.endDate = "";
+      break;
+  }
+}
+//날짜 직접선택
+function onDateChange(selectedValue) {
+  date.value = selectedValue;
+  items[index].rangeType = selectedValue;
+  updateDateRange(index);
+}
+
+// 커스텀 날짜 직접 선택 시:
+function handleDateSelect() {
+  if (items[index].startDate && items[index].endDate) {
+    date.value = "custom";
+    items[index].rangeType = "custom";
+    updateDateRange(index); // 날짜 객체 계산 등 필요한 작업
+  }
+}
 
 
 // 기사
@@ -464,7 +475,7 @@ const item = ref({
   endDate: "",
   rangeType: "all", // 'all' | 'today' | 'week' | 'month'
 });
-// 날짜 
+// 날짜
 const date = ref("오늘");
 const pickup = ref("all");
 const area = ref("all");
@@ -507,7 +518,7 @@ const statusMap = {
   completed: "완료",
   cancelled: "취소",
 };
- 
+
 
 // 상태별 색상 클래스 리턴
 function getStatusClass(status) {

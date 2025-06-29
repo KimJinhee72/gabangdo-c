@@ -16,18 +16,19 @@
           v-model:startDate="item.startDate"
           v-model:endDate="item.endDate" /> -->
         <!-- 날짜 선택 일일이 선택 -->
-        <SearchDateSelect class="p-2" v-model="items[index].rangeType" v-model:startDate="items[index].startDate"
-          v-model:endDate="items[index].endDate" @change="() => updateDateRange(index)" />
+        <SearchDateSelect v-model:startDate="items[index].startDate" v-model:endDate="items[index].endDate"
+          @change="handleDateSelect" />
+
         <!-- 오늘/주/한달 선택  -->
         <SearchSelect v-model="date" :options="dateOptions" @change="onDateChange" />
-        <SearchSelect class="text-center mr-auto" label="픽업위치" v-model="pickup" :options="pickupOptions"
-          @change="onPickupChange" style="margin:auto;" />
+        <SearchSelect class="mr-auto" label="픽업위치" v-model="pickup" :options="pickupOptions" @change="onPickupChange"
+          style="margin:auto;" />
         <!-- <SearchSelect label="담당지역" v-model="area" :options="areaOptions" /> -->
-        <SearchSelect label="운반상태" v-model="status" :options="statusOptions" />
-        <button @click="onSearch"
+        <SearchSelect label="운반상태" v-model="statusFilter" :options="statusOptions" />
+        <!-- <button @click="onSearch"
           class="w-[35px] h-[35px] bg-indigo-600 dark:bg-indigo-300 text-white dark:text-black rounded-md hover:bg-indigo-700">
           검색
-        </button>
+        </button> -->
       </div>
     </div>
 
@@ -140,18 +141,19 @@
                 </h4>
                 <div class="space-y-2 text-gray-700">
                   <div class="flex items-center">
-                    <label class="w-32 text-sm font-medium text-gray-700">상태 *</label>
+                    <label class="w-24 text-sm font-medium text-gray-700">상태 *</label>
                     <select v-model="selectedReservation.status"
                       class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-gray-700 focus:ring-indigo-500 focus:border-indigo-500">
-                      <option value="대기중">대기중</option>
-                      <option value="운반중">운반중</option>
-                      <option value="완료">완료</option>
-                      <option value="취소">취소</option>
+                      <option value="waiting">대기중</option>
+                      <option value="assigned">기사배정</option>
+                      <option value="in_progress">운반중</option>
+                      <option value="completed">완료</option>
+                      <option value="cancelled">취소</option>
                     </select>
                   </div>
                   <!-- 픽업위치 -->
                   <div class="flex items-center">
-                    <label class="w-32 text-sm font-medium text-gray-700">픽업위치 *</label>
+                    <label class="w-24 text-sm font-medium text-gray-700">픽업위치 *</label>
                     <select v-model="selectedReservation.location"
                       class="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500">
                       <option value="대구공항">대구공항</option>
@@ -162,12 +164,12 @@
                   </div>
                   <!-- 고객 -->
                   <div class="flex items-center">
-                    <label class="w-32 text-sm font-medium text-gray-700">고객명 *</label>
+                    <label class="w-24 text-sm font-medium text-gray-700">고객명 *</label>
                     <input type="text" v-model="selectedReservation.customerName"
                       class="flex-1 border border-gray-300 rounded-md md:px-4 pl-2 py-2 focus:ring-indigo-500 focus:border-indigo-500" />
                   </div>
                   <div class="flex items-center">
-                    <label class="w-32 text-sm font-medium text-gray-700">연락처 *</label>
+                    <label class="w-24 text-sm font-medium text-gray-700">연락처 *</label>
                     <input type="text" v-model="selectedReservation.phone"
                       class="flex-1 border border-gray-300 rounded-md md:px-4 pl-2 py-2 focus:ring-indigo-500 focus:border-indigo-500" />
                   </div>
@@ -180,13 +182,16 @@
                   운반 정보
                 </h4>
                 <div class="space-y-2">
-                  <div class="flex items-center">
-                    <label class="w-32 text-sm font-medium text-gray-700">가방 수 *</label>
+                  <div class="flex justify-between items-center">
+                    <label class="w-12 text-sm font-medium text-gray-700">가방수*</label>
                     <input type="number" v-model="selectedReservation.bagCount"
-                      class="flex-1 border border-gray-300 rounded-md md:px-4 pl-2 py-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                      class="flex w-20 border border-gray-300 rounded-md md:px-4 pl-2 py-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                    <label class="w-14 text-sm font-medium text-gray-700">가방가격*</label>
+                    <input type="text" v-model="selectedReservation.amount"
+                      class="flex w-20 border border-gray-300 rounded-md md:px-4 pl-2 py-2 focus:ring-indigo-500 focus:border-indigo-500" />
                   </div>
                   <div class="flex items-center text-gray-700">
-                    <label class="w-32 text-sm font-medium text-gray-700">특별 요청</label>
+                    <label class="w-24 text-sm font-medium text-gray-700">특별 요청</label>
                     <input type="text" v-model="selectedReservation.specialRequests" placeholder="특별 취급 가방, 대형 가방 등"
                       class="flex-1 border border-gray-300 rounded-md md:px-4 pl-2 py-2 focus:ring-indigo-500 focus:border-indigo-500" />
                   </div>
@@ -202,7 +207,7 @@
                 </h4>
                 <div class="space-y-2">
                   <div class="flex items-center">
-                    <label class="w-32 text-sm font-medium text-gray-700">예약일시 *</label>
+                    <label class="w-24 text-sm font-medium text-gray-700">예약일시 *</label>
                     <input type="datetime-local" v-model="selectedReservation.preferredDateTime"
                       class="hidden md:block flex-1 border border-gray-300 rounded-md md:px-3 pl-2 py-2 text-gray-700 focus:ring-indigo-500 focus:border-indigo-500" />
                     <input type="text" :value="formattedPreferredDate"
@@ -218,7 +223,7 @@
                 </h4>
                 <div class="space-y-2">
                   <div class="flex items-center">
-                    <label class="w-32 text-sm font-medium text-gray-700">담당기사 *</label>
+                    <label class="w-24 text-sm font-medium text-gray-700">담당기사 *</label>
                     <div>{{ Array.isArray(selectedReservation.worker) ? selectedReservation.worker.join(', ') :
                       selectedReservation.worker }}</div>
                     <div @click="openTechnicianSearchModal" class="flex-1 relative">
@@ -511,13 +516,19 @@
 <script setup>
 import SearchSelect from "./SearchSelect.vue";
 import SearchDateSelect from "./SearchDateSelect.vue";
-import { ref, computed, nextTick, reactive } from "vue";
+import { ref, computed, nextTick, reactive, watch } from "vue";
 import { format, addDays, subMonths } from "date-fns";
 import { useAppStore } from "@/stores/useAppStore";
 import { storeToRefs } from "pinia";
+import Assign from "../../worker/Assign.vue";
 
 const appStore = useAppStore();
 const { reservations, workers } = storeToRefs(appStore); // store에서 workers 포함해서 가져오기
+
+const bagPrices = appStore.bagPrices;
+const price = computed(() => {
+  return bagPrices.mediumbag; // .value 없이 바로 사용
+});
 
 const selectedReservation = ref(null);
 const showCancelModal = ref(false);
@@ -535,8 +546,9 @@ const sortBy = ref("date-desc");
 // 기준일 선택 옵션
 const dateOptions = [
   { value: "today", label: "오늘" },
-  { value: "week", label: "일주일" },
+  { value: "week", label: "한주" },
   { value: "month", label: "한달" },
+  { value: "year", label: "한해" },
   { value: "all", label: "전체" },
 ];
 
@@ -572,6 +584,7 @@ const areaOptions = [
 const statusOptions = [
   { value: "all", label: "운반상태" },
   { value: "waiting", label: "대기중" },
+  { value: "assigned", label: "기사배정" },
   { value: "in_progress", label: "운반중" },
   { value: "completed", label: "완료" },
   { value: "cancelled", label: "취소" },
@@ -595,12 +608,26 @@ function updateDateRange(index) {
       item.endDate = formatDate(today);
       break;
     case "week":
-      item.startDate = formatDate(addDays(today, -7));
-      item.endDate = formatDate(today);
+      const dayOfWeek = today.getDay(); // 0 (일) ~ 6 (토)
+      const sunday = new Date(today);
+      sunday.setDate(today.getDate() - dayOfWeek); // 이번 주 일요일
+      const saturday = new Date(sunday);
+      saturday.setDate(sunday.getDate() + 6); // 이번 주 토요일
+
+      item.startDate = formatDate(sunday);
+      item.endDate = formatDate(saturday);
       break;
     case "month":
-      item.startDate = formatDate(subMonths(today, 1));
-      item.endDate = formatDate(today);
+      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1); // 해당 달 1일
+      const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0); // 말일
+      item.startDate = formatDate(monthStart);
+      item.endDate = formatDate(monthEnd);
+      break;
+    case "year":
+      const yearStart = new Date(today.getFullYear(), 0, 1); // 해당 연도의 1월 1일
+      const yearEnd = new Date(today.getFullYear(), 11, 31); // 해당 연도 12월 31일
+      item.startDate = formatDate(yearStart);
+      item.endDate = formatDate(yearEnd);
       break;
     case "all":
       item.startDate = "";
@@ -608,11 +635,20 @@ function updateDateRange(index) {
       break;
   }
 }
-
+//날짜 직접선택
 function onDateChange(selectedValue) {
   date.value = selectedValue;
   items[index].rangeType = selectedValue;
   updateDateRange(index);
+}
+
+// 커스텀 날짜 직접 선택 시:
+function handleDateSelect() {
+  if (items[index].startDate && items[index].endDate) {
+    date.value = "custom";
+    items[index].rangeType = "custom";
+    updateDateRange(index); // 날짜 객체 계산 등 필요한 작업
+  }
 }
 
 function onPickupChange() {
@@ -636,7 +672,21 @@ function onSearch() {
 
   console.log("🔍 검색 필터:", filterPayload);
 }
+// 가방관련
+function calculateEstimatedPrice(reservation) {
+  let amount = 0;
 
+  if (reservation.bagDetails && Array.isArray(reservation.bagDetails)) {
+    reservation.bagDetails.forEach((bagType) => {
+      amount += bagPrices[bagType] || 0; // .value 붙이지 않음
+    });
+  } else {
+    const count = Number(reservation.bagCount) || 0;
+    amount = count * (bagPrices.mediumbag || 0);
+  }
+
+  return `${amount.toLocaleString()}원`;
+}
 // 기사 검색 관련 상태
 const showTechnicianSearchModal = ref(false);
 const technicianSearchFilters = ref({
@@ -675,7 +725,7 @@ const filteredWorkers = computed(() => {
 // 페이지네이션 관련 상태
 const currentTechnicianPage = ref(1);
 const techniciansPerPage = ref(5);
-const totalItems = ref(120);
+const totalItems = computed(() => filteredReservations.value.length);
 
 const totalTechnicianPages = computed(() =>
   Math.ceil(filteredWorkers.value.length / techniciansPerPage.value)
@@ -793,6 +843,7 @@ const saveReservation = () => {
     "customerName",
     "phone",
     "bagCount",
+    "estimatedPrice",
     "specialRequests",
     "preferredDateTime",
     "createdAt",
@@ -843,32 +894,64 @@ const filteredReservations = computed(() => {
   }
 
   // 상태 필터링
+  console.log("statusFilter.value:", statusFilter.value);
+  const statusMap = {
+    waiting: "대기중",
+    assigned: "기사배정",
+    in_progress: "운반중",
+    completed: "완료",
+    cancelled: "취소",
+  };
+
   if (statusFilter.value !== "all") {
-    result = result.filter((r) => r.status === statusFilter.value);
-  } else {
-    // 'all' 일때는 모두 보여주므로 취소된 것도 포함됨
+    const filterLabel = statusMap[statusFilter.value];
+    result = result.filter((r) => r.status === filterLabel);
   }
 
   // 날짜 필터링
-  if (date.value && date.value !== "") {
-    const today = new Date();
-    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    let dateLimit;
-
-    if (date.value === "오늘") {
-      result = result.filter((r) => {
-        const rDate = new Date(r.date);
-        return rDate >= todayStart && rDate < new Date(todayStart.getTime() + 24 * 60 * 60 * 1000);
-      });
-    } else if (date.value === "일주일") {
-      dateLimit = new Date(todayStart.getTime() - 7 * 24 * 60 * 60 * 1000);
-      result = result.filter((r) => new Date(r.date) >= dateLimit);
-    } else if (date.value === "한달") {
-      dateLimit = new Date(todayStart);
-      dateLimit.setMonth(dateLimit.getMonth() - 1);
-      result = result.filter((r) => new Date(r.date) >= dateLimit);
-    }
+  function clearTime(date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   }
+
+  const today = new Date();
+  const todayStart = clearTime(today);
+
+  if (date.value === "today") {
+    result = result.filter((r) => {
+      const rDate = clearTime(new Date(r.date));
+      return rDate.getTime() === todayStart.getTime();
+    });
+  } else if (date.value === "week") {
+    const weekAgo = clearTime(new Date(todayStart.getTime() - 7 * 24 * 60 * 60 * 1000));
+    result = result.filter((r) => {
+      const rDate = clearTime(new Date(r.date));
+      return rDate >= weekAgo && rDate <= todayStart;
+    });
+  } else if (date.value === "month") {
+    const monthAgo = clearTime(new Date(todayStart));
+    monthAgo.setMonth(monthAgo.getMonth() - 1);
+    result = result.filter((r) => {
+      const rDate = clearTime(new Date(r.date));
+      return rDate >= monthAgo && rDate <= todayStart;
+    });
+  } else if (date.value === "2025" || date.value === "year") {
+    const start2025 = new Date(2025, 0, 1);
+    const end2025 = new Date(2025, 11, 31, 23, 59, 59, 999);
+    result = result.filter((r) => {
+      const rDate = new Date(r.date);
+      return rDate >= start2025 && rDate <= end2025;
+    });
+  }
+  // ✅ 사용자 직접 날짜 선택한 경우 필터 추가
+  if (items[index].rangeType === "custom") {
+    const start = new Date(items[index].startDate);
+    const end = new Date(items[index].endDate);
+    result = result.filter((r) => {
+      const rDate = new Date(r.date);
+      return rDate >= start && rDate <= end;
+    });
+  }
+
 
   // 정렬
   switch (sortBy.value) {
@@ -886,7 +969,12 @@ const filteredReservations = computed(() => {
   return result;
 });
 
-
+watch(
+  [searchQuery, pickup, statusFilter, date, sortBy], // 감시 대상 배열
+  () => {
+    currentPage.value = 1;
+  }
+);
 const pagedReservations = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage.value;
   return filteredReservations.value.slice(start, start + itemsPerPage.value);
@@ -917,6 +1005,7 @@ const goToLastPage = () => {
 const getStatusText = (status) => {
   const statusMap = {
     waiting: "대기중",
+    assigned: "기사배정",
     in_progress: "운반중",
     completed: "완료",
     cancelled: "취소",
@@ -926,32 +1015,30 @@ const getStatusText = (status) => {
 
 const getStatusClass = (status) => {
   const statusClasses = {
-    대기중: "bg-yellow-100 text-yellow-800",
+    대기중: "bg-red-100 text-red-800",
+    기사배정: "bg-green-100 text-green-800",
     운반중: "bg-blue-100 text-blue-800",
-    완료: "bg-green-100 text-green-800",
-    취소: "bg-red-100 text-red-800",
+    완료: "bg-gray-100 text-green-800",
+    취소: "bg-white-100 text-red-300",
   };
   return statusClasses[status] || "bg-gray-100 text-gray-800";
 };
 const showReservationDetails = (reservation) => {
   selectedReservation.value = {
     ...reservation,
+    status: reservation.status || "",
     location: reservation.location || "",
     customerName: reservation.customerName || "",
     phone: reservation.phone || "",
     bagCount: reservation.bagCount ?? 0,
+    estimatedPrice: calculateEstimatedPrice(reservation),
     specialRequests: reservation.specialRequests || "",
-    cafeName: reservation.cafeName || "",
-    businessNumber: reservation.businessNumber || "",
-    modelName: reservation.modelName || "",
-    estimatedPrice: reservation.estimatedPrice || "",
-    createdAt: reservation.createdAt || new Date().toISOString().slice(0, 16),
+    // createdAt: reservation.createdAt || new Date().toISOString().slice(0, 16),
     preferredDateTime: reservation.preferredDateTime || new Date().toISOString().slice(0, 16),
+    technician: reservation.technician || null,
     photos: reservation.photos || [],
     requirements: reservation.requirements || "",
-    status: reservation.status || "",
     memo: reservation.memo || "",
-    technician: reservation.technician || null,
   };
 
   // technicianSearch 값 초기화

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref, computed } from "vue";
+import { ref, computed, reactive  } from "vue";
 
 export const useAppStore = defineStore("app", () => {
 
@@ -164,8 +164,24 @@ export const useAppStore = defineStore("app", () => {
     "정하윤",
     "최도현",
   ];
+function shuffleArray(array) {
+  const arr = [...array]; // 원본 배열 복사
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]]; // 요소 교환
+  }
+  return arr;
+}
 
-  const locations = ["대구공항", "동대구역", "서대구역", "숙소"];
+const locations = ["대구공항", "동대구역", "서대구역", "숙소"];
+const statusOptions = ["대기중", "완료", "취소", "운반중", "기사배정"];
+
+const shuffledLocations = shuffleArray(locations);
+const shuffledStatusOptions = shuffleArray(statusOptions);
+
+console.log(shuffledLocations);
+console.log(shuffledStatusOptions);
+
   const location1Mapping = {
     대구공항: "공항",
     동대구역: "역",
@@ -173,7 +189,7 @@ export const useAppStore = defineStore("app", () => {
     숙소: "숙소",
   };
 
-  const statusOptions = ["대기중", "완료", "취소", "운반중"];
+
   const workerNames = [
     "김지훈",
     "이수민",
@@ -223,13 +239,9 @@ export const useAppStore = defineStore("app", () => {
     return `${dateStr} ${hour}:${minute}`;
   }
 
-  // 가방 크기별 가격 매핑
-  const bagPrices = {
-    extrasizebag: 20000,
-    largebag: 16000,
-    mediumbag: 140000,
-    smallbag: 12000,
-  };
+
+
+
 
   // 랜덤 날짜 생성 함수
 function getRandomDate(start, end) {
@@ -441,54 +453,55 @@ function generateEmail(name) {
   }
 
   // 120개 예약 데이터 생성
-  function generateReservations() {
-    const reservations = [];
-    const startDate = new Date(2025, 0, 1); // 2025-01-01부터 시작
+  function getRandomItem(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
-    for (let i = 0; i < 120; i++) {
-      const id = `${i+1}`;
-      const customerName = customerNames[i % customerNames.length];
-      const phone = `010-${getRandomInt(1000, 9999)}-${pad(1001 + i, 4)}`;
-      const location = locations[i % locations.length];
-      const location1 = location1Mapping[location];
-      const bagCount = String(getRandomInt(1, 5));
+function generateReservations() {
+  const reservations = [];
+  const startDate = new Date(2024, 11, 1); // 2025-01-01부터 시작
 
-      // 날짜를 6개월에 걸쳐 분산
-      const daysToAdd = Math.floor(i * (180 / 120)); // 180일을 120개로 분산
-      const date = new Date(startDate.getTime() + daysToAdd * 86400000);
-      const dateStr = formatDate(date);
-      const time = `${pad(getRandomInt(8, 20), 2)}:${pad(
-        getRandomInt(0, 59),
-        2
-      )}`;
+  for (let i = 0; i < 999; i++) {
+    const id = `${i + 1}`;
+    const customerName = getRandomItem(customerNames);
+    const phone = `010-${getRandomInt(1000, 9999)}-${pad(getRandomInt(0, 9999), 4)}`;
+    const location = getRandomItem(locations);
+    const location1 = location1Mapping[location];
+    const bagCount = String(getRandomInt(1, 5));
 
-      const status = statusOptions[i % statusOptions.length];
-      const worker = workerNames[i % workerNames.length];
-      const specialRequests =
-        specialRequestsOptions[i % specialRequestsOptions.length];
-      const type = types[i % types.length];
-      const terminal = terminals[i % terminals.length];
+    // 날짜를 6개월에 걸쳐 분산
+    const daysToAdd = Math.floor(i * (420 / 999)); // 180일을 120개로 분산
+    const date = new Date(startDate.getTime() + daysToAdd * 86400000);
+    const dateStr = formatDate(date);
+    const time = `${pad(getRandomInt(8, 20), 2)}:${pad(getRandomInt(0, 59), 2)}`;
 
-      reservations.push({
-        id,
-        customerName,
-        phone,
-        bagCount,
-        location,
-        location1,
-        date: dateStr,
-        time,
-        status,
-        worker,
-        specialRequests,
-        memo: "",
-        type,
-        terminal,
-      });
-    }
+    const status = getRandomItem(statusOptions);
+    const worker = getRandomItem(workerNames);
+    const specialRequests = getRandomItem(specialRequestsOptions);
+    const type = getRandomItem(types);
+    const terminal = getRandomItem(terminals);
 
-    return reservations;
+    reservations.push({
+      id,
+      customerName,
+      phone,
+      bagCount,
+      location,
+      location1,
+      date: dateStr,
+      time,
+      status,
+      worker,
+      specialRequests,
+      memo: "",
+      type,
+
+    });
   }
+
+  return reservations;
+}
+
 
   // 120개 거래 데이터 생성 (예약과 연동)
   function generateTransactions(reservations) {
@@ -523,6 +536,10 @@ function generateEmail(name) {
         .map(([size, count]) => `${size}-${count}`)
         .join(",");
 
+        // 최종 estimatedPrice 문자열 예시
+      const estimatedPrice = `${amount}원`;
+      console.log(estimatedPrice);
+
       const dateTime = formatDateTime(new Date(reservation.date));
       const status =
         reservation.status === "취소"
@@ -539,6 +556,7 @@ function generateEmail(name) {
         bagCount: reservation.bagCount,
         bagSize,
         amount,
+        estimatedPrice, // 옵션
         date: dateTime,
         status,
         paymentMethod,
@@ -547,6 +565,15 @@ function generateEmail(name) {
 
     return transactions;
   }
+  // 가방 크기별 가격 매핑
+
+ const bagPrices = reactive({
+    extrasizebag: 20000,
+    largebag: 16000,
+    mediumbag: 140000,
+    smallbag: 12000,
+  });
+
 
   // 예약 데이터 생성
   const reservations = ref(generateReservations());
@@ -557,219 +584,128 @@ function generateEmail(name) {
   // 130명 고객 데이터 생성 (12명 비활성화)
   const customers = ref(generateCustomers());
 
-  // 기사 데이터
-  const workers = ref([
-    {
-      id: "#C001",
-      name: "김지훈",
-      phone: "010-1234-5678",
-      phone1: "1234-5678",
-      rating: 4.8,
-      status: "활동중",
-      reservations: "11건",
-      memo: "",
-      joinDate: "2024-01-15",
-      lastActivity: "2025-05-15",
-      area: "동, 군위",
-      areaGroup: "gu1",
-    },
-    {
-      id: "#C002",
-      name: "이수민",
-      phone: "010-8765-4321",
-      phone1: "8765-4321",
-      rating: 4.5,
-      status: "활동중",
-      reservations: "10건",
-      memo: "",
-      joinDate: "2024-01-20",
-      lastActivity: "2025-05-14",
-      area: "서, 중, 북",
-      areaGroup: "gu2",
-    },
-    {
-      id: "#C003",
-      name: "박서준",
-      phone: "010-5555-6666",
-      phone1: "5555-6666",
-      rating: 4.2,
-      status: "대기중",
-      reservations: "0건",
-      memo: "",
-      joinDate: "2024-01-25",
-      lastActivity: "2025-04-20",
-      area: "중, 수성",
-      areaGroup: "gu3",
-    },
-    {
-      id: "#C004",
-      name: "한예슬",
-      phone: "010-7777-8888",
-      phone1: "7777-8888",
-      rating: 4.9,
-      status: "활동중",
-      reservations: "11건",
-      memo: "",
-      joinDate: "2024-02-01",
-      lastActivity: "2025-05-18",
-      area: "달서, 달성",
-      areaGroup: "gu4",
-    },
-    {
-      id: "#C005",
-      name: "정우성",
-      phone: "010-9999-0000",
-      phone1: "9999-0000",
-      rating: 4.6,
-      status: "활동중",
-      reservations: "9건",
-      memo: "",
-      joinDate: "2024-02-05",
-      lastActivity: "2025-05-10",
-      area: "동, 군위",
-      areaGroup: "gu1",
-    },
-    {
-      id: "#C006",
-      name: "김태희",
-      phone: "010-1111-2222",
-      phone1: "1111-2222",
-      rating: 4.7,
-      status: "활동중",
-      reservations: "10건",
-      memo: "",
-      joinDate: "2024-02-10",
-      lastActivity: "2025-05-09",
-      area: "서, 중, 북",
-      areaGroup: "gu2",
-    },
-    {
-      id: "#C007",
-      name: "이준호",
-      phone: "010-3333-4444",
-      phone1: "3333-4444",
-      rating: 4.4,
-      status: "활동중",
-      reservations: "9건",
-      memo: "",
-      joinDate: "2024-02-15",
-      lastActivity: "2025-05-08",
-      area: "중, 수성",
-      areaGroup: "gu3",
-    },
-    {
-      id: "#C008",
-      name: "유인나",
-      phone: "010-5555-7777",
-      phone1: "5555-7777",
-      rating: 4.8,
-      status: "활동중",
-      reservations: "10건",
-      memo: "",
-      joinDate: "2024-02-20",
-      lastActivity: "2025-05-07",
-      area: "달서, 달성",
-      areaGroup: "gu4",
-    },
-    {
-      id: "#C009",
-      name: "이병헌",
-      phone: "010-7777-9999",
-      phone1: "7777-9999",
-      rating: 4.3,
-      status: "대기중",
-      reservations: "0건",
-      memo: "",
-      joinDate: "2024-02-25",
-      lastActivity: "2025-04-15",
-      area: "동, 군위",
-      areaGroup: "gu1",
-    },
-    {
-      id: "#C010",
-      name: "한가인",
-      phone: "010-9999-1111",
-      phone1: "9999-1111",
-      rating: 4.9,
-      status: "활동중",
-      reservations: "10건",
-      memo: "",
-      joinDate: "2024-03-01",
-      lastActivity: "2025-05-06",
-      area: "서, 중, 북",
-      areaGroup: "gu2",
-    },
-    {
-      id: "#C011",
-      name: "정해인",
-      phone: "010-2222-3333",
-      phone1: "2222-3333",
-      rating: 4.5,
-      status: "활동중",
-      reservations: "10건",
-      memo: "",
-      joinDate: "2024-03-05",
-      lastActivity: "2025-05-05",
-      area: "중, 수성",
-      areaGroup: "gu3",
-    },
-    {
-      id: "#C012",
-      name: "고아라",
-      phone: "010-4444-5555",
-      phone1: "4444-5555",
-      rating: 4.7,
-      status: "활동중",
-      reservations: "10건",
-      memo: "",
-      joinDate: "2024-03-10",
-      lastActivity: "2025-05-04",
-      area: "달서, 달성군",
-      areaGroup: "gu4",
-    },
-    {
-      id: "#C013",
-      name: "남주혁",
-      phone: "010-6666-7777",
-      phone1: "6666-7777",
-      rating: 4.2,
-      status: "대기중",
-      reservations: "0건",
-      memo: "",
-      joinDate: "2024-03-15",
-      lastActivity: "2025-04-18",
-      area: "동, 군위",
-      areaGroup: "gu1",
-    },
-    {
-      id: "#C014",
-      name: "전지현",
-      phone: "010-8888-9999",
-      phone1: "8888-9999",
-      rating: 4.8,
-      status: "활동중",
-      reservations: "10건",
-      memo: "",
-      joinDate: "2024-03-20",
-      lastActivity: "2025-05-03",
-      area: "서, 중, 북",
-      areaGroup: "gu2",
-    },
-    {
-      id: "#C015",
-      name: "송중기",
-      phone: "010-0000-1111",
-      phone1: "0000-1111",
-      rating: 4.6,
-      status: "활동중",
-      reservations: "10건",
-      memo: "",
-      joinDate: "2024-03-25",
-      lastActivity: "2025-05-02",
-      area: "중, 수성",
-      areaGroup: "gu3",
-    },
-  ]);
+  //기사
+
+// ✅ 날짜 유틸
+function getOffsetDate(offset) {
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return d.toISOString().slice(0, 10);
+}
+
+// ✅ 날짜 기준
+const days = [
+  { label: "어제", value: "yesterday", offset: -1 },
+  { label: "오늘", value: "today", offset: 0 },
+  { label: "내일", value: "tomorrow", offset: 1 },
+];
+
+// ✅ 휴무 인원 제한
+const MAX_DAYOFF_PER_DAY = 5;
+
+// ✅ 원본 워커 목록 (15명 고정)
+const rawWorkerData = [
+  { id: "#C001", name: "김지훈", area: "동, 군위", areaGroup: "gu1" },
+  { id: "#C002", name: "이수민", area: "서, 중, 북", areaGroup: "gu2" },
+  { id: "#C003", name: "박서준", area: "중, 수성", areaGroup: "gu3" },
+  { id: "#C004", name: "한예슬", area: "달서, 달성", areaGroup: "gu4" },
+  { id: "#C005", name: "정우성", area: "동, 군위", areaGroup: "gu1" },
+  { id: "#C006", name: "김태희", area: "서, 중, 북", areaGroup: "gu2" },
+  { id: "#C007", name: "이준호", area: "중, 수성", areaGroup: "gu3" },
+  { id: "#C008", name: "유인나", area: "달서, 달성", areaGroup: "gu4" },
+  { id: "#C009", name: "이병헌", area: "동, 군위", areaGroup: "gu1" },
+  { id: "#C010", name: "한가인", area: "서, 중, 북", areaGroup: "gu2" },
+  { id: "#C011", name: "정해인", area: "중, 수성", areaGroup: "gu3" },
+  { id: "#C012", name: "고아라", area: "달서, 달성군", areaGroup: "gu4" },
+  { id: "#C013", name: "남주혁", area: "동, 군위", areaGroup: "gu1" },
+  { id: "#C014", name: "전지현", area: "서, 중, 북", areaGroup: "gu2" },
+  { id: "#C015", name: "송중기", area: "중, 수성", areaGroup: "gu3" },
+];
+
+// ✅ 워커 상태 및 날짜 생성
+function getControlledStatusAndLastActivity(dayKey, offset, dayOffCountObj) {
+  const date = getOffsetDate(offset);
+
+  if (dayOffCountObj[dayKey] < MAX_DAYOFF_PER_DAY) {
+    dayOffCountObj[dayKey]++;
+    return {
+      status: "휴무",
+      lastActivity: date,
+    };
+  }
+
+  const status = Math.random() < 0.7 ? "활동중" : "대기중";
+  return {
+    status,
+    lastActivity: date,
+  };
+}
+
+// ✅ 휴무 인원 카운트 초기화
+const dayOffCounts = {
+  yesterday: 0,
+  today: 0,
+  tomorrow: 0,
+};
+
+// ✅ 전체 워커 목록 (3일 x 15명 = 45명)
+const workers = ref(
+  days.flatMap(({ label, value, offset }) => {
+    dayOffCounts[value] = 0;
+    return rawWorkerData.map((worker, i) => {
+      const { status, lastActivity } = getControlledStatusAndLastActivity(
+        value,
+        offset,
+        dayOffCounts
+      );
+
+      return {
+        ...worker,
+        phone: `010-${String(1000 + i * 11).padStart(4, "0")}-${String(
+          1000 + i * 22
+        ).padStart(4, "0")}`,
+        phone1: `${String(1000 + i * 11).padStart(4, "0")}-${String(
+          1000 + i * 22
+        ).padStart(4, "0")}`,
+        rating: Math.round((3.5 + Math.random()) * 10) / 10,
+        reservations: `${Math.floor(Math.random() * 11)}건`,
+        memo: "",
+        joinDate: `2024-0${(1 + (i % 3))}-${String(10 + i).padStart(2, "0")}`,
+        lastActivity,
+        status,
+        day: value, // ✅ 필터 기준용 필드
+      };
+    });
+  })
+);
+//평균 평점 구하기
+const averageFilteredRating = computed(() => {
+  const list = filteredWorkers.value;
+  if (list.length === 0) return 0;
+  const total = list.reduce((sum, w) => sum + w.rating, 0);
+  return (total / list.length).toFixed(1); // 문자열 반환 시
+});
+
+
+// ✅ 🔍 필터용 상태 (UI 연동 가능)
+const selectedDay = ref("tomorrow"); // 'yesterday', 'today', 'tomorrow'
+const selectedStatus = ref("all"); // '활동중', '대기중', '휴무', 'all'
+
+// ✅ 🎯 필터링된 워커 목록
+const filteredWorkers = computed(() => {
+  return workers.value.filter((worker) => {
+    const matchDay = selectedDay.value === "all" || worker.day === selectedDay.value;
+    const matchStatus = selectedStatus.value === "all" || worker.status === selectedStatus.value;
+    return matchDay && matchStatus;
+  });
+});
+
+
+
+
+
+
+
 
   // 통계 계산
   const dashboardStats = computed(() => {
@@ -810,6 +746,7 @@ function generateEmail(name) {
       totalCustomers,
       totalRevenue,
       workers,
+      bagPrices,
       avgRating: avgRating.toFixed(1),
       revenueGrowth: 12.5,
       reservationGrowth: 8.3,
