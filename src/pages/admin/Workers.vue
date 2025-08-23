@@ -17,7 +17,6 @@
     </div>
 
     <!-- 기사 통계 카드 -->
-    <!--오늘기사 카드-->
     <div class="card grid grid-rows-1 md:w-full grid-cols-3 gap-6">
       <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow dark:bg-gray-800">
         <div class="flex items-center max-[930px]:justify-center">
@@ -85,31 +84,66 @@
       <div class="flex flex-col md:flex-row gap-4">
         <div class="flex-1">
           <div class="relative">
-            <input type="text" v-model="searchQuery" placeholder="기사명 또는 연락처로 검색..."
+            <input
+              type="text"
+              v-model="searchQuery"
+              @input="handleSearchInput"
+              placeholder="기사명 또는 연락처로 검색..."
               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
             <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
           </div>
         </div>
         <div class="flex gap-2">
-          <select v-model="statusFilter"
-            class="border border-gray-300 text-gray-400 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+          <select
+            v-model="statusFilter"
+            @change="applyFilters"
+            class="border border-gray-300 text-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
             <option value="all">활동상태</option>
-            <option value="waiting">대기중</option>
-            <option value="in_progress">활동중</option>
-            <option value="joboff">휴무</option>
+            <option value="대기중">대기중</option>
+            <option value="활동중">활동중</option>
+            <option value="휴무">휴무</option>
           </select>
-          <select v-model="rating"
-            class="border border-gray-300 text-gray-400 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+          <select
+            v-model="ratingFilter"
+            class="border border-gray-300 text-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
             <option value="all">기사평점</option>
-            <option value="4.5">4.5👆🏼</option>
-            <option value="3.5">3.5👆🏼</option>
+            <option value="4.5">4.5점 이상</option>
+            <option value="4.0">4.0점 이상</option>
+            <option value="3.5">3.5점 이상</option>
           </select>
         </div>
+      </div>
+
+      <!-- 활성 필터 표시 -->
+      <div v-if="hasActiveFilters" class="mt-3 flex flex-wrap gap-2">
+        <span class="text-sm text-gray-600 dark:text-gray-300">활성 필터:</span>
+        <span v-if="statusFilter !== 'all'" class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
+          상태: {{ statusFilter }}
+          <button @click="clearStatusFilter" class="ml-1 text-blue-600 hover:text-blue-800">×</button>
+        </span>
+        <span v-if="ratingFilter !== 'all'" class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">
+          평점: {{ ratingFilter }}점 이상
+          <button @click="clearRatingFilter" class="ml-1 text-green-600 hover:text-green-800">×</button>
+        </span>
+        <span v-if="searchQuery" class="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs">
+          검색: {{ searchQuery }}
+          <button @click="clearSearchQuery" class="ml-1 text-purple-600 hover:text-purple-800">×</button>
+        </span>
+        <button @click="clearAllFilters" class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs hover:bg-red-200">
+          모든 필터 지우기
+        </button>
       </div>
     </div>
 
     <!-- 기사 목록 & 상세 모달 -->
-    <WorkersList :workers="workers" :searchQuery="searchQuery" :statusFilter="statusFilter" />
+    <WorkersList
+      :searchQuery="searchQuery"
+      :statusFilter="statusFilter"
+      :ratingFilter="ratingFilter"
+      :workers="filteredWorkers"
+      @update:filtered="updateFilteredWorkers"
+    />
+
     <!-- 기사 추가 모달 -->
     <form @submit.prevent="submitForm">
       <div v-if="isAddModalOpen" @close="closeModal"
@@ -258,195 +292,117 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import WorkersList from "./components/WorkersList.vue";
 import { useAppStore } from "@/stores/useAppStore";
-//값받아오기
-const appStore = useAppStore();
 
-const rawWorkers = computed(() => appStore.workers)
-
-const workers = computed(() =>
-  rawWorkers.value.map(worker => ({
-    ...worker,
-    date: worker.date || '2025-06-27' // 기본값 지정
-  }))
-)
-// 카드
-const today = new Date().toISOString().slice(0, 10)
-console.log('today:', today)
-// 오늘 날짜 기사 리스트 (15명)
-const todayWorkers = computed(() =>
-  workers.value.filter(worker => {
-    if (!worker.date) return false
-    const workerDay = worker.date.slice(0, 10)  // 앞 10글자만 (YYYY-MM-DD)
-    return workerDay === today
-  })
-    .slice(0, 15)  // 상위 15명만
-)
-console.log('workers dates:', workers.value.map(w => w.date))
-
-// 오늘 날짜 전체 기사 수 (15명)
-const articleTotalCount = computed(() => todayWorkers.value.length)
-
-// 오늘 날짜 + (활동중 또는 대기중) 기사 수
-const todayActiveOrWaitingCount = computed(() =>
-  todayWorkers.value.filter(worker =>
-    worker.status === '활동중' || worker.status === '대기중'
-  ).length
-)
-
-// 오늘 날짜 + 활동중 기사 수
-const todayActiveCount = computed(() =>
-  todayWorkers.value.filter(worker => worker.status === '활동중').length
-)
-
-// 카드평점
-const filteredFromChild = ref([])
-
-const averageFilteredRating = computed(() => {
-  const ratings = filteredWorkers.value
-    .map(w => parseFloat(w.rating || 0))
-    .filter(r => !isNaN(r))
-  const total = ratings.reduce((sum, r) => sum + r, 0)
-  return ratings.length ? (total / ratings.length).toFixed(1) : '-'
+const store = useAppStore();
+defineProps({
+  workers: Array  // 부모로부터 전달받는 필터된 기사 리스트
 })
-//필터 기준
-const status = ref("all");
-const rating = ref("all");
-const searchWorker = ref("");
-// ✅ 검색어, 상태, 활동중 필터
-const searchQuery = ref('')
-const statusFilter = ref('all')
-const activityFilter = ref('all')
-const ratingFilter = ref('all')
 
-// 필터 내용
-// 활동상태
-const statusOptions = [
-  { value: "all", label: "활동상태" },
-  { value: "waiting", label: "대기중" },
-  { value: "in_progress", label: "활동중" },
-  { value: "joboff", label: "휴무" },
-];
-const statusMap = {
-  waiting: "대기중",
-  in_progress: "활동중",
-  joboff: "휴무",
-};
-// 평점
-const ratingOptions = [
-  { value: "all", label: "기사평점" },
-  { value: "4.5", label: "4.5👆🏼" },
-  { value: "3.5", label: "3.5👆🏼" },
-];
-const ratingMap = {
-  4.5: "4.5👆🏼",
-  3.5: "3.5👆🏼",
-};
+// 필터 상태
+const searchQuery = ref('');
+const statusFilter = ref('all');
+const ratingFilter = ref('all');
+
+// 필터링된 기사 목록
 const filteredWorkers = computed(() => {
-  return workers.value.filter((worker) => {
+  return todayWorkers.value.filter((worker) => {
+    // 검색 필터
     const matchSearch = searchQuery.value
       ? worker.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      (worker.phone && worker.phone.includes(searchQuery.value))
-      : true
+        (worker.phone && worker.phone.includes(searchQuery.value))
+      : true;
 
+    // 상태 필터
     const matchStatus =
-      statusFilter.value === 'all' ? true : worker.status === statusFilter.value
+      statusFilter.value === "all" ? true : worker.status === statusFilter.value;
 
-    const matchesActivity =
-      activityFilter.value === 'all'
-        ? true
-        : activityFilter.value === 'active'
-          ? worker.isActive
-          : !worker.isActive
-
+    // 평점 필터
     const matchRating =
-      ratingFilter.value === 'all'
+      ratingFilter.value === "all"
         ? true
-        : (worker.rating || 0) >= parseFloat(ratingFilter.value)
-
-    return matchSearch && matchStatus && matchRating && matchesActivity
-  })
+        : parseFloat(worker.rating) >= parseFloat(ratingFilter.value);
+console.log("현재 ratingFilter:", ratingFilter.value)
+    return matchSearch && matchStatus && matchRating;
+  });
+});
+watch(ratingFilter, (newVal) => {
+  console.log("🔍 ratingFilter changed to:", newVal)
+  console.log("🟢 필터 통과 기사 수:", filteredWorkers.value.length)
 })
 
+// 오늘 날짜 기준 기사들
+const todayWorkers = computed(() =>
+  store.workers.filter(w => w.day === "today")
+);
 
-// 활동중/대기중 버튼
-const activeStatus = (worker) => {
-  const currentStatus = worker.status;
-  const newStatus = currentStatus === "대기중" ? "활동중" : "대기중";
-  store.updateWorker(worker.id, { status: newStatus });
-};
+// 통계 계산
+const articleTotalCount = computed(() => todayWorkers.value.length);
+const todayActiveOrWaitingCount = computed(() =>
+  todayWorkers.value.filter(w => w.status === "활동중" || w.status === "대기중").length
+);
+const todayActiveCount = computed(() =>
+  todayWorkers.value.filter(w => w.status === "활동중").length
+);
 
-// 페이지네이션 상태
-const currentPage = ref(1);
-const itemsPerPage = ref(5);
-const totalItems = ref(15);
-const selectedWorker = ref(null);
-const addWorker = ref(null);
-// 페이지네이션 계산
-const totalPages = computed(() => {
-  return Math.ceil(store.workers.length / itemsPerPage.value);
+// 필터된 기사들의 평균 평점
+const averageFilteredRating = computed(() => {
+  if (filteredWorkers.value.length === 0) return "0.0";
+  const total = filteredWorkers.value.reduce((sum, w) => sum + parseFloat(w.rating), 0);
+  return (total / filteredWorkers.value.length).toFixed(1);
 });
 
-const paginatedWorkers = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage.value;
-  const end = start + itemsPerPage.value;
-  return store.workers.slice(start, end);
+// 활성 필터 확인
+const hasActiveFilters = computed(() => {
+  return statusFilter.value !== 'all' ||
+         ratingFilter.value !== 'all' ||
+         searchQuery.value !== '';
 });
 
-// 페이지 이동 함수
-const goToPage = (page) => {
-  if (page >= 1 && page <= totalPages.value) {
-    currentPage.value = page;
-  }
+// 필터링된 기사 목록 업데이트
+const updateFilteredWorkers = (workers) => {
+  filteredWorkers.value = workers;
 };
 
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++;
-  }
+// 검색 입력 처리 (한글 입력 지원)
+const handleSearchInput = (event) => {
+  searchQuery.value = event.target.value;
+  applyFilters();
 };
 
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--;
-  }
+// 필터 적용
+const applyFilters = () => {
+  // 필터 변경 시 자동으로 WorkersList 컴포넌트에서 처리됨
 };
 
-const getStatusClass = (status) => {
-  const statusClasses = {
-    활동중: "bg-green-100 text-green-800",
-    대기중: "bg-red-100 text-red-800",
-  };
-  return statusClasses[status] || "bg-gray-100 text-gray-800";
+// 필터 지우기 함수들
+const clearStatusFilter = () => {
+  statusFilter.value = 'all';
+  applyFilters();
 };
 
-// 기사 추가 모달 관련 함수
+const clearRatingFilter = () => {
+  ratingFilter.value = 'all';
+  applyFilters();
+};
+
+const clearSearchQuery = () => {
+  searchQuery.value = '';
+  applyFilters();
+};
+
+const clearAllFilters = () => {
+  statusFilter.value = 'all';
+  ratingFilter.value = 'all';
+  searchQuery.value = '';
+  applyFilters();
+};
+
+// 기사 추가 모달 관련
 const isAddModalOpen = ref(false);
-const openAddModal = () => {
-  isAddModalOpen.value = true;
-  addWorker.value = {
-    id: "",
-    name: "",
-    phone: "",
-    rating: 0,
-    status: "활동중",
-    reservations: "0건",
-    memo: "",
-    joinDate: new Date().toISOString().split("T")[0],
-    lastActivity: "",
-    area: "",
-  };
-  document.body.style.overflow = "hidden";
-};
-
-const closeModal = () => {
-  isAddModalOpen.value = false;
-  document.body.style.overflow = "auto";
-};
-
-const profileImage = ref("/images/people1.png");
+const profileImage = ref("/placeholder.svg?height=200&width=200");
 const showImageModal = ref(false);
 const driverName = ref("");
 const driverPhone = ref("");
@@ -455,34 +411,37 @@ const vehicleInfo = ref("");
 const isEditing = ref(true);
 const imagePreview = ref(null);
 const fileInput = ref(null);
-const averageRating = ref(4.8);
 
-// 이미지 업로드 모달 열기
+const openAddModal = () => {
+  isAddModalOpen.value = true;
+  document.body.style.overflow = "hidden";
+};
+
+const closeModal = () => {
+  isAddModalOpen.value = false;
+  document.body.style.overflow = "auto";
+};
+
 const uploadImage = () => {
   showImageModal.value = true;
 };
 
-// 이미지 모달 닫기
 const closeImageModal = () => {
   showImageModal.value = false;
 };
 
-// 파일선택 다이얼로그 트리거
 const triggerFileInput = () => {
   fileInput.value.click();
 };
 
-// 선택된 이미지 파일을 base64형식으로 변환하여 미리보기 표기
 const handleImageUpload = (event) => {
   const file = event.target.files[0];
   if (file) {
-    // 파일 크기 체크 (5MB 제한)
     if (file.size > 5 * 1024 * 1024) {
       alert("파일 크기는 5MB를 초과할 수 없습니다.");
       return;
     }
 
-    // 이미지 파일 타입 체크
     if (!file.type.startsWith("image/")) {
       alert("이미지 파일만 업로드 가능합니다.");
       return;
@@ -496,7 +455,6 @@ const handleImageUpload = (event) => {
   }
 };
 
-// 프로필 이미지 저장
 const saveImage = () => {
   if (imagePreview.value) {
     profileImage.value = imagePreview.value;
@@ -504,7 +462,6 @@ const saveImage = () => {
   closeImageModal();
 };
 
-// 프로필 수정 모드 시작
 const startEditing = () => {
   isEditing.value = true;
 };
@@ -527,7 +484,6 @@ const saveProfile = () => {
   `;
 
   if (confirm(confirmMessage)) {
-    // 새 기사를 store에 추가
     const newWorker = {
       name: profile.name,
       phone: profile.phone,
@@ -537,8 +493,9 @@ const saveProfile = () => {
       memo: "",
       joinDate: new Date().toISOString().split("T")[0],
       lastActivity: new Date().toISOString().split("T")[0],
-      area: "동, 군위",
-      areaGroup: "gu1"
+      area: "동구, 군위군",
+      areaGroup: "gu1",
+      day: "today"
     };
 
     store.addWorker(newWorker);
@@ -572,14 +529,14 @@ const cancelEditing = () => {
   }
 };
 
-// 유틸리티 함수들
-const formatDate = (date) => date.toISOString().split('T')[0];
-const addDays = (date, days) => new Date(date.getTime() + days * 24 * 60 * 60 * 1000);
-const subMonths = (date, months) => new Date(date.getFullYear(), date.getMonth() - months, date.getDate());
-
 const submitForm = () => {
   // Form submission logic here
 };
+
+// 검색어 변경 시 자동 필터링
+watch([searchQuery, statusFilter, ratingFilter], () => {
+  applyFilters();
+}, { deep: true });
 </script>
 
 <style scoped>
@@ -590,19 +547,9 @@ const submitForm = () => {
 
 .icon-box i {
   font-size: 1.5rem;
-  /* text-xl 정도 */
   padding-left: 0;
   margin-left: 5px;
   margin-bottom: 1px;
-  align-items: center;
-}
-
-.icon-box i {
-  font-size: 1.5rem;
-  /* text-xl 정도 */
-  padding-left: 0;
-  margin-left: 2px;
-  margin-bottom: 2px;
   align-items: center;
 }
 
@@ -637,7 +584,6 @@ const submitForm = () => {
 
   .icon-box i {
     font-size: 1.5rem;
-    /* text-xl 정도 */
     padding-left: 0;
     color: rgb(53, 184, 24);
   }

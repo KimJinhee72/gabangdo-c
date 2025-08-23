@@ -2,7 +2,7 @@
   <Header_subtypeAll v-if="!isWorkerPage" />
   <div class="wrap" :class="{ 'no-padding': isWorkerPage }">
     <main class="main">
-      <router-view></router-view>
+      <router-view/>
     </main>
   </div>
   <Footer v-if="!isWorkerPage" />
@@ -51,11 +51,19 @@ const isWorkerPage = computed(() => {
   return (
     route.path.startsWith("/worker") ||
     route.path.startsWith("/admin") ||
+    route.path.startsWith("/admin") ||
+    route.path.startsWith("/login") ||
+    route.path.startsWith("/signup") ||
     route.meta.hideLayout
   );
 });
 </script>
-
+<!-- DevTools용 이름 지정 -->
+<script>
+export default {
+  name: "App", // ✅ DevTools에서 App.vue 이름 표시
+};
+</script>
 
 <style lang="scss" scoped>
 .wrap {

@@ -1,3 +1,4 @@
+// main.js
 import "/src/assets/Main.scss";
 import "/src/assets/tailwind.css";
 
@@ -5,17 +6,24 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import { createPinia } from "pinia";
-import i18n from "./i18n"; // ✅ 이걸 그대로 사용
+import i18n from "./i18n"; // 기존 i18n 그대로 사용
 
+// Vue 앱 생성
 const app = createApp(App);
-const pinia = createPinia();
 
-app.use(pinia);
+// Pinia 상태 관리
+app.use(createPinia());
+
+// 라우터
 app.use(router);
-app.use(i18n); // ✅ 중복 생성 없이 그대로 사용
 
-app.mount("#app");
+// i18n
+app.use(i18n);
 
-if (import.meta.env.PROD) {
-  app.config.devtools = false;
+// 개발 환경에서만 DevTools 활성화
+if (import.meta.env.DEV) {
+  app.config.devtools = true;
 }
+
+// 앱 마운트
+app.mount("#app");

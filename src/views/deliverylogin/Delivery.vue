@@ -133,7 +133,11 @@ const oneDayAgo = new Date(now);
 oneDayAgo.setDate(now.getDate() - 1);
 const timeOneDayAgo = ref(formatDate(oneDayAgo));
 </script>
-
+<script>
+export default {
+  name: "DeliveryComponent",
+};
+</script>
 <style lang="scss" scoped>
 @use "sass:color";
 @use "/src/assets/Main.scss" as *;
@@ -150,12 +154,14 @@ const timeOneDayAgo = ref(formatDate(oneDayAgo));
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border-radius: 20px;
   padding: 4% 0 2% 0;
+
   .bb_title1 {
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     padding-bottom: 30px;
+
     .bb_title_txt1 h1 {
       font-size: 40px;
       font-family: $font-ownglyph;
@@ -166,11 +172,13 @@ const timeOneDayAgo = ref(formatDate(oneDayAgo));
     background-color: #f0f4fa;
     justify-content: space-between;
     align-items: center;
+
     .bb_progress-present {
       display: flex;
       text-align: center;
       justify-content: center;
       padding: 4% 10% 1% 10%;
+
       .bb_step {
         display: flex;
         align-items: center;
@@ -199,6 +207,7 @@ const timeOneDayAgo = ref(formatDate(oneDayAgo));
           border-color: #0070c0;
           color: #0070c0;
         }
+
         .bb_someMore {
           width: 50px;
           height: 50px;
@@ -212,6 +221,7 @@ const timeOneDayAgo = ref(formatDate(oneDayAgo));
         display: flex;
         justify-content: center;
         align-items: center;
+
         .bb_changColorLine {
           background-color: #ccc !important;
           width: 100%; // 선 길이
@@ -225,26 +235,31 @@ const timeOneDayAgo = ref(formatDate(oneDayAgo));
         }
       }
     }
+
     .bb_progress-letter {
       display: flex;
       text-align: center;
       padding-bottom: 4%;
       font-size: 14px;
+
       div {
         flex: 1;
       }
     }
   }
+
   // 하단 시간표시
   .bb_log {
     display: flex;
     justify-content: space-between;
     padding: 8% 10% 1% 10%;
+
     .bb_logleft {
       display: flex;
       justify-content: space-between;
       width: 20%;
     }
+
     .bb_loglist {
       width: 10%;
       display: flex;
@@ -272,9 +287,11 @@ const timeOneDayAgo = ref(formatDate(oneDayAgo));
     height: 20px;
     background-color: $main-color;
   }
+
   .bb_logCirclegray {
     background-color: #ccc;
   }
+
   .bb_logLinegray {
     background-color: #ccc !important;
   }
@@ -289,11 +306,13 @@ const timeOneDayAgo = ref(formatDate(oneDayAgo));
     height: 100%;
     background-color: $sub-color;
   }
+
   // 동글뱅이 옆글씨
   .bb_logLetter {
     display: flex;
     flex-direction: column;
   }
+
   .bb_logLetterP {
     width: 74px;
     flex: 1;
@@ -304,6 +323,7 @@ const timeOneDayAgo = ref(formatDate(oneDayAgo));
 .bb_logTime {
   display: flex;
   flex-direction: column;
+
   .bb_logTime1 {
     flex: 1;
     width: 101px;
@@ -327,10 +347,12 @@ const timeOneDayAgo = ref(formatDate(oneDayAgo));
     font-size: 14px;
     padding: 1%;
     margin-bottom: 4%;
+
     p {
       font-size: 25px;
       font-weight: bold;
     }
+
     .bb_kakao-btn {
       display: flex;
       align-items: center;
@@ -342,10 +364,12 @@ const timeOneDayAgo = ref(formatDate(oneDayAgo));
       cursor: pointer;
       font-size: 14px;
       color: black;
+
       span {
         font-size: 20px;
         padding-right: 5px;
       }
+
       img {
         width: 40px;
         height: 40px;

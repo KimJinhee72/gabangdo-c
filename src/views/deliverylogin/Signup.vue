@@ -32,7 +32,7 @@ function sendPhoneVerification() {
 }
 
 // 주소 검색 (예: 카카오 우편번호)
-function searchAddress() {}
+function searchAddress() { }
 
 // 실제 회원가입 처리
 function onSignup() {
@@ -54,69 +54,40 @@ function onSignup() {
 </script>
 
 <template>
-  <div class="wrap_total">
+  <div>
     <div class="signup-container">
       <h2>회원가입</h2>
       <p class="subtitle">회원정보를 입력해주세요</p>
       <form @submit.prevent="onSignup">
-        <input
-          type="text"
-          placeholder="이름을 입력하세요"
-          v-model="formData.name"
-          class="bb_needMore" />
+        <input type="text" placeholder="이름을 입력하세요" v-model="formData.name" class="bb_needMore" />
 
         <div class="input-group">
-          <input
-            type="email"
-            placeholder="이메일을 입력하세요"
-            v-model="formData.email" />
-          <button
-            type="button"
-            class="btn-small"
-            @click="sendEmailVerification">
+          <input type="email" placeholder="이메일을 입력하세요" v-model="formData.email" />
+          <button type="button" class="btn-small" @click="sendEmailVerification">
             인증하기
           </button>
         </div>
 
-        <input
-          type="password"
-          placeholder="비밀번호를 입력하세요"
-          v-model="formData.password" />
+        <input type="password" placeholder="비밀번호를 입력하세요" v-model="formData.password" />
         <p class="hint">8자 이상, 영문, 숫자, 특수문자 포함</p>
 
-        <input
-          type="password"
-          placeholder="비밀번호를 다시 입력하세요"
-          v-model="formData.passwordConfirm"
-          class="bb_needMore" />
+        <input type="password" placeholder="비밀번호를 다시 입력하세요" v-model="formData.passwordConfirm" class="bb_needMore" />
 
         <div class="input-group">
-          <input
-            type="text"
-            placeholder="휴대폰 번호를 입력하세요"
-            v-model="formData.phone" />
-          <button
-            type="button"
-            class="btn-small"
-            @click="sendPhoneVerification">
+          <input type="text" placeholder="휴대폰 번호를 입력하세요" v-model="formData.phone" />
+          <button type="button" class="btn-small" @click="sendPhoneVerification">
             인증하기
           </button>
         </div>
 
         <div class="input-group">
-          <input
-            type="text"
-            placeholder="주소를 입력하세요"
-            v-model="formData.address" />
+          <input type="text" placeholder="주소를 입력하세요" v-model="formData.address" />
           <button type="button" class="btn-small" @click="searchAddress">
             주소검색
           </button>
         </div>
 
-        <input
-          type="text"
-          placeholder="상세주소를 입력하세요"
-          v-model="formData.detail" />
+        <input type="text" placeholder="상세주소를 입력하세요" v-model="formData.detail" />
 
         <div class="agree">
           <input type="checkbox" id="agree" v-model="formData.agreed" />
@@ -160,15 +131,13 @@ body {
   justify-content: center;
   align-items: center;
 }
+
 .signup-container {
-  margin-top: 100px !important;
-  margin-bottom: 100px !important;
+  margin-top: 30px !important;
   margin: 0 auto;
-  width: 360px;
+  width: 500px;
   background: #fff;
   padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
   text-align: center;
 
   h2 {
@@ -187,13 +156,15 @@ body {
   form {
     display: flex;
     flex-direction: column;
+
     .bb_needMore {
       margin-bottom: 22px !important;
     }
+
     input[type="text"],
     input[type="email"],
     input[type="password"] {
-      padding: 10px;
+      padding: 7px;
       margin-bottom: 12px;
       border: 1px solid #ccc;
       border-radius: 5px;
@@ -225,6 +196,7 @@ body {
         white-space: nowrap;
         cursor: pointer;
         margin-bottom: 12px !important;
+
         .btn-small.done {
           background: $sub-color;
         }
@@ -255,6 +227,7 @@ body {
 
   .social-login {
     margin-top: 25px;
+
     .bb_sns-login {
       display: flex;
       align-items: center;
@@ -273,6 +246,7 @@ body {
       font-size: 14px;
       color: #333;
     }
+
     .bb_grayline {
       flex: 1;
       height: 1px;
@@ -303,9 +277,10 @@ body {
       }
     }
   }
+
   .bb_alreadyLogin {
     display: flex;
-    padding-left: 75px;
+    justify-content: center;
     p {
       padding-right: 5px;
     }

@@ -53,7 +53,11 @@
 </template>
 
 <script setup></script>
-
+<script>
+export default {
+  name: "FooterComponent",
+};
+</script>
 <style lang="scss" scoped>
 .ft_footer {
   width: 100%;
@@ -104,7 +108,7 @@
     color: #666;
     line-height: 1.6;
     font-size: 14px;
-    margin-bottom: 16px;    
+    margin-bottom: 16px;
   }
 }
 
@@ -220,7 +224,7 @@
     span{
       width: 80px !important;
       line-height: 35px !important;
-    }   
+    }
   }
   .fas{
     width: 50px !important;
@@ -269,7 +273,7 @@
     i {
       font-size: 11px;
     }
-  }  
+  }
   .ft_contactUs {
     h1 {
       font-size: 15px;

@@ -250,7 +250,11 @@ onUnmounted(() => {
   window.removeEventListener("resize", updateScreenSize);
 });
 </script>
-
+<script>
+export default {
+  name: "HeaderComponent",
+};
+</script>
 <style lang="scss" scoped>
 @use "/src/assets/Variables" as *;
 .header {
