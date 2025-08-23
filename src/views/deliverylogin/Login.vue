@@ -215,7 +215,7 @@ const handleLogin = () => {
               frameborder="no" scrolling="no" tabindex="0" name="" title="AD"
               sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
               src="/images/geen/adver.png"
-              style="width: 100%; height: 147px; visibility: inherit; border: 0px; vertical-align: bottom;"></img>
+              style="width: 100%; height: 147px; visibility: inherit; border: 0px; vertical-align: bottom;">
           </div>
         </div>
       </div>
