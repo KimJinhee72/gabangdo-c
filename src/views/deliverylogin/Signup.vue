@@ -15,10 +15,6 @@ const showtelLi = ref(false); //통신사리스트
 const choiceGender = ref(''); //남여내/외국인
 const choiceNational = ref(''); //남여내/외국인
 
-//
-const toggleKeepLoggedIn = () => {
-  keepLoggedIn.value = !keepLoggedIn.value;
-}
 const genders = [
   { label: '남', value: 'male' },
   { label: '여', value: 'female' }
@@ -84,18 +80,28 @@ const mapbtnClick = () => {
 
 
 // 실제 회원가입 처리
-function onSignup() {
-  // if (!formData.value.id) return alert("아이디을 입력하세요");
-  // if (!formData.value.name) return alert("이름을 입력하세요");
-  // if (!formData.value.email) return alert("이메일을 입력하세요");
-  // if (!formData.value.password) return alert("비밀번호를 입력하세요");
-  // if (formData.value.password !== formData.value.passwordConfirm)
-  //   return alert("비밀번호가 일치하지 않습니다");
-  // if (!formData.value.phone) return alert("휴대폰 번호를 입력하세요");
-  // if (!formData.value.address) return alert("주소를 입력하세요");
-  // if (!formData.value.agreed) return alert("약관에 동의해주세요");
+const signUp = () => {
+  errorMessage.value = ''; // **함수 시작 시 에러 메시지 초기화**
 
-  // 예시: authStore.signup API
+  // 필수 항목 유효성 검사
+  const requiredFields = ['id', 'name', 'password', 'birth', 'phone', 'telecom', 'address'];
+  for (const field of requiredFields) {
+    if (!formData.value[field]) {
+      errorMessage.value = `'${field}'는 필수 입력 항목입니다.`;
+      return;
+    }
+  }
+
+  // 휴대폰 번호 인증 검사
+  if (!formData.value.phone || verificationCode.value !== serverVerificationCode.value) {
+    errorMessage.value = "휴대폰 번호를 인증해주세요.";
+    return;
+  }
+
+  // ... (기존 회원가입 로직)
+  // 모든 검사를 통과했을 때의 로직
+  // 예: 서버에 회원가입 데이터 전송
+  console.log('회원가입 정보:', formData.value);
   auth
     .signup({ ...formData.value })
     .then(() => router.push("/login"))
@@ -111,7 +117,7 @@ function onSignup() {
       </div>
 
       <p class="subtitle">회원정보를 입력해주세요</p>
-      <form @submit.prevent="onSignup">
+      <form @submit.prevent="Signup">
         <!-- 회원가입1/2영역 -->
         <div class="verification-wrap">
           <!-- 회원가입1영역 -->
@@ -126,7 +132,7 @@ function onSignup() {
             </div>
             <!-- 아이디 입력란 -->
             <div>
-              <input type="text" placeholder="아이디 만들기" v-model="formData.id" class="bb_needMore idName_icon"  />
+              <input type="text" placeholder="아이디 만들기" v-model="formData.id" class="bb_needMore idName_icon" />
               <!-- X 버튼은 입력값이 있을 때만 보이게 -->
               <button v-if="formData.id" type="button" class="btn_delete" id="id_clear" @click="clearInput('id')">
                 <span class="icon_delete"><img src="/images/geen/circle-letter-x 1.png" alt="x닫기"></span>
@@ -258,8 +264,18 @@ function onSignup() {
             이용약관 및 <span>개인정보처리방침</span>에 동의합니다.
           </label>
         </div>
-
-        <button type="submit" class="btn-main">회원가입</button>
+        <!-- 인증요청 -->
+        <div class="signup_wrap">
+          <div class="signup_header">
+            <p class="signup_guide">
+              <span style="color:red">*</span>이메일 제외 모두 필수항목입니다.
+            </p>
+            <div v-if="errorMessage" class="error-message">
+              {{ errorMessage }}
+            </div>
+            <button type="submit" class="btn-main">인증요청</button>
+          </div>
+        </div>
       </form>
 
       <div class="social-login">
@@ -298,7 +314,7 @@ body {
 // 포커싱되면 보더를 바꾸게 하려면 기본 input설정후 포커스를 해야 먹힘
 input {
   width: 100%;
-  height:50px;
+  height: 50px;
   padding: 10px;
   border: 1px solid #ccc;
   border-bottom: 0;
@@ -321,6 +337,7 @@ input {
   background: #fff;
   padding-top: 0;
   text-align: center;
+
   // border: 1px solid #e1e3e5;
   //   border-radius: 12px;
   //   background-color: #fff;

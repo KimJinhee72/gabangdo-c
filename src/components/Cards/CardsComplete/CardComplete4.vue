@@ -25,7 +25,7 @@
         <div class="detail3 flex items-center text-xs text-black-700 gap-1">
           <div class="iconState">
             <img
-              src="/public/images/yr/delivery/subway_icon.png"
+              src="/images/yr/delivery/subway_icon.png"
               alt="집아이콘"
               class="w-4 h-4 text-green-600" />
           </div>
@@ -38,7 +38,7 @@
         <!-- 전화버튼 -->
         <button>
           <div class="callbuttuon w-[35px] h-[90px] pt-[30px]">
-            <img src="/public/images/yr/delivery/phone_icon.png" alt="전화" />
+            <img src="/images/yr/delivery/phone_icon.png" alt="전화" />
           </div>
         </button>
 
@@ -53,4 +53,3 @@
 
   </div>
 </template>
-
