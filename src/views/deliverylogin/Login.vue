@@ -326,7 +326,7 @@ const clearPw = () => {
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @charset "UTF-8";
 @use "/src/assets/Main.scss" as *;
 @use "/src/assets/Variables.scss" as *;
@@ -757,7 +757,7 @@ input::-ms-reveal {
   display: block;
   position: relative;
   height: 63px;
-  padding-top: 12px;
+  padding-top: 15px;
   border: 1px solid #e1e3e5;
   border-top: 1px solid #f5f6f4;
   border-bottom: 0;
@@ -798,6 +798,7 @@ input::-ms-reveal {
 }
 
 .menu_id {
+  position: relative;
   border-left: 1px solid #f5f6f4;
   border-right: 0;
   border-radius: 12px 0 0 0
@@ -812,23 +813,14 @@ input::-ms-reveal {
 
 .menu_id.on {
   border-top: 1px solid #e1e3e5;
-  border-left: 1px solid #e1e3e5
-}
+  border-left: 1px solid #e1e3e5 !important;
 
-.menu_id.on::after {
-  content: '';
-  position: absolute;
-  top: -1px;
-  right: -13px;
-  background-image: url("/images/geen/1/Untitled-2.png");
-  background-repeat: no-repeat;
-  width: 25px;
-  height: 62px
 }
 
 
 
 .menu_ones {
+  position: relative;
   border-right: 0;
   border-radius: 0
 }
@@ -847,23 +839,25 @@ input::-ms-reveal {
 .menu_ones.on::v-deep(::before) {
   content: '';
   position: absolute;
-  top: -13px;
-  left: -13px;
+  top: -1px;
+  left: 0px;
   background-image: url("/images/geen/1/Untitled-1.png");
   background-repeat: no-repeat;
   width: 25px;
-  height: 62px
+  height: 62px;
+  z-index: 10;
 }
 
 .menu_ones.on::v-deep(::after) {
   content: '';
   position: absolute;
-  top: -13px;
+  top: -1px;
   right: -12px;
   background-image: url("/images/geen/1/Untitled-2.png");
   background-repeat: no-repeat;
   width: 25px;
-  height: 62px
+  height: 62px;
+  z-index: 10;
 }
 
 .menu_ones.on .menu_text::before {
@@ -875,7 +869,8 @@ input::-ms-reveal {
 
 .menu_qr {
   border-right: 1px solid #f5f6f4;
-  border-radius: 0 12px 0 0
+  border-radius: 0 12px 0 0;
+  border-left: 0;
 }
 
 .menu_qr .menu_text::before {
@@ -887,13 +882,14 @@ input::-ms-reveal {
 
 .menu_qr.on {
   border-top: 1px solid #e1e3e5;
-  border-right: 1px solid #e1e3e5
+  border-right: 1px solid #e1e3e5;
+  border-left: 0 !important;
 }
 
 .menu_qr.on::v-deep(::before) {
   content: '';
   position: absolute;
-  top: -13px;
+  top: -1px;
   left: -13px;
   background-image: url("/images/geen/1/Untitled-1.png");
   background-repeat: no-repeat;
@@ -917,8 +913,9 @@ input::-ms-reveal {
 
 .panel_item {
   border: 1px solid #e1e3e5;
-  border-radius: 12px;
-  background-color: #fff
+  border-radius: 0 0 12px 12px;
+  background-color: #fff;
+  margin-top: 9px;
 }
 
 .panel_inner {
@@ -933,61 +930,8 @@ input[type=text]::-webkit-input-placeholder {
   color: #737373
 }
 
-.captcha_input,
-.input_row {
-  position: relative;
-  display: block;
-  height: 100%;
-  border: 1px solid #c5ccd2;
-  background-color: #fff;
-  padding: 16px 18px 15px;
-  border-radius: 6px;
 
-  box-sizing: border-box;
-  text-align: left
-}
 
-.captcha_input+.captcha_input,
-.captcha_input+.input_row,
-.input_row+.captcha_input,
-.input_row+.input_row {
-  margin-top: -1px
-}
-
-.captcha_input.focus::before,
-.input_row.focus::before {
-  content: '';
-  position: absolute;
-  top: -1px;
-  left: -1px;
-  right: -1px;
-  bottom: -1px;
-  border: solid 2px #09aa5c;
-  border-radius: 6px;
-  z-index: 5
-}
-
-.captcha_input.readonly,
-.input_row.readonly {
-  border: 1px solid #c5ccd2
-}
-
-.captcha_input.onetime,
-.input_row.onetime {
-  padding: 13px 11px
-}
-
-.captcha_input.onetime .input_text,
-.input_row.onetime .input_text {
-  padding: 0 25px 0 10px;
-  text-align: center
-}
-
-.captcha_input.onetime .btn_delete,
-.input_row.onetime .btn_delete {
-  top: 5px;
-  z-index: 7
-}
 
 .input_text {
   position: relative;
@@ -4634,14 +4578,6 @@ body.cafe24 .custom_checkbox::before {
   content: none;
 }
 
-.menu_id.on,
-.menu_ones.on,
-.menu_qr.on {
-  border-color: #e1e3e5;
-  background-color: #fff;
-  border-left: 1px solid #e1e3e5 !important;
-  z-index: 3;
-}
 
 .menu_qr.on {
   border-top: 1px solid #e1e3e5;
@@ -4691,7 +4627,7 @@ body.cafe24 .custom_checkbox::before {
 .menu_qr.on[data-v-e4b3ab34] {
   border-color: #e1e3e5;
   background-color: #fff;
-  z-index: 5;
+  z-index: 3;
   /* 위로 띄우기 */
   border-radius: 12px 12px 0 0;
   /* 다시 선언해줘야 확실히 적용됨 */
