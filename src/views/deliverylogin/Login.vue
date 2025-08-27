@@ -844,10 +844,10 @@ input::-ms-reveal {
   border-top: 1px solid #e1e3e5
 }
 
-.menu_ones.on::before {
+.menu_ones.on::v-deep(::before) {
   content: '';
   position: absolute;
-  top: -1px;
+  top: -13px;
   left: -13px;
   background-image: url("/images/geen/1/Untitled-1.png");
   background-repeat: no-repeat;
@@ -855,10 +855,10 @@ input::-ms-reveal {
   height: 62px
 }
 
-.menu_ones.on::after {
+.menu_ones.on::v-deep(::after) {
   content: '';
   position: absolute;
-  top: -1px;
+  top: -13px;
   right: -12px;
   background-image: url("/images/geen/1/Untitled-2.png");
   background-repeat: no-repeat;
@@ -890,10 +890,10 @@ input::-ms-reveal {
   border-right: 1px solid #e1e3e5
 }
 
-.menu_qr.on::before {
+.menu_qr.on::v-deep(::before) {
   content: '';
   position: absolute;
-  top: -1px;
+  top: -13px;
   left: -13px;
   background-image: url("/images/geen/1/Untitled-1.png");
   background-repeat: no-repeat;
