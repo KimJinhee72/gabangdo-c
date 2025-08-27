@@ -32,7 +32,6 @@
             <router-link to="/yeyak">
               <button class="btn1">
                 <p>예약하기</p>
-                <!-- <img src="/public/images/yr/mainImg/arrowW.png" alt="" /> -->
               </button>
             </router-link>
             <router-link to="/bangbeob2">

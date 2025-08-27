@@ -2,36 +2,24 @@
 import { useAuthStore } from "@/stores/auth";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
-// 업로드해주신 LoginStatus&Secure.vue 컴포넌트
-import LoginStatusSecure from "../../components/LoginStatus&Secure.vue";
-// qr
-import Qrlogin from "./Qrlogin.vue";
 // autj.js에서 불러오기
 const authStore = useAuthStore();
-const router = useRouter();
-// 로그인 상태
-const inputValue = ref("");
-const password = ref("");
-const showPassword = ref(false);
-const keepLoggedIn = ref(false);// 로그인 상태 유지 체크
-const ipSecurity = ref(true); // IP보안 ON/OFF
 // 상태 클래스
 const id = ref("");
-// 버튼상태
+const password = ref("")
 const idHasValue = computed(() => inputValue.value.length > 0)
 const pwHasValue = computed(() => password.value.length > 0)
-// QR 로그인 표시 여부
-const showQr = ref(false);
-const openQrLogin = () => (showQr.value = true);
-const closeQrLogin = () => (showQr.value = false);
+const keepLoggedIn = ref(false);   // 로그인 상태 유지 체크
+const ipSecurity = ref(true);      // IP보안 ON/OFF
+
 // tab
 const activeTab = ref("id");
 const tabs = [
   { label: "고객", value: "id", icon: "/images/gh/ma_content1/login-17905450-unscreen.gif", id: "idTab", class: "" },
-  { label: "관리자", value: "admin", icon: "/images/gh/ma_content1/management-consulting-15401497.gif", id: "ones", class: "menu_ones" },
-  { label: "기사", value: "worker", icon: "/images/gh/character/courier-13471009.gif", id: "qrcode", class: "menu_qr" },
+  { label: "관리자", value: "otp", icon: "/images/gh/ma_content1/management-consulting-15401497.gif", id: "ones", class: "menu_ones" },
+  { label: "기사", value: "qr", icon: "/images/gh/character/courier-13471009.gif", id: "qrcode", class: "menu_qr" },
 ];
-// 로그인
+// 로그
 const login = async () => {
   try {
     // 1️⃣ 서버 로그인 API 요청
@@ -46,12 +34,6 @@ const login = async () => {
       }),
     });
 
-    // 🚨 수정된 부분: res.ok로 응답 상태 확인
-    if (!res.ok) {
-      // 서버 응답이 성공적이지 않은 경우 (예: 404, 500 등)
-      throw new Error(`HTTP Error! Status: ${res.status}`);
-    }
-
     const data = await res.json();
 
     if (data.success) {
@@ -63,14 +45,12 @@ const login = async () => {
 
       // 2️⃣ Pinia 스토어 로그인 상태 업데이트
       authStore.login({
-        name: data.name || id.value,
+        name: data.name || id.value,   // 서버에서 이름 제공 없으면 id 사용
         email: data.email || id.value,
         phone: data.phone || "",
       });
 
       alert(`${tabs.find(tab => tab.id === activeTab.value)?.label} 로그인 성공!`);
-      // 🚨 수정된 부분: 로그인 성공 후 메인 페이지로 이동
-      router.push('/');
     } else {
       // 3️⃣ 서버 로그인 실패 시 로컬스토리지 fallback
       const users = JSON.parse(localStorage.getItem("users") || "[]");
@@ -88,15 +68,25 @@ const login = async () => {
       });
 
       alert(`${user.name}님 로컬 로그인 성공!`);
-      // 🚨 수정된 부분: 로컬 로그인 성공 후 메인 페이지로 이동
-      router.push('/');
     }
   } catch (err) {
     console.error(err);
-    alert("로그인 중 오류가 발생했습니다. 서버 응답을 확인해주세요.");
+    alert("로그인 중 오류가 발생했습니다.");
   }
 };
+const router = useRouter();
 //
+const showPassword = ref(false);
+const togglePassword = () => (showPassword.value = !showPassword.value);//
+
+const role = ref("customer");
+const formData = ref({
+  email: "",
+  password: "",
+  role: role.value,
+  rememberMe: false,
+});
+
 const getPlaceholder = computed(() => {
   switch (activeTab.value) {
     case 'id':
@@ -109,22 +99,11 @@ const getPlaceholder = computed(() => {
       return '아이디'
   }
 })
-const togglePassword = () => (showPassword.value = !showPassword.value);//
-
-const role = ref("customer");
-const formData = ref({
-  email: "",
-  password: "",
-  role: role.value,
-  rememberMe: false,
-});
-
-
 
 // 변수들을 ref로 선언하고 초기값을 할당합니다.
 const userId = ref('');
 const userPw = ref('');
-
+const inputValue = ref('');
 // CapsLock 상태 확인
 const showCapsLockWarning = ref(false);
 const checkCapsLock = (event) => {
@@ -145,6 +124,7 @@ const clearPw = () => {
 
 <template>
   <div id="wrap" class="wrap">
+    <div class="u_skip"><a href="https://www.naver.com">본문 바로가기</a></div>
     <header class="header" role="banner">
       <div class="header_inner">
         <a href="/" class="logo nlog-click"><img src="/images/txt.png" alt="로고이미지"></a>
@@ -161,6 +141,7 @@ const clearPw = () => {
     </header>
 
     <div id="container" class="container ">
+      <!-- content -->
       <div class="content">
         <div class="login_wrap">
 
@@ -176,107 +157,113 @@ const clearPw = () => {
             </li>
           </ul>
 
-          <form id="frmNIDLogin" name="frmNIDLogin" target="_top" autocomplete="off" method="POST">
-            <div v-if="!showQr">
-              <ul class="panel_wrap">
-                <li class="panel_item" style="display: block;">
-                  <!-- ✅ 일반 로그인폼 -->
-                  <div class="panel_inner" role="tabpanel" :aria-controls="`login-${activeTab}`">
-                    <div class="login_form">
-                      <!-- 아이디/비밀번호 입력창 ... -->
-                      <div class="input_item id" :class="{ on: inputValue }" id="input_item_id">
-                        <input type="text" id="id" name="id" maxlength="41" autocapitalize="none" v-model="inputValue"
-                          class="input_id" :aria-label="getPlaceholder" @keyup="checkCapsLock">
-                        <label for="id" class="text_label" id="id_label" aria-hidden="true">{{ getPlaceholder }}</label>
-                        <button type="button" class="btn_delete" id="id_clear" v-show="inputValue"
-                          @click="inputValue = ''">
-                          <span class="icon_delete" >
-                            <span class="blind text-gray-400" v-show="idHasValue" @click="clearId">삭제</span>
-                          </span>
-                        </button>
-                      </div>
-
-                      <div class="input_item pw" :class="{ on: password }" id="input_item_pw">
-                        <input :type="showPassword ? 'text' : 'password'" v-model="password" id="pw" name="pw"
-                          title="비밀번호" class="input_pw" maxlength="16" aria-label="비밀번호" @keyup="checkCapsLock" />
-                        <label for="pw" class="text_label" id="pw_label" aria-hidden="true">비밀번호</label>
-
-                        <button type="button" class="btn_view" :class="{ hide: showPassword }" id="pw_hide"
-                          :aria-pressed="showPassword" v-show="pwHasValue" @click="togglePassword">
-                          <span class="icon_view">
-                            <span class="blind text-white" :class="{ hide: showPassword }" v-show="pwHasValue"
-                              @click="clearPw"> {{ showPassword ? '비밀번호 숨기기' : '비밀번호 보기'
-                              }}</span>
-                          </span>
-                        </button>
-
-                        <button type="button" class="btn_delete" id="pw_clear" v-show="pwHasValue" @click="clearPw">
-                          <span class="icon_delete">
-                            <span class="blind text-gray-400">삭제</span>
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-                    <!-- 로그인상태표시 및 ip보안 -->
-                    <LoginStatusSecure v-model:keepLoggedIn="keepLoggedIn" v-model:ipSecurity="ipSecurity" />
-                    <!-- 에러부분 -->
-                    <div class="login_error_wrap" id="err_capslock" v-show="showCapsLockWarning">
-                      <div class="error_message">
-                        <p><strong>Caps Lock</strong>이 켜져 있습니다.</p>
-                      </div>
-                    </div>
-
-                    <div class="login_error_wrap" id="err_empty_id" style="display: none;">
-                      <div class="error_message">
-                        <strong>아이디 또는 전화번호</strong>를 입력해 주세요.
-                      </div>
-                    </div>
-
-                    <div class="login_error_wrap" id="err_empty_pw" style="display: none;">
-                      <div class="error_message">
-                        <strong>비밀번호</strong>를 입력해 주세요.
-                      </div>
-                    </div>
-                    <div class="login_error_wrap" id="err_common" style="display:none;">
-                      <div class="error_message" style="width:100%">
-
-                      </div>
-                    </div>
-                    <!-- 로그인버튼 -->
-                    <div class="btn_login_wrap">
-                      <button type="button" class="btn_login off next_step nlog-click" id="log.login"
-                        @click.prevent="login">
-                        <span class="btn_text" id="log.login.text">로그인</span>
+          <form id="frmNIDLogin" name="frmNIDLogin" target="_top" autocomplete="off"
+            action="https://nid.naver.com/nidlogin.login" method="POST">
+            <ul class="panel_wrap">
+              <li class="panel_item" style="display: block;">
+                <div class="panel_inner" role="tabpanel" aria-controls="loinid">
+                  <div class="login_form">
+                    <div class="input_item id" :class="{ on: inputValue }" id="input_item_id">
+                      <input type="text" id="id" name="id" maxlength="41" autocapitalize="none" v-model="inputValue"
+                        class="input_id" :aria-label="getPlaceholder" @keyup="checkCapsLock" >
+                      <label for="id" class="text_label" id="id_label" aria-hidden="true">{{ getPlaceholder }}</label>
+                      <button type="button" class="btn_delete" id="id_clear" v-show="inputValue"
+                        @click="inputValue = ''">
+                        <span class="icon_delete">
+                          <span class="blind text-gray-400" v-show="idHasValue" @click="clearId">삭제</span>
+                        </span>
                       </button>
                     </div>
-                    <!-- 간편로그인 부분 -->
-                    <div class="dividing_safe" id="passkey.divider">
-                      <span class="text">간편로그인</span>
-                    </div>
-                    <div class="bb_sns-icons">
-                      <a href="https://accounts.kakao.com/login/?continue=https%3A%2F%2Faccounts.kakao.com%2Fweblogin%2Faccount#login"
-                        class="kakao"><img src="/images/yr/loginpage/loginKT.png" alt="깨톡" /></a>
-                      <a href="https://nid.naver.com/nidlogin.login?mode=form&url=https://www.naver.com/"
-                        class="naver"><img src="/images/yr/loginpage/loginN.png" alt="네이버" /></a>
 
-                      <a href="https://accounts.google.com/InteractiveLogin/signinchooser?continue=https%3A%2F%2Ftakeout.google.com%2F%3Fhl%3Dko&followup=https%3A%2F%2Ftakeout.google.com%2F%3Fhl%3Dko&hl=ko&osid=1&passive=1209600&ifkv=AXH0vVudToPB1oXfNyrRstCJ2S8_6MGsxrjKMEimiqpbXowYURSOX1dz9tFsLIFhTsRW8skj6ngVQw&ddm=1&flowName=GlifWebSignIn&flowEntry=ServiceLogin"
-                        class="google"><img src="/images/yr/loginpage/loginG.png" alt="구글" /></a>
-                    </div>
-                    <!-- 라인 -->
-                    <div class="dividing_safe" id="passkey.divider"></div>
-                    <!-- qr로그인버튼부분 -->
-                    <div class="btn_login_wrap">
-                      <button type="button" class="btn_login off next_step nlog-click qrlogin" id="log.login"
-                        @click="openQrLogin">
-                        <span class="btn_text" id="log.login.text">QR로그인</span>
+                    <div class="input_item pw" :class="{ on: password }" id="input_item_pw">
+                      <input :type="showPassword ? 'text' : 'password'" v-model="password" id="pw" name="pw"
+                        title="비밀번호" class="input_pw" maxlength="16" aria-label="비밀번호" @keyup="checkCapsLock" />
+                      <label for="pw" class="text_label" id="pw_label" aria-hidden="true">비밀번호</label>
+
+                      <button type="button" class="btn_view" :class="{ hide: showPassword }" id="pw_hide"
+                        :aria-pressed="showPassword" v-show="pwHasValue" @click="togglePassword">
+                        <span class="icon_view">
+                          <span class="blind text-white" :class="{ hide: showPassword }"  v-show="pwHasValue" @click="clearPw"> {{ showPassword ? '비밀번호 숨기기' : '비밀번호 보기'
+                            }}</span>
+                        </span>
+                      </button>
+
+                      <button type="button" class="btn_delete" id="pw_clear" v-show="pwHasValue" @click="clearPw">
+                        <span class="icon_delete">
+                          <span class="blind text-gray-400">삭제</span>
+                        </span>
                       </button>
                     </div>
                   </div>
-                </li>
-              </ul>
-            </div>
-            <!-- ✅ QR 로그인 버튼 누른 후 새영역 -->
-            <Qrlogin v-if="showQr" @close="closeQrLogin" />
+                  <div class="login_keep_wrap" id="login_keep_wrap">
+                    <div class="keep_check  " id="keep" role="checkbox" aria-checked="false" tabindex="0">
+                      <input type="checkbox" id="nvlong" name="nvlong" tabindex="-1" class="input_keep" value="off">
+                      <span for="keep" class="keep_text">로그인 상태 유지</span>
+                    </div>
+                    <div class="ip_check">
+                      <a href="/login/ext/help_ip3.html" target="_blank" id="ipguide" title="IP보안"><span
+                          class="ip_text">IP보안</span></a>
+                      <span class="switch">
+                        <input type="checkbox" id="switch" class="switch_checkbox" value="off">
+                        <label for="switch" class="switch_btn">
+                          <span class="switch_on" role="checkbox" aria-checked="true">ON</span>
+                          <span class="switch_off" role="checkbox" aria-checked="false">OFF</span>
+                        </label>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="login_error_wrap" id="err_capslock" v-show="showCapsLockWarning">
+                    <div class="error_message">
+                      <p><strong>Caps Lock</strong>이 켜져 있습니다.</p>
+                    </div>
+                  </div>
+
+                  <div class="login_error_wrap" id="err_empty_id" style="display: none;">
+                    <div class="error_message">
+                      <strong>아이디 또는 전화번호</strong>를 입력해 주세요.
+                    </div>
+                  </div>
+
+                  <div class="login_error_wrap" id="err_empty_pw" style="display: none;">
+                    <div class="error_message">
+                      <strong>비밀번호</strong>를 입력해 주세요.
+                    </div>
+                  </div>
+                  <div class="login_error_wrap" id="err_common" style="display:none;">
+                    <div class="error_message" style="width:100%">
+
+                    </div>
+                  </div>
+                  <div class="btn_login_wrap">
+                    <button type="submit" class="btn_login off next_step nlog-click" id="log.login" @click="login">
+                      <span class="btn_text" id="log.login.text">로그인</span>
+                    </button>
+                  </div>
+                  <!-- 간편로그인 -->
+                  <div class="dividing_safe" id="passkey.divider">
+                    <span class="text">간편로그인</span>
+                  </div>
+                  <div class="bb_sns-icons">
+                    <a href="https://accounts.kakao.com/login/?continue=https%3A%2F%2Faccounts.kakao.com%2Fweblogin%2Faccount#login"
+                      class="kakao"><img src="/images/yr/loginpage/loginKT.png" alt="깨톡" /></a>
+                    <a href="https://nid.naver.com/nidlogin.login?mode=form&url=https://www.naver.com/"
+                      class="naver"><img src="/images/yr/loginpage/loginN.png" alt="네이버" /></a>
+
+                    <a href="https://accounts.google.com/InteractiveLogin/signinchooser?continue=https%3A%2F%2Ftakeout.google.com%2F%3Fhl%3Dko&followup=https%3A%2F%2Ftakeout.google.com%2F%3Fhl%3Dko&hl=ko&osid=1&passive=1209600&ifkv=AXH0vVudToPB1oXfNyrRstCJ2S8_6MGsxrjKMEimiqpbXowYURSOX1dz9tFsLIFhTsRW8skj6ngVQw&ddm=1&flowName=GlifWebSignIn&flowEntry=ServiceLogin"
+                      class="google"><img src="/images/yr/loginpage/loginG.png" alt="구글" /></a>
+                  </div>
+                  <div class="dividing_safe" id="passkey.divider"></div>
+                  <!-- qr로그인 -->
+                  <div class="btn_login_wrap">
+                    <button type="submit" class="btn_login off next_step nlog-click qrlogin " id="log.login">
+                      <span class="btn_text" id="log.login.text">QR로그인</span>
+                    </button>
+                  </div>
+
+                </div>
+              </li>
+            </ul>
           </form>
         </div>
         <ul class="find_wrap" id="find_wrap">
@@ -285,10 +272,12 @@ const clearPw = () => {
               id="idinquiry" class="find_text">비밀번호 찾기</a></li>
           <li><a target="_blank" href="https://nid.naver.com/user2/api/route?m=routeIdInquiry&amp;lang=ko_KR"
               id="pwinquiry" class="find_text">아이디 찾기</a></li>
-          <li><a target="_blank" href="/signup" id="join" class="find_text">회원가입</a>
+          <li><a target="_blank" href="https://nid.naver.com/user2/V2Join?m=agree&amp;lang=ko_KR&amp;realname=N"
+              id="join" class="find_text">회원가입</a>
           </li>
 
         </ul>
+        <!--배너-->
         <div id="gladbanner" class="banner_wrap">
           <div style="width: 100%; height: auto; margin: 0px auto; line-height: 0;"><img id="gladbanner_tgtLREC"
               frameborder="no" scrolling="no" tabindex="0" name="" title="AD"
@@ -298,10 +287,12 @@ const clearPw = () => {
           </div>
         </div>
       </div>
+      <!-- //content -->
     </div>
 
     <div class="footer">
       <div class="footer_inner">
+        <!--[주]고객센터,제휴문의,서비스안내-->
         <ul class="footer_link" id="footer_link">
           <li><a target="_blank" class="footer_item nlog-click" href="http://www.naver.com/rules/service.html"
               id="fot.agreement"><span class="text">이용약관</span></a></li>
@@ -315,7 +306,7 @@ const clearPw = () => {
         </ul>
         <div class="footer_copy">
           <a id="fot.naver" target="_blank" href="https://www.navercorp.com" class="nlog-click">
-            <span class="footer_logo">가방도<span class="blind">가방도</span></span>
+            <span class="footer_logo"><span class="blind">가방도</span></span>
           </a>
           <span class="text">Copyright</span>
           <span class="corp">© Gabangdo Corp.</span>
@@ -522,15 +513,18 @@ body.oauth_mobile .oauth_wrap .age_area::before {
 }
 
 body {
-  width: 100%;
   height: 100%;
   color: #222;
   background-color: #fff
 }
 
-.container,
+body.full_height .container,
+body.full_height .content {
+  height: 100%;
+}
+
 .content {
-  width: 100%;
+  width: 100vw;
   margin: 0 auto;
 }
 
@@ -564,7 +558,7 @@ h6 {
 
 .header .logo {
   display: inline-block;
-  margin-top: 60px;
+  margin-top: 28px;
   vertical-align: top;
   background-position: 0 -51px;
   background-repeat: no-repeat;
@@ -663,6 +657,8 @@ h6 {
 .footer .footer_copy .footer_logo {
   display: inline-block;
   vertical-align: top;
+  background-position: -157px -51px;
+  background-repeat: no-repeat;
   width: 70px;
   height: 15px
 }
@@ -865,7 +861,7 @@ input::-ms-reveal {
 .menu_qr.on {
   border-color: #e1e3e5;
   background-color: #fff;
-  z-index: 3
+  z-index: 5
 }
 
 .menu_id.on .menu_text,
@@ -989,7 +985,7 @@ input::-ms-reveal {
 
 .panel_wrap {
   position: relative;
-  z-index: 1;
+  z-index: 3;
   margin-top: -10px
 }
 
@@ -1020,7 +1016,6 @@ input[type=text]::-webkit-input-placeholder {
   background-color: #fff;
   padding: 16px 18px 15px;
   border-radius: 6px;
-
   box-sizing: border-box;
   text-align: left
 }
@@ -1461,10 +1456,8 @@ input[type=text]::-webkit-input-placeholder {
   width: 22px;
   height: 22px
 }
-
 // 삭제 맨트 보이지 않게
-.blind,
-.sr-only {
+.blind, .sr-only {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -1475,7 +1468,6 @@ input[type=text]::-webkit-input-placeholder {
   white-space: nowrap;
   border: 0;
 }
-
 .btn_view {
   position: absolute;
   top: 10px;
@@ -1659,6 +1651,155 @@ input[type=text]::-webkit-input-placeholder {
   height: 20px
 }
 
+.login_keep_wrap {
+  position: relative;
+  margin-top: 12px;
+  padding-right: 90px
+}
+
+.keep_check {
+  position: relative;
+  display: inline-block;
+  padding-left: 26px;
+  cursor: pointer
+}
+
+.keep_check::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-position: -292px -236px;
+  background-repeat: no-repeat;
+  width: 20px;
+  height: 20px;
+  background-color: #fff
+}
+
+.keep_check.check::before {
+  background-position: -66px -292px;
+  background-repeat: no-repeat;
+  width: 20px;
+  height: 20px
+}
+
+.keep_check.check .keep_text {
+  color: #303038
+}
+
+.keep_check .keep_text {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: #767678
+}
+
+.ip_check {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding-right: 45px
+}
+
+.ip_check .ip_text {
+  display: inline-block;
+  padding-right: 4px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -.4px;
+  color: #303038
+}
+
+.ip_check .switch {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  margin-top: -10px;
+  text-align: center;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent
+}
+
+.ip_check .switch_checkbox {
+  position: absolute;
+  top: 2px;
+  right: 1px;
+  width: 42px;
+  height: 18px
+}
+
+.ip_check .switch_checkbox:checked+.switch_btn {
+  background-color: #09aa5c;
+  transition: all .3s ease;
+  text-align: left
+}
+
+.ip_check .switch_checkbox:checked+.switch_btn::before {
+  transform: translate(25px, 0);
+  background-color: #fff
+}
+
+.ip_check .switch_checkbox:checked+.switch_btn .switch_off,
+.ip_check .switch_checkbox:checked+.switch_btn .switch_on {
+  display: inline-block;
+  padding-left: 6px
+}
+
+.ip_check .switch_checkbox:checked+.switch_btn .switch_off {
+  display: none
+}
+
+.ip_check .switch_btn {
+  display: block;
+  position: relative;
+  width: 45px;
+  height: 20px;
+  margin: 0 auto;
+  border-radius: 12px;
+  background-color: #a5adb8;
+  box-sizing: border-box;
+  cursor: pointer;
+  text-align: right
+}
+
+.ip_check .switch_btn span {
+  vertical-align: top;
+}
+
+.ip_check .switch_btn::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  margin-top: -8px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .1);
+  transition: all .3s ease;
+  box-sizing: border-box
+}
+
+.ip_check .switch_off,
+.ip_check .switch_on {
+  display: none;
+  height: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: -.3px;
+
+  color: #fff
+}
+
+.ip_check .switch_off {
+  display: inline-block;
+  padding-right: 5px;
+}
 
 .dividing_safe {
   position: relative;
@@ -2556,10 +2697,7 @@ input[type=text]::-webkit-input-placeholder {
   .menu_id .menu_text .text,
   .menu_ones .menu_text .text,
   .menu_qr .menu_text .text {
-    position: absolute;
-    top: -10px;
-    font-size: 10px;
-
+    display: none
   }
 
   .nudge_banner {
@@ -4727,13 +4865,12 @@ body.cafe24 .custom_checkbox::before {
 .menu_qr.on {
   border-color: #e1e3e5;
   background-color: #fff;
-  border-left: 1px solid #e1e3e5 !important;
-  z-index: 3;
+  z-index: 5;
 }
 
 .menu_qr.on {
   border-top: 1px solid #e1e3e5;
-  border-right: 1px solid #e1e3e5 !important;
+  border-right: 1px solid #e1e3e5;
 }
 
 /* 기본 탭 */
@@ -4746,31 +4883,12 @@ body.cafe24 .custom_checkbox::before {
   padding-top: 12px;
   border: 1px solid #e1e3e5;
   border-top: 1px solid #f5f6f4;
-  border-right: none;
   border-bottom: 0;
-  border-radius: 0px 0px 0 0;
+  border-radius: 12px 12px 0 0;
   background-color: #f5f6f4;
   text-align: center;
   box-sizing: border-box;
-  z-index: 1;
-}
-
-.menu_id {
-  border-top: 0;
-  border-left: 0 !important;
-  border-right: 0;
-  border-radius: 12px 0 0 0 !important;
-}
-
-.menu_ones {
-  border-left: 1px solid #e1e3e5 !important;
-  border-right: 1px solid #e1e3e5 !important;
-  border-radius: 0px 0px 0 0 !important;
-}
-
-.menu_qr {
-  border-right: 1px solid #f5f6f4;
-  border-radius: 0 12px 0 0 !important;
+  z-index: 3;
 }
 
 /* 활성화된 탭 */
@@ -4827,6 +4945,10 @@ body.cafe24 .custom_checkbox::before {
       height: 100%;
     }
   }
+
+  .google {
+    width: 9% !important;
+  }
 }
 
 strong {
@@ -4841,26 +4963,6 @@ strong {
 
   span {
     color: #666 !important;
-  }
-}
-
-@media (max-width: 470px) {
-  .bb_sns-icons {
-    a {
-      width: 100%;
-      height: 100%;
-
-      img {
-        width: 35px !important;
-        height: 35px !important;
-      }
-    }
-    .google{
-      width: 20% important !important;
-      img{
-        width: 100%;
-      }
-    }
   }
 }
 </style>

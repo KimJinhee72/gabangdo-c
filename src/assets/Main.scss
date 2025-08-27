@@ -25,7 +25,15 @@ body,
 #app {
   margin: 0;
 }
-
+/* 텍스트에 포커스가 가지 않게 */
+div,
+label,
+span,
+button, a {
+  outline: none;
+  user-select: none;
+  cursor: default; /* 선택 불가 커서 */
+}
 // 전체
 .wrap_total {
   padding-top: 50px;

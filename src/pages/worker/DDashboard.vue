@@ -10,7 +10,7 @@
             <router-link to="/worker/ddashboard">
               <div class="logo">
                 <img
-                  src="/public/images/yr/delivery/logoL.png"
+                  src="/images/yr/delivery/logoL.png"
                   alt="로고"
                   class="w-15 h-5" />
               </div>
@@ -20,14 +20,14 @@
             <router-link to="/worker/assigned-jobs">
               <button>
                 <img
-                  src="/public/images/yr/delivery/check_icon.png"
+                  src="/images/yr/delivery/check_icon.png"
                   alt="체크"
                   class="w-[20px] h-[20px] mt-[3px]" />
               </button>
             </router-link>
             <router-link to="/worker/assign">
               <img
-                src="/public/images/yr/delivery/alert.png"
+                src="/images/yr/delivery/alert.png"
                 alt="알림"
                 class="w-[20px] h-[20px] mt-[3px]" />
             </router-link>
@@ -38,7 +38,7 @@
         <div class="flex items-center mb-4">
           <div class="w-12 h-12 rounded-full mr-3">
             <img
-              src="/public/images/yr/delivery/profile.png"
+              src="/images/yr/delivery/profile.png"
               alt="프로필"
               class="w-full h-full rounded-full object-cover" />
           </div>
@@ -83,7 +83,7 @@
               : 'bg-blue-500 hover:bg-blue-600',
           ]">
           <!-- <img
-            src="/public/images/yr/delivery/map_icon.png"
+            src="/images/yr/delivery/map_icon.png"
             alt="지도 아이콘"
             class="w-4 h-4" /> -->
           {{ showMap ? "지도 닫기" : "지도 보기" }}
@@ -149,7 +149,7 @@
                 class="w-8 h-8 rounded-lg bg-green-500 text-sm flex items-center justify-center"
                 @click="showPopup = !showPopup">
                 <img
-                  src="/public/images/yr/delivery/clock_icon.png"
+                  src="/images/yr/delivery/clock_icon.png"
                   alt="clock"
                   class="p-1" />
               </button>

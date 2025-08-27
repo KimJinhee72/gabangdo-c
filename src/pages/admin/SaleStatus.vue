@@ -142,7 +142,7 @@
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
         <div class="p-6 border-b border-gray-200 dark:border-gray-700">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ getChartTitle('trend') }}</h3>
-          <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-white">{{ getChartDescription('trend') }}</p>
+          <p class="text-sm text-gray-600 dark:text-white">{{ getChartDescription('trend') }}</p>
         </div>
         <div class="p-6">
           <div style="height: 300px;">

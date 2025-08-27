@@ -30,5 +30,8 @@ export default defineConfig(({ command, mode }) => ({
   server: {
     open: true, // 개발 서버 시작 시 브라우저 자동 열기
     port: 5173, // 원하는 포트 설정
+      proxy: {
+      "/api": "http://localhost:3000", // Vue → Express 프록시
+    },
   },
 }));

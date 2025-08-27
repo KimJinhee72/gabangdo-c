@@ -9,7 +9,7 @@
         <!-- 뒤로가기 -->
         <button @click="goBack">
           <img
-            src="/public/images/yr/delivery/backIcon.png"
+            src="/images/yr/delivery/backIcon.png"
             alt="뒤로가기"
             class="w-4 h-4" />
         </button>
@@ -17,7 +17,7 @@
         <router-link to="/worker/ddashboard">
           <div class="text-blue-500 text-lg font-bold">
             <img
-              src="/public/images/yr/delivery/logoL.png"
+              src="/images/yr/delivery/logoL.png"
               alt=""
               class="w-15 h-5" />
           </div>
@@ -26,7 +26,7 @@
         <div class="flex gap-2">
           <router-link to="/worker/assigned-jobs">
             <img
-              src="/public/images/yr/delivery/check_icon.png"
+              src="/images/yr/delivery/check_icon.png"
               alt="체크"
               class="w-5 h-5" />
           </router-link>
@@ -87,7 +87,7 @@
                       class="absolute top-2 right-2 hover:bg-gray-100 rounded-full p-1 transition-colors"
                       @click="removeAlert(item.id)">
                       <img
-                        src="/public/images/yr/delivery/Xicon.png"
+                        src="/images/yr/delivery/Xicon.png"
                         alt="닫기"
                         class="w-3 h-3" />
                     </button>
@@ -120,7 +120,7 @@
                       class="absolute top-2 right-2 hover:bg-gray-200 rounded-full p-1 transition-colors"
                       @click="removeAlert(item.id)">
                       <img
-                        src="/public/images/yr/delivery/Xicon.png"
+                        src="/images/yr/delivery/Xicon.png"
                         alt="닫기"
                         class="w-3 h-3 opacity-75" />
                     </button>
@@ -142,7 +142,7 @@
           @click="clearAlerts"
           class="w-full flex justify-center items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded">
           <img
-            src="/public/images/yr/delivery/trashIcon.png"
+            src="/images/yr/delivery/trashIcon.png"
             alt="휴지통"
             class="w-5 h-5" />
           <span class="pt-0.5">전체 지우기</span>
@@ -171,70 +171,70 @@ const getToday = () => {
 const alerts = ref([
   {
     id: 1,
-    icon: "/public/images/yr/delivery/alert1.png",
+    icon: "/images/yr/delivery/alert1.png",
     message: "새로운 배송 요청이 들어왔습니다.",
     time: "21:30",
     date: "2025-05-29", // 오늘 날짜
   },
   {
     id: 2,
-    icon: "/public/images/yr/delivery/alert2.png",
+    icon: "/images/yr/delivery/alert2.png",
     message: "오늘의 배송 실적이 업데이트되었습니다.",
     time: "21:15",
     date: "2025-05-29", // 오늘 날짜
   },
   {
     id: 3,
-    icon: "/public/images/yr/delivery/alert3.png",
+    icon: "/images/yr/delivery/alert3.png",
     message: "내일 예정된 배송 일정이 있습니다.",
     time: "21:00",
     date: "2025-05-29", // 오늘 날짜
   },
   {
     id: 4,
-    icon: "/public/images/yr/delivery/alert1.png",
+    icon: "/images/yr/delivery/alert1.png",
     message: "배송 완료된 주문이 있습니다.<br/>리뷰를 작성해주세요.",
     time: "20:45",
     date: "2025-05-29", // 오늘 날짜
   },
   {
     id: 1,
-    icon: "/public/images/yr/delivery/alert1.png",
+    icon: "/images/yr/delivery/alert1.png",
     message: "새로운 배송 요청이 들어왔습니다.",
     time: "21:30",
     date: "2024-03-19", // 오늘 날짜
   },
   {
     id: 2,
-    icon: "/public/images/yr/delivery/alert2.png",
+    icon: "/images/yr/delivery/alert2.png",
     message: "오늘의 배송 실적이 업데이트되었습니다.",
     time: "21:15",
     date: "2024-03-19", // 오늘 날짜
   },
   {
     id: 3,
-    icon: "/public/images/yr/delivery/alert3.png",
+    icon: "/images/yr/delivery/alert3.png",
     message: "내일 예정된 배송 일정이 있습니다.",
     time: "21:00",
     date: "2024-03-19", // 오늘 날짜
   },
   {
     id: 4,
-    icon: "/public/images/yr/delivery/alert1.png",
+    icon: "/images/yr/delivery/alert1.png",
     message: "배송 완료된 주문이 있습니다.<br/>리뷰를 작성해주세요.",
     time: "20:45",
     date: "2024-03-19", // 오늘 날짜
   },
   {
     id: 5,
-    icon: "/public/images/yr/delivery/alert2.png",
+    icon: "/images/yr/delivery/alert2.png",
     message: "5월 정산이 마무리 되었습니다.<br/>확인 부탁드립니다.",
     time: "2024.05.14",
     date: "2024-03-18", // 어제 날짜
   },
   {
     id: 6,
-    icon: "/public/images/yr/delivery/alert3.png",
+    icon: "/images/yr/delivery/alert3.png",
     message: "주간 성과 리포트가 업데이트되었습니다.",
     time: "19:15",
     date: "2024-03-18", // 어제 날짜

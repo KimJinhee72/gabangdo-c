@@ -1,16 +1,17 @@
 // Pinia에서 스토어를 정의하기 위해 defineStore를 불러옴
 import { defineStore } from "pinia";
+import { ref } from 'vue'
 
 // 'auth'라는 이름의 인증 스토어 정의
 export const useAuthStore = defineStore("auth", {
 
   // 상태(state): 로그인 상태 및 사용자 정보 저장
   state: () => ({
-  
+
     // 로컬스토리지에 저장된 로그인 상태를 불러와 초기값으로 사용
     isLoggedIn: localStorage.getItem("isLoggedIn") === "true",
 
-    // 저장된 사용자 이름 또는 기본값 '' 
+    // 저장된 사용자 이름 또는 기본값 ''
     // Pinia에서 userName으로 자동 저장
     userName: localStorage.getItem("userName") || "",
 
@@ -83,7 +84,7 @@ export const useAuthStore = defineStore("auth", {
       this.login({
         name: formData.name,
         email: formData.email,
-        phone: formData.phone, 
+        phone: formData.phone,
       });
        // 호출한 컴포넌트에서 then/catch로 처리할 수 있게 Promise 반환
       return Promise.resolve();

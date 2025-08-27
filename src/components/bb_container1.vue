@@ -5,7 +5,7 @@
   <div class="card">
     <p class="sub-title">출발지가가</p>
     <h2 class="title">공항인 경우</h2>
-    <img src="/public/images/yr/page1/airplane.png" alt="비행기" class="plane-img" />
+    <img src="/images/yr/page1/airplane.png" alt="비행기" class="plane-img" />
 
     <ul class="step-list">
       <li><span class="step-num">1</span> 예약된 픽업 시간 도착</li>
@@ -20,7 +20,7 @@
   <div class="card">
     <p class="sub-title">출발지가가</p>
     <h2 class="title">숙소인 경우</h2>
-    <img src="/public/images/yr/page1/building.png" alt="비행기" class="plane-img" />
+    <img src="/images/yr/page1/building.png" alt="비행기" class="plane-img" />
 
     <ul class="step-list">
       <li><span class="step-num">1</span> 로비 / 프론트 데스크</li>
@@ -35,7 +35,7 @@
   <div class="card">
     <p class="sub-title">출발지가가</p>
     <h2 class="title">기차인 경우</h2>
-    <img src="/public/images/yr/page1/subway.png" alt="비행기" class="plane-img" />
+    <img src="/images/yr/page1/subway.png" alt="비행기" class="plane-img" />
 
     <ul class="step-list">
       <li><span class="step-num">1</span> 지정된 출구 / 대기장소</li>

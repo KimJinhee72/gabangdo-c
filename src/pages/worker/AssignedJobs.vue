@@ -9,7 +9,7 @@
         <!-- 뒤로가기 -->
         <button @click="goBack">
           <img
-            src="/public/images/yr/delivery/backIcon.png"
+            src="/images/yr/delivery/backIcon.png"
             alt="뒤로가기"
             class="w-4 h-4" />
         </button>
@@ -23,7 +23,7 @@
 
         <router-link to="/worker/assign">
           <img
-            src="/public/images/yr/delivery/alert.png"
+            src="/images/yr/delivery/alert.png"
             alt="알림"
             class="w-5 h-5" />
         </router-link>
@@ -40,7 +40,7 @@
           <div class="flex flex-col items-center text-xs">
             <p class="text-black mb-1 pl-4">평가</p>
             <img
-              src="/public/images/yr/delivery/star.png"
+              src="/images/yr/delivery/star.png"
               alt="평가별"
               class="w-16 ml-4" />
             <p class="text-base font-semibold pl-4 text-black">4.0</p>
@@ -68,7 +68,7 @@
             placeholder="고객명 또는 주소, 전화번호 검색"
             class="w-full pl-10 pr-3 py-2 rounded border border-gray-300 text-sm focus:outline-none text-[#000]" />
           <img
-            src="/public/images/yr/delivery/glass.png"
+            src="/images/yr/delivery/glass.png"
             alt="돋보기"
             class="absolute left-3 top-2.5 w-4 h-4" />
         </div>
@@ -89,7 +89,7 @@
           <div class="space-y-4 pb-4">
             <div class="p-2 bg-[#E9E9E9] rounded-lg">
               <!-- 카드 0 -->
-              <div class="bg-white rounded-lg shadow p-3 mb-2 mb-2">
+              <div class="bg-white rounded-lg shadow p-3 mb-2">
                 <div
                   class="flex justify-between text-sm font-semibold text-gray-700">
                   <p>05.02 (화)</p>
@@ -256,7 +256,7 @@
   <!-- 모달 -->
   <div
     id="modal"
-    class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+    class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
     <div class="bg-white w-[350px] rounded-xl">
       <div class="rounded-lg w-[330px] m-auto p-3 pt-4">
         <!-- 이름 -->
@@ -296,7 +296,7 @@
         </div>
         <div class="flex justify-end mb-3">
           <img
-            src="/public/images/yr/delivery/home_icon.png"
+            src="/images/yr/delivery/home_icon.png"
             alt=""
             class="w-[20px] h-[20px] items-end" />
         </div>
