@@ -190,7 +190,7 @@ const clearPw = () => {
                         <label for="id" class="text_label" id="id_label" aria-hidden="true">{{ getPlaceholder }}</label>
                         <button type="button" class="btn_delete" id="id_clear" v-show="inputValue"
                           @click="inputValue = ''">
-                          <span class="icon_delete" >
+                          <span class="icon_delete">
                             <span class="blind text-gray-400" v-show="idHasValue" @click="clearId">삭제</span>
                           </span>
                         </button>
@@ -435,84 +435,6 @@ table {
 }
 
 
-.blank_content .text::before,
-.btn_view.hide .icon_view,
-.bullet_help,
-.cafe24_content .btn_register .text::before,
-.cafe24_content .button_area .text_app::before,
-.cafe24_content .button_area .text_talktalk::before,
-.cafe24_content .register_box .btn_delete_file .text::before,
-.cafe24_content .register_box .btn_info::before,
-.cafe24_content .register_box .btn_layer_close::before,
-.cafe24_content .register_box .label_file .text::before,
-.captcha_row .btn_picture::after,
-.captcha_row .btn_refresh::after,
-.captcha_row .btn_sound::after,
-.captcha_wrap .captcha_audio .icon_audio,
-.chatbot .icon_chatbot,
-.country_list .icon_country_check,
-.custom_checkbox.size16::before,
-.custom_checkbox.size16[aria-checked=true]::before,
-.custom_checkbox.size20::before,
-.custom_checkbox.size20[aria-checked=true]::before,
-.header_blank .btn_close::before,
-.header_blank .header_title .link::before,
-.header_oauth .btn_profile::after,
-.header_oauth .logo .link::before,
-.header_oauth .tooltip::before,
-.icon_beta,
-.icon_delete,
-.icon_view,
-.img_lock,
-.img_wowpoint,
-.input_item.country .country_code::after,
-.ip_relogin_box .relogin_close::after,
-.ip_relogin_box .relogin_tip::before,
-.keep_check.check::before,
-.keep_check::before,
-.lang::after,
-.menu_id .menu_text::before,
-.menu_id.on .menu_text::before,
-.menu_id.on::after,
-.menu_ones .menu_text::before,
-.menu_ones.on .menu_text::before,
-.menu_ones.on::after,
-.menu_ones.on::before,
-.menu_qr .menu_text::before,
-.menu_qr.on .menu_text::before,
-.menu_qr.on::before,
-.oauth_wrap .age_area::before,
-.oauth_wrap .btn_close::before,
-.oauth_wrap .check_all input:checked+label::before,
-.oauth_wrap .check_all label::before,
-.oauth_wrap .check_item .link::before,
-.oauth_wrap .check_item input:checked+label::before,
-.oauth_wrap .check_item label::before,
-.ones_text .bullet_dotte,
-.ones_text .bullet_set,
-.pop_img_lock,
-.qrcode_help_stepbox .popup_close::after,
-.qrcode_help_stepbox .step_title::before,
-.reconfirm_sub .captcha_wrap .voice_box .icon_voice,
-.sns_wrap li:nth-child(1) .sns_text::before,
-.sns_wrap li:nth-child(2) .sns_text::before,
-.sns_wrap li:nth-child(3) .sns_text::before,
-.step_ask .ask_text::before,
-.sub_desc .bullet_greendot,
-.sub_desc .bullet_lens,
-.terms_detail .naver_logo::before,
-.time_wrap .btn_renewal::before,
-body.cafe24 .custom_checkbox.size16::before,
-body.cafe24 .custom_checkbox.size16[aria-checked=true]::before,
-body.cafe24 .custom_checkbox.size20::before,
-body.cafe24 .custom_checkbox.size20[aria-checked=true]::before,
-body.oauth_mobile .header_oauth .btn_profile::after,
-body.oauth_mobile .header_oauth .logo .link::before,
-body.oauth_mobile .oauth_wrap .age_area::before {
-  background-image: url(https://ssl.pstatic.net/static/nid/login/sprite/m_sp_01_login_7b3d4fc3.png);
-  background-size: 336px 330px;
-  background-repeat: no-repeat
-}
 
 .header_blank.svg .header_title .link::before {
   background-image: url(https://ssl.pstatic.net/static/nid/login/sprite/sp_00_common_603f2de4.png);
@@ -898,6 +820,9 @@ input::-ms-reveal {
   position: absolute;
   top: -1px;
   right: -13px;
+  background-image: url(https://ssl.pstatic.net/static/nid/login/sprite/m_sp_01_login_7b3d4fc3.png);
+  background-size: 336px 330px;
+  background-repeat: no-repeat;
   background-position: -225px -104px;
   background-repeat: no-repeat;
   width: 25px;
@@ -927,6 +852,9 @@ input::-ms-reveal {
   position: absolute;
   top: -1px;
   left: -13px;
+  background-image: url(https://ssl.pstatic.net/static/nid/login/sprite/m_sp_01_login_7b3d4fc3.png);
+  background-size: 336px 330px;
+  background-repeat: no-repeat;
   background-position: 0 -202px;
   background-repeat: no-repeat;
   width: 25px;
@@ -973,6 +901,9 @@ input::-ms-reveal {
   position: absolute;
   top: -1px;
   left: -13px;
+  background-image: url(https://ssl.pstatic.net/static/nid/login/sprite/m_sp_01_login_7b3d4fc3.png);
+  background-size: 336px 330px;
+  background-repeat: no-repeat;
   background-position: 0 -202px;
   background-repeat: no-repeat;
   width: 25px;
@@ -4855,9 +4786,11 @@ strong {
         height: 35px !important;
       }
     }
-    .google{
+
+    .google {
       width: 20% important !important;
-      img{
+
+      img {
         width: 100%;
       }
     }
