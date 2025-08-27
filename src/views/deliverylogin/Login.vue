@@ -820,10 +820,7 @@ input::-ms-reveal {
   position: absolute;
   top: -1px;
   right: -13px;
-  background-image: url(https://ssl.pstatic.net/static/nid/login/sprite/m_sp_01_login_7b3d4fc3.png);
-  background-size: 336px 330px;
-  background-repeat: no-repeat;
-  background-position: -225px -104px;
+  background-image: url("/images/geen/1/Untitled-2.png");
   background-repeat: no-repeat;
   width: 25px;
   height: 62px
@@ -852,10 +849,7 @@ input::-ms-reveal {
   position: absolute;
   top: -1px;
   left: -13px;
-  background-image: url(https://ssl.pstatic.net/static/nid/login/sprite/m_sp_01_login_7b3d4fc3.png);
-  background-size: 336px 330px;
-  background-repeat: no-repeat;
-  background-position: 0 -202px;
+  background-image: url("/images/geen/1/Untitled-1.png");
   background-repeat: no-repeat;
   width: 25px;
   height: 62px
@@ -866,7 +860,7 @@ input::-ms-reveal {
   position: absolute;
   top: -1px;
   right: -12px;
-  background-position: -225px -104px;
+  background-image: url("/images/geen/1/Untitled-2.png");
   background-repeat: no-repeat;
   width: 25px;
   height: 62px
@@ -901,10 +895,7 @@ input::-ms-reveal {
   position: absolute;
   top: -1px;
   left: -13px;
-  background-image: url(https://ssl.pstatic.net/static/nid/login/sprite/m_sp_01_login_7b3d4fc3.png);
-  background-size: 336px 330px;
-  background-repeat: no-repeat;
-  background-position: 0 -202px;
+  background-image: url("/images/geen/1/Untitled-1.png");
   background-repeat: no-repeat;
   width: 25px;
   height: 62px
@@ -4635,17 +4626,7 @@ body.cafe24 .custom_checkbox::before {
   content: ''
 }
 
-// 추가
-.menu_ones.on::before {
-  content: '';
-  position: absolute;
-  top: -1px;
-  left: -13px;
-  background-position: 0 -202px;
-  background-repeat: no-repeat;
-  width: 25px;
-  height: 62px;
-}
+
 
 /* 마지막 탭일 경우에는 ::after 숨김 */
 .menu_wrap .menu_item:last-child .menu_id.on::after {
@@ -4716,16 +4697,6 @@ body.cafe24 .custom_checkbox::before {
   /* 다시 선언해줘야 확실히 적용됨 */
 }
 
-.menu_ones.on::before {
-  content: '';
-  position: absolute;
-  top: -1px;
-  left: -13px;
-  background-position: 0 -202px;
-  background-repeat: no-repeat;
-  width: 25px;
-  height: 62px;
-}
 
 .menu_icon {
   width: 35px;
