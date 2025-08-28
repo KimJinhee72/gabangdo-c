@@ -516,7 +516,7 @@ const onSubmit = () => {
             {{ errorMessage }}
           </div>
           <button type="submit" class="btn-main" @click="() => { submitted = true; validateAll(); }"
-            style="background-color: #0067e8;">
+            style="background-color: #3b88f3;">
             인증요청</button>
         </div>
       </form>
@@ -697,10 +697,8 @@ input {
             position: relative;
             top: 0;
             left: 0;
-            background-image: url(https://ssl.pstatic.net/static/nid/login/sprite/m_sp_01_login_7b3d4fc3.png);
-            background-position: -292px -236px;
-            background-size: 336px 330px;
-            background-repeat: no-repeat;
+            background: url("/images/geen/1/check.png") no-repeat 0 center;
+            background-size: 18px;
             width: 20px;
             height: 20px;
             vertical-align: middle;
@@ -712,9 +710,9 @@ input {
             display: inline-block;
             width: 20px;
             height: 20px;
-            background: url(https://ssl.pstatic.net/static/nid/login/sprite/m_sp_01_login_7b3d4fc3.png) -286px -292px / 336px 330px no-repeat;
+            background: url("/images/geen/1/check.png") no-repeat 0px center;
+            background-size: 18px;
             vertical-align: middle;
-            margin-right: 4px;
             filter: invert(12%) sepia(100%) saturate(7500%) hue-rotate(200deg) brightness(100%) contrast(120%);
 
           }
@@ -729,14 +727,14 @@ input {
             font-size: 14px;
             font-weight: 400;
             line-height: 20px;
-            color: blue;
+            color: #9c9c9c;
             cursor: default;
             pointer-events: none;
             /* 클릭/커서 이벤트 무시 */
           }
 
           &.check .keep_text {
-            color: #9c9c9c;
+            color: blue;
             pointer-events: none;
             /* 클릭/커서 이벤트 무시 */
 

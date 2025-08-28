@@ -79,7 +79,8 @@ const handleCancel = () => {
 .keep_check {
   position: relative;
   display: inline-block;
-  padding-left: 26px;
+  padding-left: 30px;
+  line-height: 25px;
   cursor: pointer
 }
 
@@ -88,13 +89,25 @@ const handleCancel = () => {
   position: absolute;
   top: 0;
   left: 0;
-  background-image: url(https://ssl.pstatic.net/static/nid/login/sprite/m_sp_01_login_7b3d4fc3.png);
-  background-position: -292px -236px;
-  background-size: 336px 330px;
+  background: url("/images/geen/1/check.png") no-repeat 4px center;
+  background-size: 18px;
   background-repeat: no-repeat;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   background-color: #fff;
+}
+
+.keep_check.check::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: url("/images/geen/1/check.png") no-repeat 4px center;
+  background-size: 18px;
+  background-repeat: no-repeat;
+  width: 22px;
+  height: 22px;
+  filter: invert(12%) sepia(100%) saturate(7500%) hue-rotate(200deg) brightness(100%) contrast(120%);
 }
 
 .keep_check .input_keep {
@@ -103,7 +116,7 @@ const handleCancel = () => {
 }
 
 .keep_check.check .keep_text {
-  color: #303038;
+  color: #1970da;
   pointer-events: none;
   /* 클릭/커서 이벤트 무시 */
 

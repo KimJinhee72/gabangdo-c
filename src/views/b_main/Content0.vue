@@ -192,6 +192,7 @@
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { Clock4, MapPin, Shield } from "lucide-vue-next";
 import Modal from "../b_main/Modal.vue";
+
 const showModal = ref(false);
 const images = [
   "/images/yr/mainImg/attraction1.png",

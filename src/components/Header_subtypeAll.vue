@@ -11,23 +11,12 @@
           <!-- 메인탭메뉴(방법도/요금도/예약도/소통도/여행도) :중간영역 -->
           <nav v-if="!isMobile" class="hd_menu">
             <!-- 메인메뉴  -->
-            <ul
-              @mouseenter="showAllSubMenu = true"
-              @mouseleave="showAllSubMenu = false">
-              <li
-                v-for="(item, index) in menuItems"
-                :key="index"
-                @click="handleMenuClick(item)">
-                <router-link
-                  v-if="!item.sub"
-                  :to="item.to"
-                  :class="{ mainMenu: item.label === '예약도' }">
+            <ul @mouseenter="showAllSubMenu = true" @mouseleave="showAllSubMenu = false">
+              <li v-for="(item, index) in menuItems" :key="index" @click="handleMenuClick(item)">
+                <router-link v-if="!item.sub" :to="item.to" :class="{ mainMenu: item.label === '예약도' }">
                   <span class="menu-label">{{ item.label }}</span>
                 </router-link>
-                <a
-                  v-else
-                  href="#"
-                  :class="{ mainMenu: item.label === '예약도' }">
+                <a v-else href="#" :class="{ mainMenu: item.label === '예약도' }">
                   {{ item.label }}
                 </a>
               </li>
@@ -35,28 +24,24 @@
           </nav>
           <!--  가방조회/로그인: 오른쪽 영역-->
           <!-- 가방/로그인 아이콘 -->
-          <div class="hd_mobileRight">
-            <router-link to="/delivery">
-              <img
-                src="/images/cr/delivery.png"
-                alt="가방조회이미지"
-                class="icon-square" />
-            </router-link>
-            <router-link to="/yeyaklookup">
-              <img
-                src="/images/cr/lookup.png"
-                alt="예약조회이미지"
-                class="icon-square" />
-            </router-link>
-            <router-link to="/login">
-              <img
-                src="/images/cr/login.png"
-                alt="로그인이미지"
-                class="icon-square" />
-            </router-link>
+          <div class="hd_right">
+            <div class="hd_mobileRight">
+              <router-link to="/delivery">
+                <img src="/images/cr/delivery.png" alt="가방조회이미지" class="icon-square" />
+              </router-link>
+              <router-link to="/yeyaklookup">
+                <img src="/images/cr/lookup.png" alt="예약조회이미지" class="icon-square" />
+              </router-link>
+              <router-link to="/login">
+                <img src="/images/cr/login.png" alt="로그인이미지" class="icon-square" />
+              </router-link>
+            </div>
           </div>
         </div>
-
+        <!-- 고객로그인 -->
+        <div class="customer">
+          <h6>{{ username }}님, 환영합니다!</h6>
+        </div>
         <!--1230px 및 모바일 메뉴 -->
         <div class="hd_mobileMenu">
           <!-- 헤더 아이콘 영역 -->
@@ -72,38 +57,22 @@
             <!-- 가방/로그인 아이콘 -->
             <div class="hd_mobileRight">
               <router-link to="/delivery">
-                <img
-                  src="/images/cr/delivery.png"
-                  alt="가방조회이미지"
-                  class="icon-square" />
+                <img src="/images/cr/delivery.png" alt="가방조회이미지" class="icon-square" />
               </router-link>
               <router-link to="/yeyaklookup">
-                <img
-                  src="/images/cr/lookup.png"
-                  alt="예약조회이미지"
-                  class="icon-square" />
+                <img src="/images/cr/lookup.png" alt="예약조회이미지" class="icon-square" />
               </router-link>
               <router-link to="/login">
-                <img
-                  src="/images/cr/login.png"
-                  alt="로그인이미지"
-                  class="icon-square" />
+                <img src="/images/cr/login.png" alt="로그인이미지" class="icon-square" />
               </router-link>
             </div>
             <!-- 1230px 및 모바일에서 열리는 메뉴 파랑바탕-->
-            <div
-              class="hd_menu1"
-              :class="{ show: shortMenu, leave: isLeaving }"
-              v-show="shortMenu"
-              @mouseleave="handleMouseLeave"
-              @mouseenter="clearLeave">
+            <div class="hd_menu1" :class="{ show: shortMenu, leave: isLeaving }" v-show="shortMenu"
+              @mouseleave="handleMouseLeave" @mouseenter="clearLeave">
               <span @click.prevent="closeMobileMenu" role="button">X</span>
               <ul>
                 <li v-for="(item, index) in menuItems" :key="index">
-                  <router-link
-                    v-if="!item.sub"
-                    :to="item.to"
-                    @click="handleMenuClick(item)">
+                  <router-link v-if="!item.sub" :to="item.to" @click="handleMenuClick(item)">
                     <span>{{ item.label }}</span>
                   </router-link>
                   <div v-else>
@@ -112,11 +81,7 @@
                     </a>
                     <ul v-if="openedMobileMenu === index" class="subMenu show">
                       <li v-for="(sub, idx) in item.sub" :key="idx">
-                        <router-link
-                          :to="sub.to"
-                          @click="handleMenuClick(item)"
-                          >{{ sub.label }}</router-link
-                        >
+                        <router-link :to="sub.to" @click="handleMenuClick(item)">{{ sub.label }}</router-link>
                       </li>
                     </ul>
                   </div>
@@ -134,9 +99,12 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, watch, onBeforeUnmount } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useAuthStore } from "../stores/auth";
 import { storeToRefs } from "pinia";
+const route = useRoute();
+// query로 전달된 username 사용
+const username = route.query.username || "";
 
 // 모바일 여부 체크용
 const isLeaving = ref(false); // 트랜지션 상태
@@ -257,6 +225,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 @use "/src/assets/Variables" as *;
+
 .header {
   position: fixed;
   top: 0;
@@ -267,6 +236,7 @@ export default {
   z-index: 999999;
   background-color: #fff;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
   a,
   .router-link-active,
   .router-link-exact-active {
@@ -278,6 +248,7 @@ export default {
     color: black; // hover 시에도 동일하게 유지
   }
 }
+
 header .inner {
   max-width: 1300px;
   margin-top: 5px;
@@ -286,18 +257,22 @@ header .inner {
   justify-content: space-between;
   align-items: center;
 }
+
 .hd_wideMenu {
   width: 100%;
   height: 6cap;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 5px auto;
 }
+
 body.modal-open {
   position: fixed;
   width: 100%;
   overflow: hidden;
 }
+
 // 로고
 .hd_logo {
   width: 110px;
@@ -307,6 +282,7 @@ body.modal-open {
     width: 90px;
   }
 }
+
 .hd_mobileMenu {
   width: 100%;
   display: none;
@@ -319,18 +295,23 @@ body.modal-open {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+  font-size: 16px;
+
   ul {
     display: flex;
     align-items: center;
     width: 100%;
     height: 100%;
+
     li {
       position: relative;
       flex: 1;
       text-align: center;
+
       &:hover .subMenu {
         display: flex; // hover 중에는 항상 보이게
       }
+
       a {
         display: inline-block;
         padding: 5px 15px;
@@ -338,10 +319,12 @@ body.modal-open {
         border-radius: 5px;
         font-weight: normal;
       }
+
       a:hover {
         color: #279bf4 !important;
         font-weight: bold;
       }
+
       .subMenu {
         width: 100%;
         height: 100px;
@@ -353,8 +336,10 @@ body.modal-open {
         left: 0;
         z-index: 10;
         padding: 10px 0;
+
         li {
           height: 40px;
+
           a {
             display: flex; // 플렉스 박스로 설정
             align-items: center; // 수직 가운데 정렬
@@ -365,18 +350,25 @@ body.modal-open {
           }
         }
       }
+
       .subMenu.show {
         display: flex;
       }
     }
   }
 }
+
 .icon-square {
-  width: 90%; /* 가로 길이 */
-  height: 90%; /* 세로 길이 (width와 동일) */
-  object-fit: contain; /* 원본 비율 유지하면서 빈 공간이 생기면 여백 처리 */
-  /* object-fit: cover; */ /* 꽉 채워서 자르려면 이 옵션을 사용 */
+  width: 80%;
+  /* 가로 길이 */
+  height: 80%;
+  /* 세로 길이 (width와 동일) */
+  object-fit: contain;
+  /* 원본 비율 유지하면서 빈 공간이 생기면 여백 처리 */
+  /* object-fit: cover; */
+  /* 꽉 채워서 자르려면 이 옵션을 사용 */
 }
+
 .hd_menu1 {
   pointer-events: none;
   position: fixed;
@@ -398,6 +390,7 @@ body.modal-open {
   pointer-events: none;
   background-color: #fff;
   background-color: #279bf4;
+
   &.show {
     text-align: left;
     color: #fff;
@@ -414,8 +407,10 @@ body.modal-open {
     color: #fff;
     cursor: pointer;
   }
+
   li {
     width: 100%;
+
     a {
       display: block;
       width: 100% !important;
@@ -428,12 +423,14 @@ body.modal-open {
       border-radius: 10px;
       border: 2.5px solid #0066b333;
     }
+
     a:hover {
       border: 2.5px solid $sub-color;
       font-weight: bold;
       border-radius: 10px;
     }
   }
+
   .subMenu {
     li {
       a {
@@ -445,14 +442,18 @@ body.modal-open {
     }
   }
 }
+
 .hd_menu1 .subMenu.show {
   display: flex;
   flex-direction: column;
 }
+
 .menu-label {
-  display: inline-block; /* 너비 적용을 위해 */
+  display: inline-block;
+  /* 너비 적용을 위해 */
   // height: 50px; /* 원하는 만큼 조정 */
 }
+
 // delivery/login icon
 .hd_extra {
   position: fixed;
@@ -464,12 +465,13 @@ body.modal-open {
   justify-content: space-around;
   align-items: center;
   z-index: 9;
+
   img {
     font-weight: 600;
   }
 }
 
-.hd_extra > div > a {
+.hd_extra>div>a {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -477,6 +479,7 @@ body.modal-open {
   text-align: center;
   border: 1px solid transparent;
 }
+
 // 로그인
 .hd_myPage {
   position: relative;
@@ -507,9 +510,11 @@ body.modal-open {
 .hd_afterlogindropPage_content a:hover {
   background-color: #f5f5f5;
 }
+
 .user-name {
   color: $main-color;
 }
+
 // 반응형후 delivery/login icon
 .hd_extra1 {
   position: fixed;
@@ -521,15 +526,18 @@ body.modal-open {
   justify-content: space-around;
   align-items: center;
   z-index: 9;
+
   img {
     font-weight: 600;
     max-width: none !important;
   }
 }
+
 .hd_hambar,
-.hd_hambar > img {
+.hd_hambar>img {
   width: 36px;
 }
+
 .hd_man,
 .hd_man img {
   width: 29px !important;
@@ -537,11 +545,33 @@ body.modal-open {
   margin-bottom: 5px;
   font-weight: bold;
 }
-.hd_mobileRight {
-  width: 150px;
+
+.hd_right {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
+
+  .hd_mobileRight {
+    width: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+
+    a:nth-child(3) {
+      img {
+        width: 68%;
+      }
+    }
+
+
+  }
+}
+.customer{
+position: fixed;
+top:28px;
+right: 10px;
+ h6 {
+      width: 150px;
+
+    }
 }
 </style>

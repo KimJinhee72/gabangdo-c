@@ -12,6 +12,8 @@ const router = useRouter();
 // 로그인 상태
 const inputValue = ref("");
 const password = ref("");
+const showEmptyIdError = ref(false);    // 아이디 미입력 경고
+const showEmptyPwError = ref(false);    // 비밀번호 미입력 경고
 const showPassword = ref(false);
 const keepLoggedIn = ref(false);// 로그인 상태 유지 체크
 const ipSecurity = ref(true); // IP보안 ON/OFF
@@ -36,8 +38,26 @@ const currentTab = computed(() => tabs.find(t => t.value === activeTab.value));
 
 // 로그인
 const login = () => {
+  // 초기화
+  showEmptyIdError.value = false;
+  showEmptyPwError.value = false;
+
+  // 입력값 체크
+  if (!inputValue.value) {
+    showEmptyIdError.value = true;
+    return;
+  }
+  if (!password.value) {
+    showEmptyPwError.value = true;
+    return;
+  }
+
+  // 로그인 성공 시 라우터 이동
   if (currentTab.value) {
-    router.push(currentTab.value.route);
+    router.push({
+      path: currentTab.value.route,
+      query: { username: inputValue.value } // query로 전달
+    });
   }
 };
 //
@@ -120,8 +140,8 @@ const clearPw = () => {
                 <li class="panel_item" style="display: block;">
                   <!-- ✅ 일반 로그인폼 -->
                   <div class="panel_inner" role="tabpanel" :aria-controls="`login-${activeTab}`">
+                    <!-- 아이디/비밀번호 입력창 ... -->
                     <div class="login_form">
-                      <!-- 아이디/비밀번호 입력창 ... -->
                       <div class="input_item id" :class="{ on: inputValue }" id="input_item_id">
                         <input type="text" id="id" name="id" maxlength="41" autocapitalize="none" v-model="inputValue"
                           class="input_id" :aria-label="getPlaceholder" @keyup="checkCapsLock">
@@ -158,26 +178,23 @@ const clearPw = () => {
                     <!-- 로그인상태표시 및 ip보안 -->
                     <LoginStatusSecure v-model:keepLoggedIn="keepLoggedIn" v-model:ipSecurity="ipSecurity" />
                     <!-- 에러부분 -->
-                    <div class="login_error_wrap" id="err_capslock" v-show="showCapsLockWarning">
-                      <div class="error_message">
-                        <p><strong>Caps Lock</strong>이 켜져 있습니다.</p>
+                    <div>
+                      <div class="login_error_wrap" id="err_capslock" v-show="showCapsLockWarning">
+                        <div class="error_message">
+                          <p><strong>Caps Lock</strong>이 켜져 있습니다.</p>
+                        </div>
                       </div>
-                    </div>
 
-                    <div class="login_error_wrap" id="err_empty_id" style="display: none;">
-                      <div class="error_message">
-                        <strong>아이디 또는 전화번호</strong>를 입력해 주세요.
+                      <div class="login_error_wrap" id="err_empty_id" v-show="showEmptyIdError">
+                        <div class="error_message">
+                          <strong>아이디</strong>를 입력해 주세요.
+                        </div>
                       </div>
-                    </div>
 
-                    <div class="login_error_wrap" id="err_empty_pw" style="display: none;">
-                      <div class="error_message">
-                        <strong>비밀번호</strong>를 입력해 주세요.
-                      </div>
-                    </div>
-                    <div class="login_error_wrap" id="err_common" style="display:none;">
-                      <div class="error_message" style="width:100%">
-
+                      <div class="login_error_wrap" id="err_empty_pw" v-show="showEmptyPwError">
+                        <div class="error_message">
+                          <strong>비밀번호</strong>를 입력해 주세요.
+                        </div>
                       </div>
                     </div>
                     <!-- 로그인버튼 -->
@@ -252,9 +269,9 @@ const clearPw = () => {
                 class="text">회원정보 고객센터</span></a></li>
         </ul>
         <div class="footer_copy">
-          <a id="fot.naver" target="_blank" href="https://www.navercorp.com" class="nlog-click">
+          <router-link id="fot.naver" target="_blank" to="/" class="nlog-click">
             <span class="footer_logo">가방도<span class="blind">가방도</span></span>
-          </a>
+          </router-link>
           <span class="text">Copyright</span>
           <span class="corp">© Gabangdo Corp.</span>
           <span class="text">All Rights Reserved.</span>
@@ -2174,7 +2191,7 @@ input[type=text]::-webkit-input-placeholder {
 }
 
 .btn_login.off {
-  background-color: #81b1f5
+  background-color: #3b88f3
 }
 
 .btn_login.off .btn_text {

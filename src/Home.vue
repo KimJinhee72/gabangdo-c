@@ -24,6 +24,8 @@ import Content2 from "@/views/b_main/Content2.vue";
 import Homeswiper2 from "./views/b_main/Homeswiper2.vue";
 import Modal from "@/views/b_main/Modal.vue";
 
+
+
 //  반응형 관련 상태
 // - isMobile: 현재 화면이 모바일인지 여부 (true: 모바일 화면)
 // - isMenuOpen: 현재 메뉴가 열려 있는지 여부 (여기선 모바일에서 true)
