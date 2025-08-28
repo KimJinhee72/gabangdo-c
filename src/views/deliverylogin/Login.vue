@@ -25,75 +25,19 @@ const showQr = ref(false);
 const openQrLogin = () => (showQr.value = true);
 const closeQrLogin = () => (showQr.value = false);
 // tab
-const activeTab = ref("id");
+const activeTab = ref("id"); // 기본 고객 탭
 const tabs = [
-  { label: "고객", value: "id", icon: "/images/gh/ma_content1/login-17905450-unscreen.gif", id: "idTab", class: "" },
-  { label: "관리자", value: "admin", icon: "/images/gh/ma_content1/management-consulting-15401497.gif", id: "ones", class: "menu_ones" },
-  { label: "기사", value: "worker", icon: "/images/gh/character/courier-13471009.gif", id: "qrcode", class: "menu_qr" },
+  { label: "고객", value: "id", route: "/", icon: "/images/gh/ma_content1/login-17905450-unscreen.gif", id: "1", class: "" },
+  { label: "관리자", value: "admin", route: "/admin/dashboard", icon: "/images/gh/ma_content1/management-consulting-15401497.gif", id: "2", class: "menu_ones" },
+  { label: "기사", value: "worker", route: "/worker", icon: "/images/gh/character/courier-13471009.gif", id: "3", class: "menu_qr" },
 ];
+// [추가] 현재 선택된 탭 객체
+const currentTab = computed(() => tabs.find(t => t.value === activeTab.value));
+
 // 로그인
-const login = async () => {
-  try {
-    // 1️⃣ 서버 로그인 API 요청
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: id.value,
-        pw: password.value,
-        keep: keepLoggedIn.value,
-        ipSecurity: ipSecurity.value
-      }),
-    });
-
-    // 🚨 수정된 부분: res.ok로 응답 상태 확인
-    if (!res.ok) {
-      // 서버 응답이 성공적이지 않은 경우 (예: 404, 500 등)
-      throw new Error(`HTTP Error! Status: ${res.status}`);
-    }
-
-    const data = await res.json();
-
-    if (data.success) {
-      // ✅ 토큰 저장
-      sessionStorage.setItem("accessToken", data.accessToken);
-      if (keepLoggedIn.value && data.refreshToken) {
-        localStorage.setItem("refreshToken", data.refreshToken);
-      }
-
-      // 2️⃣ Pinia 스토어 로그인 상태 업데이트
-      authStore.login({
-        name: data.name || id.value,
-        email: data.email || id.value,
-        phone: data.phone || "",
-      });
-
-      alert(`${tabs.find(tab => tab.id === activeTab.value)?.label} 로그인 성공!`);
-      // 🚨 수정된 부분: 로그인 성공 후 메인 페이지로 이동
-      router.push('/');
-    } else {
-      // 3️⃣ 서버 로그인 실패 시 로컬스토리지 fallback
-      const users = JSON.parse(localStorage.getItem("users") || "[]");
-      const user = users.find(u => u.email === id.value && u.password === password.value);
-
-      if (!user) {
-        alert("로그인 실패: 이메일 또는 비밀번호 확인");
-        return;
-      }
-
-      authStore.login({
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-      });
-
-      alert(`${user.name}님 로컬 로그인 성공!`);
-      // 🚨 수정된 부분: 로컬 로그인 성공 후 메인 페이지로 이동
-      router.push('/');
-    }
-  } catch (err) {
-    console.error(err);
-    alert("로그인 중 오류가 발생했습니다. 서버 응답을 확인해주세요.");
+const login = () => {
+  if (currentTab.value) {
+    router.push(currentTab.value.route);
   }
 };
 //
@@ -112,12 +56,6 @@ const getPlaceholder = computed(() => {
 const togglePassword = () => (showPassword.value = !showPassword.value);//
 
 const role = ref("customer");
-const formData = ref({
-  email: "",
-  password: "",
-  role: role.value,
-  rememberMe: false,
-});
 
 
 
@@ -244,8 +182,8 @@ const clearPw = () => {
                     </div>
                     <!-- 로그인버튼 -->
                     <div class="btn_login_wrap">
-                      <button type="button" class="btn_login off next_step nlog-click" id="log.login"
-                        @click.prevent="login">
+                      <button type="button" class="btn_login off next_step nlog-click" iid="log.login"
+                        @click.stop="login">
                         <span class="btn_text" id="log.login.text">로그인</span>
                       </button>
                     </div>

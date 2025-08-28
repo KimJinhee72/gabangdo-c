@@ -198,7 +198,7 @@ const mapbtnClick = () => {
     return;
   }
 
-  new window.daum.Postcode({
+  new daum.Postcode({
     oncomplete: (data) => {
       let addr = data.roadAddress ? data.roadAddress : data.jibunAddress;
       formData.value.address = addr;
