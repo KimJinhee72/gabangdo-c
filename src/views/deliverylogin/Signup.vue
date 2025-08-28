@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive, ref, watch } from "vue";
+import { computed, reactive, ref, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 
@@ -193,19 +193,33 @@ const selectCarrier = (carrier) => {
 
 // 카카오 주소 찾기 버튼
 const mapbtnClick = () => {
+  if (!window.daum || !window.daum.Postcode) {
+    alert("주소 API가 아직 로드되지 않았습니다.");
+    return;
+  }
+
   new window.daum.Postcode({
     oncomplete: (data) => {
-      // 도로명 주소 OR 지번 주소 가져오기
       let addr = data.roadAddress ? data.roadAddress : data.jibunAddress;
       formData.value.address = addr;
 
-      // 주소 입력 후 상세주소 input에 자동 focus
+      // 상세주소 input에 포커스
       const detailInput = document.getElementById("detailInput");
       if (detailInput) detailInput.focus();
     }
   }).open();
 };
 
+onMounted(() => {
+  if (!window.daum) {
+    const script = document.createElement("script");
+    script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+    script.onload = () => {
+      console.log("카카오 주소 API 로드 완료");
+    };
+    document.head.appendChild(script);
+  }
+});
 
 // 실제 회원가입 처리
 const signUp = () => {
@@ -501,8 +515,9 @@ const onSubmit = () => {
             <a><img src="/images/geen/1/point 1.svg" /></a>
             {{ errorMessage }}
           </div>
-          <button type="submit" class="btn-main" @click="() => { submitted = true; validateAll(); }" style="background-color: #0067e8;">
-  인증요청</button>
+          <button type="submit" class="btn-main" @click="() => { submitted = true; validateAll(); }"
+            style="background-color: #0067e8;">
+            인증요청</button>
         </div>
       </form>
 
