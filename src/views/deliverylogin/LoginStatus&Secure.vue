@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { nextTick } from 'vue';
-import SecurePop from "../views/deliverylogin/securePop.vue";
+import SecurePop from "./securePop.vue";
 
 const id = ref("");
 const password = ref("");

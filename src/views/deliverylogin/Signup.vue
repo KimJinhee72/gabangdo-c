@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive, ref } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 
@@ -15,7 +15,15 @@ const showtelLi = ref(false); //통신사리스트
 const choiceGender = ref(''); //남여내/외국인
 const choiceNational = ref(''); //남여내/외국인
 const requireAgree = ref(false); //필수 약관
-
+const errorMessage = ref("");  //에러메시지
+const verificationCode = ref("");        // 사용자가 입력한 인증번호
+const serverVerificationCode = ref("");  // 서버에서 받은 인증번호
+const fieldErrmsg = ref({}); // 각 필드 에러
+const submitted = ref(false); //제출버튼
+const submitForm = () => {
+  submitted.value = true;
+  // 추가로 전체 필드 검증 가능
+};
 
 const genders = [
   { label: '남', value: 'male' },
@@ -35,7 +43,18 @@ const conditionAgree = [
 // 각 아이템 체크 상태를 배열로 저장
 const checkedList = ref(Array(conditionAgree.length).fill(false));
 
-const formData = ref({
+// ✅ checkedList 값이 변할 때마다 requireAgree 자동 업데이트
+watch(checkedList, (newVal) => {
+  requireAgree.value = newVal.every(Boolean); // 5개 다 true면 true
+}, { deep: true });
+
+// ✅ 부모 클릭 시 전체 선택 토글
+const toggleAll = () => {
+  const newVal = !requireAgree.value;
+  checkedList.value = checkedList.value.map(() => newVal);
+};
+
+const formData = reactive({
   id: "",
   name: "",
   email: "",
@@ -50,9 +69,102 @@ const formData = ref({
   agree: "",
   agreed: false,
 });
+const fieldLabels = {
+  id: "아이디",
+  name: "이름",
+  password: "비밀번호",
+  birth: "생년월일",
+  phone: "휴대폰 번호",
+  telecom: "통신사",
+  address: "주소",
+  email: "이메일"
+};
+const fieldErrorActive = reactive({
+  id: true,
+  password: false,
+  name: false,
+  birth: false,
+  telecom: false,
+  world: false,
+  phone: false,
+  agree: false,
+  address: false,
+  detail: false,
+});
+const fields = [
+  { key: "id", message: "아이디는 대/소문자,숫자 8자이상 입력해주세요" },
+  { key: "password", message: "비밀번호는 소문자,숫자,특수기호 포함 8자 이상 입력해주세요" },
+  { key: "email", message: "@를 포함해야 합니다." },
+  { key: "name", message: "이름을 입력해주세요" },
+  { key: "birth", message: "생년월일을 입력해주세요" },
+  { key: "telecom", message: "통신사를 선택해주세요" },
+  { key: "world", message: "국가번호를 선택해주세요" },
+  { key: "phone", message: "휴대폰 번호를 입력해주세요" },
+  { key: "agree", message: "약관에 동의해주세요" },
+  { key: "address", message: "주소를 입력해주세요" },
+  { key: "detail", message: "상세 주소를 입력해주세요" }
+];
+// index 기준으로 메시지 표시 여부 계산
+const showError = (index) => {
+  // index까지 하나라도 빈 값이 있으면 true
+  for (let i = 0; i <= index; i++) {
+    if (!formData[fields[i].key]) return true;
+  }
+  return false;
+};
+
+const requiredFields = ["id", "name", "password", "birth", "telecom", "phone", "agree"];
+// 단일 필드 검증
+const validateField = (field) => {
+  const value = formData.value[field.key];
+
+  // email, address, detail 은 입력 안 하면 에러 없음
+  if (["email", "address", "detail"].includes(field.key)) {
+    if (!value) return "";
+  } else {
+    if (!value) return field.message;
+  }
+
+  // 값이 있을 때만 세부 검증
+  switch (field.key) {
+    case "id":
+      return /^[A-Za-z0-9]{8,}$/.test(value) ? "" : field.message;
+    case "password":
+      return /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/.test(value)
+        ? ""
+        : field.message;
+    case "email":
+      return /@/.test(value) ? "" : field.message;
+    case "phone":
+      return /^\d{10,11}$/.test(value) ? "" : field.message;
+    case "agree":
+      return value ? "" : field.message;
+    default:
+      return "";
+  }
+};
+
+// 전체 필드 검증 (submit 시 호출)
+const validateAll = () => {
+  // 에러 상태 초기화
+  Object.keys(fieldErrorActive.value).forEach((key) => {
+    fieldErrorActive.value[key] = false;
+  });
+
+  requiredFields.forEach((key) => {
+    const field = fields.find((f) => f.key === key);
+    if (!formData.value[key] || validateField(field)) {
+      fieldErrorActive.value[key] = true;
+    }
+  });
+};
+
+
 // 인풋의 x버튼으로 내용지우기
 const clearInput = (value) => {
-  formData.value[value] = "";
+  // reactive 객체라면 .value가 필요 없어
+  formData[value] = "";
+  fieldErrorActive.value[key] = false;
 };
 function focusInput(target) {
   // 통신사 인풋 안 버튼 눌러도 인풋 포커스되게 조건
@@ -97,32 +209,35 @@ const mapbtnClick = () => {
 
 // 실제 회원가입 처리
 const signUp = () => {
-  errorMessage.value = ''; // **함수 시작 시 에러 메시지 초기화**
+  errorMessage.value = "";
 
-  // 필수 항목 유효성 검사
-  const requiredFields = ['id', 'name', 'password', 'birth', 'phone', 'telecom', 'address'];
   for (const field of requiredFields) {
     if (!formData.value[field]) {
-      errorMessage.value = `'${field}'는 필수 입력 항목입니다.`;
+      errorMessage.value = `이메일과 주소를 제외하고 모두 필수 입력 항목입니다.`;
+      // span 보여주기 신호 ON
+      fieldErrorActive.value[field] = true;
       return;
     }
   }
 
-  // 휴대폰 번호 인증 검사
   if (!formData.value.phone || verificationCode.value !== serverVerificationCode.value) {
     errorMessage.value = "휴대폰 번호를 인증해주세요.";
     return;
   }
 
-  // ... (기존 회원가입 로직)
-  // 모든 검사를 통과했을 때의 로직
-  // 예: 서버에 회원가입 데이터 전송
-  console.log('회원가입 정보:', formData.value);
-  auth
-    .signup({ ...formData.value })
+  // 서버에 회원가입 요청
+  auth.signup({ ...formData.value })
     .then(() => router.push("/login"))
     .catch((err) => alert(err.message));
-}
+};
+const onSubmit = () => {
+  // 필드 검증
+  const valid = validateFields();
+  if (!valid) return; // 오류 있으면 제출 중단
+
+  // 검증 통과 시 실제 회원가입 로직 실행
+  signUp();
+};
 </script>
 
 <template>
@@ -133,7 +248,7 @@ const signUp = () => {
       </div>
 
       <p class="subtitle">회원정보를 입력해주세요</p>
-      <form @submit.prevent="Signup">
+      <form @submit.prevent="onSubmit">
         <!-- 회원가입1/2영역 -->
         <div class="verification-wrap">
           <!-- 회원가입1영역 -->
@@ -148,7 +263,8 @@ const signUp = () => {
             </div>
             <!-- 아이디 입력란 -->
             <div>
-              <input type="text" placeholder="아이디 만들기" v-model="formData.id" class="bb_needMore idName_icon" />
+              <input type="text" placeholder="아이디 만들기" v-model="formData.id" class="bb_needMore idName_icon"
+                @input="validateField('id')" />
               <!-- X 버튼은 입력값이 있을 때만 보이게 -->
               <button v-if="formData.id" type="button" class="btn_delete" id="id_clear" @click="clearInput('id')">
                 <span class="icon_delete"><img src="/images/geen/circle-letter-x 1.png" alt="x닫기"></span>
@@ -157,7 +273,7 @@ const signUp = () => {
             <!-- 비밀번호 입력란 -->
             <div>
               <input :type="viewPW ? 'text' : 'password'" placeholder="비밀번호 만들기" v-model="formData.password"
-                class="pw_icon" />
+                class="pw_icon" @input="validateField('password')" />
               <!-- 입력값이 있을 때만 비밀번호 보이기 기본값 숨기기(눈아이콘)-->
               <span v-if="formData.password" class="icon_delete pwcloseneye" @click="viewPW = !viewPW"><img
                   :src="!viewPW ? '/images/geen/2/eye-off.svg' : '/images/geen/2/eye.svg'"
@@ -171,13 +287,21 @@ const signUp = () => {
             </div>
             <!-- 이메일 입력란(선택) -->
             <div>
-              <input type="email" placeholder="[선택] 이메일주소 입력 (비밀번호 찾기 등 본인 확인용) " v-model="formData.email"
-                class="email_icon" />
+              <input placeholder="[선택] 이메일주소 입력 (비밀번호 찾기 등 본인 확인용) " v-model="formData.email"
+                @input="validateField('email')" class="email_icon" />
               <!-- X 버튼은 입력값이 있을 때만 보이게 -->
               <button v-if="formData.email" type="button" class="btn_delete" id="id_clear" @click="clearInput('email')">
                 <span class="icon_delete emaildelbtn"><img src="/images/geen/circle-letter-x 1.png" alt="">
                 </span>
               </button>
+            </div>
+            <!-- 에러메시지영역 1-->
+            <div class="errArea">
+              <div v-for="(field, index) in fields.slice(0, 3)" :key="index" class="errAreaDiv">
+                <span class="error-label" v-if="submitted && !formData[field.key]">
+                  {{ field.message }}
+                </span>
+              </div>
             </div>
           </div>
           <!-- 회원가입2영역 -->
@@ -262,7 +386,7 @@ const signUp = () => {
             </button>
           </div>
           <!-- 휴대폰 번호 입력란 -->
-          <div class="phoneDiv">
+          <div class="phoneDiv" :class="{ check: keepLoggedIn }">
             <input type="phone" placeholder="휴대전화번호" v-model="formData.phone" class="phone_icon" />
             <!-- X 버튼은 입력값이 있을 때만 보이게 -->
             <button v-if="formData.phone" type="button" class="btn_delete" id="id_clear" @click="clearInput('phone')">
@@ -273,8 +397,7 @@ const signUp = () => {
 
           <!-- 필수 약관 -->
           <div class="agree" :class="{ check: requireAgree }" tabindex="0" role="checkbox"
-            :aria-checked="requireAgree.toString()" @click.stop="requireAgree = !requireAgree"
-            @keydown.enter.space.prevent="requireAgree = !requireAgree">
+            :aria-checked="requireAgree.toString()" @click.stop="toggleAll" @keydown.enter.space.prevent="toggleAll">
             <!-- 실제 체크박스는 숨김 -->
             <input v-model="requireAgree" class="hidden" />
 
@@ -289,13 +412,15 @@ const signUp = () => {
           </div>
 
           <!-- 약관리스트 -->
-          <div v-if="requireAgree" class="agreelistDiv">
+          <div v-show="checkedList.some(v => v)" class="agreelistDiv">
             <div class="agreelist">
               <!-- 왼쪽 (3개) -->
               <div class="col colleft">
-                <div v-for="(item, index) in conditionAgree.slice(0, 3)" :key="'left-' + index" class="agree-item"  @click="checkedList[index] = !checkedList[index]" >
+                <div v-for="(item, index) in conditionAgree.slice(0, 3)" :key="'left-' + index" class="agree-item"
+                  @click.stop="checkedList[index] = !checkedList[index]">
                   <img v-if="checkedList[index]" src="/images/geen/1/check 2.svg" />
                   <img v-else src="/images/geen/1/check 1.svg" />
+                  <!-- <img :src="checkedList[index] ? '/images/geen/1/check 2.svg' : '/images/geen/1/check 1.svg'" /> -->
                   <span>{{ item.label }}</span>
                   <img src="/images/geen/1/chevron-down 1.svg" />
                 </div>
@@ -303,8 +428,9 @@ const signUp = () => {
 
               <!-- 오른쪽 (나머지) -->
               <div class="col colright">
-                <div v-for="(item, index) in conditionAgree.slice(3)" :key="'right-' + index" class="agree-item" @click="checkedList[index+3] = !checkedList[index+3]">
-                  <img v-if="checkedList[index+3]" src="/images/geen/1/check 2.svg" />
+                <div v-for="(item, index) in conditionAgree.slice(3)" :key="'right-' + index" class="agree-item"
+                  @click.stop="checkedList[index + 3] = !checkedList[index + 3]">
+                  <img v-if="checkedList[index + 3]" src="/images/geen/1/check 2.svg" />
                   <img v-else src="/images/geen/1/check 1.svg" />
                   <span>{{ item.label }}</span>
                   <img src="/images/geen/1/chevron-down 1.svg" />
@@ -313,22 +439,19 @@ const signUp = () => {
             </div>
           </div>
 
-
-          <div class="address" @click="mapbtnClick">
-            <input type="text" placeholder="[선택] 주소 입력 (자택배송시 및 경품배송 필요용)" v-model="formData.address"
-              class="address_icon" ref="addressInput" readonly />
-            <button type="button" class="btn_delete addressFind" @click="focusInput('address')" @click.stop>
-              <span class="icon_delete addressFind"><img src="/images/geen/2/map-pin-search 1.svg" alt="주소검색">
-              </span>
-            </button>
-          </div>
-
-          <label for="agree">
-            이용약관 및 <span>개인정보처리방침</span>에 동의합니다.
-          </label>
         </div>
+        <!-- 에러메시지영역 2-->
+        <div class="errArea">
+          <div v-for="(field, index) in fields.slice(3, 9)" :key="index" class="errAreaDiv">
+            <span class="error-label" v-if="submitted && !formData[field.key]">
+              {{ field.message }}
+            </span>
+          </div>
+        </div>
+
         <!-- 회원가입4영역 선택사항(네이버쇼핑주소미리등록) -->
         <div class="signup4area">
+          <!-- 카카오 주소검색 -->
           <div class="address" @click="mapbtnClick">
             <input type="text" placeholder="[선택] 주소 입력 (자택배송시 및 경품배송 필요용)" v-model="formData.address"
               class="address_icon" ref="addressInput" readonly />
@@ -340,37 +463,50 @@ const signUp = () => {
           <!-- 상세주소 -->
           <input type="text" id="detailInput" placeholder="상세주소 입력" v-model="formData.detail" class="addDetatil_icon" />
         </div>
+        <!-- 에러메시지영역 3-->
+        <div class="errArea">
+          <div v-for="(field, index) in fields.slice(9, 11)" :key="index" class="errAreaDiv">
+            <span class="error-label" v-if="submitted && !formData[field.key]">
+              {{ field.message }}
+            </span>
+          </div>
+        </div>
+        <div class="social-login">
+          <div class="bb_sns-login">
+            <div class="bb_imgline">
+              <div class="bb_grayline"></div>
+              <div class="subtitle">간편 회원가입</div>
+              <div class="bb_grayline"></div>
+            </div>
+            <div class="icons">
+              <a
+                href="https://accounts.kakao.com/weblogin/create_account/?continue=https%3A%2F%2Fwww.daum.net&lang=ko&showHeader=false#intro"><img
+                  src="/images/yr/loginpage/loginKT.png" alt="카카오톡" /></a>
+              <a href="https://nid.naver.com/user2/join/agree?lang=ko_KR&realname=N"><img
+                  src="/images/yr/loginpage/loginN.png" alt="네이버" /></a>
+              <a
+                href="https://accounts.google.com/lifecycle/steps/signup/name?dsh=S-486453042:1756378813911425&flowEntry=SignUp&flowName=GlifWebSignIn&ifkv=AdBytiOfaS95vOt-vmo3Pv3q2A9SadQS4wIjXe4SSZg8Od4H1wFvsOfqzbvCuHhmQ_A2O97fRUi8iA&TL=ALgCv6ysz3ptvgRh_UTeRooxArNvKqb7skgg-W--EYDeb8zRtROMZjsF15CuOGHj&continue=https://accounts.google.com/ManageAccount?nc%3D1"><img
+                  src="/images/yr/loginpage/loginG.png" alt="구글" /></a>
+            </div>
+          </div>
+        </div>
 
+        <div class="bb_alreadyLogin">
+          <p class="login-link subtitle">이미 회원이신가요?</p>
+          <router-link to="/login" style="color: blue; cursor: pointer; font-weight: bold;"> 로그인으로</router-link>
+        </div>
         <!-- 인증요청 -->
         <div class="signup_wrap">
-          <div class="signup_header">
-            <p class="signup_guide">
-              <span style="color:red">*</span>이메일 제외 모두 필수항목입니다.
-            </p>
-            <div v-if="errorMessage" class="error-message">
-              {{ errorMessage }}
-            </div>
-            <button type="submit" class="btn-main">인증요청</button>
+          <div v-if="errorMessage" class="error-message">
+            <a><img src="/images/geen/1/point 1.svg" /></a>
+            {{ errorMessage }}
           </div>
+          <button type="submit" class="btn-main" @click="() => { submitted = true; validateAll(); }" style="background-color: #0067e8;">
+  인증요청</button>
         </div>
       </form>
 
-      <div class="social-login">
-        <div class="bb_sns-login">
-          <div class="bb_grayline"></div>
-          <p>간편 회원가입</p>
-          <div class="bb_grayline"></div>
-        </div>
-        <div class="icons">
-          <img src="/images/yr/loginpage/loginKT.png" alt="카카오톡" />
-          <img src="/images/yr/loginpage/loginN.png" alt="네이버" />
-          <img src="/images/yr/loginpage/loginG.png" alt="구글" />
-        </div>
-        <div class="bb_alreadyLogin">
-          <p class="login-link">이미 회원이신가요?</p>
-          <router-link to="/login"> 로그인</router-link>
-        </div>
-      </div>
+
     </div>
   </div>
 </template>
@@ -381,6 +517,7 @@ const signUp = () => {
 @use "/src/assets/Variables.scss" as *;
 
 body {
+  height: 98% !important;
   font-family: "Arial", sans-serif;
   background: #f8f9fa;
   display: flex;
@@ -421,7 +558,7 @@ input {
   .logo {
     width: 100px;
     height: 50px;
-    margin: 0 !important;
+    margin: 15px 0 0 0 !important;
     padding: 0 !important;
 
     a {
@@ -438,14 +575,16 @@ input {
   .subtitle {
     font-size: 14px;
     color: $sub-color;
-    margin-bottom: 20px;
     text-align: left;
   }
 
   form {
     display: flex;
     flex-direction: column;
-
+    /* 경고란이 보일 때의 높이를 계산하여 설정 */
+    min-height: 780px;
+    /* 이 값을 실제 높이에 맞게 조정해야 합니다. */
+    transition: min-height 0.3s ease;
 
     // user아이콘
     .idName_icon {
@@ -490,16 +629,30 @@ input {
 
     }
 
+    // 에러메시지 영역
+    .errArea {
+
+      .errAreaDiv {
+        display: flex;
+        align-items: center;
+
+
+        .error-label {
+          color: red;
+          padding: 5px;
+          padding-left: 30px;
+          background: url("/images/geen/2/point 1.svg") no-repeat 8px center;
+          background-size: 13px;
+        }
+      }
+    }
+
     .verification-wrap {
-      /* 통신사 선택란이 보일 때의 높이를 계산하여 설정 */
-      min-height: 355px;
-      /* 이 값을 실제 높이에 맞게 조정해야 합니다. */
-      transition: min-height 0.3s ease;
 
       /* 부드러운 전환 효과 추가 */
       .signup1area {
         width: 100%;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
 
         .keep_check {
           display: flex;
@@ -508,6 +661,7 @@ input {
           align-items: center;
           /* 세로 가운데 정렬 */
           cursor: pointer;
+          margin-top: 10px;
           margin-right: 10px;
           margin-bottom: 5px;
           font-size: 14px;
@@ -607,7 +761,7 @@ input {
           padding-left: 40px !important;
           border: 1px solid #ccc;
           border-radius: 0 0 5px 5px !important;
-          background: url("/images/geen/2/mail 1.png") no-repeat 8px center;
+          background: url("/images/geen/1/mail 1.png") no-repeat 8px center;
           background-size: 20px;
           background-size: 17px;
           background-position: 10px;
@@ -636,6 +790,7 @@ input {
         }
 
         .mobileco_icon {
+          height: 45px;
           border-radius: 0 !important;
           background: url("/images/geen/2/building-broadcast-tower.png") no-repeat 8px center;
           /* 아이콘 때문에 여백 추가 */
@@ -655,7 +810,7 @@ input {
         }
 
         .telecomColistarr {
-          top: 11px;
+          top: 13px;
           right: 17px;
           width: 18px;
           height: 20px;
@@ -681,6 +836,7 @@ input {
             padding: 6px 15px;
             text-align: left;
             cursor: pointer;
+            color: #818181;
             // border: 0.1px solid #f1f1f1;
           }
 
@@ -774,7 +930,7 @@ input {
 
     .signup3area {
       width: 100%;
-      margin-top: 10px;
+      margin-top: 20px;
 
       .world_icon {
         height: 45px;
@@ -793,33 +949,40 @@ input {
           box-shadow: 0 2px 0 0 #0000ff; // 포커스 시 밑줄 강조
         }
       }
-.phoneDiv{
-      .phone_icon {
-        height: 45px;
-        cursor: pointer;
-        border-radius: 0 0 5px 5px;
-        border-bottom: 1px solid #ccc;
-        background: url("/images/geen/2/device-mobile 1 (1).svg") no-repeat 8px center;
-        padding-left: 40px !important;
-        padding-right: 40px !important;
-        /* 아이콘 때문에 왼쪽 여백 추가 */
-        background-size: 20px, 15px;
-        font-size: 14px;
-        font-weight: normal;
-        caret-color: transparent;
+
+      .phoneDiv {
+        &.check .phone_icon {
+          border-radius: 5px;
+        }
+
+        .phone_icon {
+          height: 45px;
+          cursor: pointer;
+          border-radius: 0 0 5px 5px;
+          border-bottom: 1px solid #ccc;
+          background: url("/images/geen/2/device-mobile 1 (1).svg") no-repeat 8px center;
+          padding-left: 40px !important;
+          padding-right: 40px !important;
+          /* 아이콘 때문에 왼쪽 여백 추가 */
+          background-size: 20px, 15px;
+          font-size: 14px;
+          font-weight: normal;
+          caret-color: transparent;
 
 
-        &:focus {
-          box-shadow: 0 2px 0 0 #0000ff; // 포커스 시 밑줄 강조
+          &:focus {
+            box-shadow: 0 2px 0 0 #0000ff; // 포커스 시 밑줄 강조
+          }
+        }
+
+        .phonedelbtn {
+          top: 342px;
+          left: 65%;
         }
       }
 
-      .phonedelbtn {
-        top: 342px;
-        left: 65%;
-      }
-    }
       .agree {
+        position: relative;
         font-size: 13px;
         margin: 12px 0 0;
         text-align: left;
@@ -829,7 +992,7 @@ input {
         }
 
         &.check .agree_icon {
-          border-radius:5px 5px 0 0;
+          border-radius: 5px 5px 0 0;
           border-color: none;
           background: url("/images/geen/1/check.png") no-repeat 8px center;
           background-size: 20px;
@@ -859,6 +1022,14 @@ input {
             box-shadow: 0 2px 0 0 #0000ff; // 포커스 시 밑줄 강조
           }
         }
+
+        .agreeToggle {
+          span {
+            position: absolute;
+            top: 0;
+            right: 0;
+          }
+        }
       }
 
       .agreelistDiv {
@@ -882,7 +1053,7 @@ input {
             .agree-item {
               display: flex;
               gap: 5px;
-              width: 180px;
+              width: 210px;
               height: 30px;
               padding: 10px 5px 0 20px;
             }
@@ -912,6 +1083,7 @@ input {
       width: 100%;
       margin-top: 20px;
 
+      // 주소검색
       .address {
 
         // address_icon
@@ -947,6 +1119,7 @@ input {
         }
       }
 
+      //상세주소
       .addDetatil_icon {
         height: 44px;
         border-radius: 0 0 5px 5px !important;
@@ -961,12 +1134,105 @@ input {
         border-bottom: 1px solid #ccc;
 
       }
+
+      //인증요청
+      .signup_wrap {
+        .signup_guide {
+          display: flex;
+
+          span {
+            position: relative;
+
+            img {
+              position: absolute;
+              width: 10px;
+            }
+          }
+        }
+      }
     }
 
+    .social-login {
+      margin: 10px 0;
+      width: 100%;
+      margin: 40px 0;
 
+      .bb_sns-login {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        gap: 45px; // 선과 텍스트 사이 간격
+        width: 92%;
+
+        .bb_grayline {
+          width: 50px;
+          height: 1px;
+          background-color: #ccc; // 연한 회색
+        }
+
+        .bb_imgline {
+          flex: 1;
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          width: 100%;
+
+
+
+
+
+          p {
+            font-size: 14px;
+            color: #333;
+            font-size: 14px;
+            color: #2aaae2;
+            text-align: left;
+          }
+        }
+
+        .icons {
+          margin: 0 10px;
+        }
+      }
+
+      .icons {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+
+        img {
+          width: 40px;
+          height: 40px;
+          cursor: pointer;
+        }
+      }
+
+      .login-link {
+        font-size: 13px;
+
+        a {
+          color: $main-color;
+          text-decoration: none;
+          font-weight: bold;
+        }
+      }
+    }
+
+    .bb_alreadyLogin {
+      display: flex;
+      justify-content: left;
+
+
+      p {
+        padding-right: 5px;
+      }
+    }
 
     .btn-main {
-      padding: 5px 10px !important;
+      width: 100%;
+      padding: 15px !important;
       background: $main-color;
       color: white;
       border: none;
@@ -977,65 +1243,5 @@ input {
     }
   }
 
-  .social-login {
-    margin-top: 25px;
-
-    .bb_sns-login {
-      display: flex;
-      align-items: center;
-      gap: 10px; // 선과 텍스트 사이 간격
-      margin: 8% 0;
-
-      .bb_grayline {
-        flex: 1;
-        height: 1px;
-        background-color: #ccc; // 연한 회색
-      }
-    }
-
-    p {
-      font-size: 14px;
-      color: #333;
-    }
-
-    .bb_grayline {
-      flex: 1;
-      height: 1px;
-      background-color: #ccc; // 연한 회색
-    }
-
-    .icons {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      margin-top: 20px;
-      margin-bottom: 20px;
-
-      img {
-        width: 40px;
-        height: 40px;
-        cursor: pointer;
-      }
-    }
-
-    .login-link {
-      font-size: 13px;
-
-      a {
-        color: $main-color;
-        text-decoration: none;
-        font-weight: bold;
-      }
-    }
-  }
-
-  .bb_alreadyLogin {
-    display: flex;
-    justify-content: center;
-
-    p {
-      padding-right: 5px;
-    }
-  }
 }
 </style>

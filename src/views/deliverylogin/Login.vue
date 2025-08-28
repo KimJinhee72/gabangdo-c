@@ -3,7 +3,7 @@ import { useAuthStore } from "@/stores/auth";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 // 업로드해주신 LoginStatus&Secure.vue 컴포넌트
-import LoginStatusSecure from "../../components/LoginStatus&Secure.vue";
+import LoginStatusSecure from "./LoginStatus&Secure.vue";
 // qr
 import Qrlogin from "./Qrlogin.vue";
 // autj.js에서 불러오기
@@ -503,12 +503,11 @@ h6 {
 .lang::after {
   content: '';
   position: absolute;
-  top: 8px;
+  top: 5px;
   right: 8px;
-  background-position: -27px -250px;
-  background-repeat: no-repeat;
-  width: 16px;
-  height: 14px;
+  background: url("/images/geen/2/chevron-down 1.png") no-repeat right 6px center /15px;
+  width: 20px;
+  height: 20px;
   z-index: 0
 }
 
@@ -530,7 +529,8 @@ h6 {
 }
 
 .footer {
-  padding-top: 38px;
+  padding-top: 34px;
+  padding-bottom: 15px;
   box-sizing: border-box
 }
 
@@ -2275,7 +2275,7 @@ input[type=text]::-webkit-input-placeholder {
 
 .find_wrap,
 .relogin_find_wrap {
-  padding: 20px 0 38px;
+  padding: 20px 0 34px;
   text-align: center
 }
 

@@ -82,7 +82,9 @@ onUnmounted(() => {
             <div class="sub_desc sub_desc2">
                 해당 QR코드의 유효시간이 지났습니다.<br> 다시 로그인을 시도하시겠습니까?
             </div>
-            <button class="trybtn" @click="retry"><img src="/images/geen/1/5760336_reload_reset_restart_return_update_icon 1.png" alt=""><span>재시도</span></button>
+            <button class="trybtn" @click="retry"><img
+                    src="/images/geen/1/5760336_reload_reset_restart_return_update_icon 1.png"
+                    alt=""><span>재시도</span></button>
         </div>
 
         <button @click="$emit('close')" class="lastbtn">ID로그인으로</button>
@@ -91,7 +93,7 @@ onUnmounted(() => {
 <style scoped>
 .qr_wrap {
     position: relative;
-    z-index: 3;
+    z-index: 2;
     text-align: center;
     padding: 10px 24px 0;
     margin-top: -10px;
@@ -107,7 +109,7 @@ onUnmounted(() => {
     /* 수평 중앙 */
     align-items: center;
     /* 수직 중앙 (선택) */
-    margin: 16px 0 30px;
+    margin: 25px 0 30px;
 }
 
 .qr_box {
@@ -136,7 +138,6 @@ onUnmounted(() => {
 }
 
 .time_num {
-    margin-left: 9px;
     font-size: 18px;
     font-weight: bold;
     color: blue;
@@ -185,9 +186,11 @@ onUnmounted(() => {
     font-size: 12px;
     box-sizing: border-box;
 }
-.sub_desc2{
-    margin: 20px 0 0 ;
+
+.sub_desc2 {
+    margin: 20px 0 0;
 }
+
 h2 {
     margin: 5px 0;
     font-size: 14px;
@@ -209,26 +212,29 @@ h2 {
     background-image: url(https://ssl.pstatic.net/static/nid/login/m_sp_01_login_775fb7c0.png);
     background-size: 336px 330px;
 }
-.trybtn{
+
+.trybtn {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 5px;
     width: 100%;
 }
-.trybtn img{
+
+.trybtn img {
     width: 20px;
 }
-.trybtn span{
+
+.trybtn span {
     font-size: 16px !important;
     font-weight: bold;
     color: blue;
 }
+
 .lastbtn {
     margin: 20px 0;
     font-size: 14px;
     text-decoration: underline;
     color: #666;
 }
-
 </style>
