@@ -14,6 +14,8 @@ const addressInput = ref(null); //주소늘보이는 아이콘 클릭해도 인�
 const showtelLi = ref(false); //통신사리스트
 const choiceGender = ref(''); //남여내/외국인
 const choiceNational = ref(''); //남여내/외국인
+const requireAgree = ref(false); //필수 약관
+
 
 const genders = [
   { label: '남', value: 'male' },
@@ -23,6 +25,15 @@ const nationalers = [
   { label: '내국인', value: 'local' },
   { label: '외국인', value: 'foreigner' }
 ]
+const conditionAgree = [
+  { label: '개인정보 이용', value: 'individual' },
+  { label: '통신사 이용약관', value: 'telecom' },
+  { label: '인증사 이용약관 ', value: 'agreeFirm' },
+  { label: '고유식별정보 처리', value: 'Unique' },
+  { label: '네이버 개인정보수집', value: 'naver' }
+]
+// 각 아이템 체크 상태를 배열로 저장
+const checkedList = ref(Array(conditionAgree.length).fill(false));
 
 const formData = ref({
   id: "",
@@ -32,9 +43,11 @@ const formData = ref({
   birth: "",
   phone: "",
   telecom: "",
+  world: "",
   address: "",
   detail: "",
   role: "customer",
+  agree: "",
   agreed: false,
 });
 // 인풋의 x버튼으로 내용지우기
@@ -45,9 +58,12 @@ function focusInput(target) {
   // 통신사 인풋 안 버튼 눌러도 인풋 포커스되게 조건
   if (target === "telecom") telecomInput.value?.focus();
   // 주소 인풋 안 버튼 눌러도 인풋 포커스되게 조건
-  if (target === "address") {
+  if (target === "address")
     // input에 포커스 주기
     addressInput.value?.focus();
+  if (target === "world") {
+    // input에 포커스 주기
+    worldInput.value?.focus();
     // 주소 검색 실행
     searchAddress();
   }
@@ -128,7 +144,7 @@ const signUp = () => {
               @keydown.enter.space.prevent="keepLoggedIn = !keepLoggedIn">
               <input type="checkbox" id="nvlong" name="nvlong" tabindex="-1" v-model="keepLoggedIn" class="input_keep"
                 value="off" />
-              <label for="join_toggle" class="keep_text">실명 인증된 아이디로 가입</label>
+              <label for="nvlong" class="keep_text">실명 인증된 아이디로 가입</label>
             </div>
             <!-- 아이디 입력란 -->
             <div>
@@ -190,7 +206,7 @@ const signUp = () => {
             <!-- 통신사 선택란 -->
             <div v-show="keepLoggedIn" class="telecom" @click="showtelLi = !showtelLi">
               <input placeholder="통신사" v-model="choIce.telecom" class="mobileco_icon" ref="telecomInput" readonly />
-              <!-- X 버튼은 입력값이 있을 때만 보이게 -->
+              <!-- 아래 버튼  -->
               <button type="button" class="btn_delete telecomColistarr" id="id_clear" @click="focusInput('telecom')">
                 <span class="icon_delete "><img src="/images/geen/2/chevron-down 1.png" alt="통신사리스트보기화살표">
                 </span>
@@ -235,15 +251,81 @@ const signUp = () => {
         </div>
         <!-- 회원가입3영역 -->
         <div class="signup3area">
+          <!-- 국가번호 토글 -->
+          <div v-show="!keepLoggedIn">
+            <input placeholder="대한민국 +82" v-model="formData.world" class="world_icon" readonly />
+            <!-- 아래 버튼  -->
+            <button type="button" class="btn_delete worldToggle" id="id_clear" ref="worldInput"
+              @click="focusInput('world')">
+              <span class="icon_delete "><img src="/images/geen/2/chevron-down 1.png" alt="국가번호화살표">
+              </span>
+            </button>
+          </div>
           <!-- 휴대폰 번호 입력란 -->
-          <div>
-            <input type="phone" placeholder="휴대폰번호" v-model="formData.phone" class="phone_icon" />
+          <div class="phoneDiv">
+            <input type="phone" placeholder="휴대전화번호" v-model="formData.phone" class="phone_icon" />
             <!-- X 버튼은 입력값이 있을 때만 보이게 -->
             <button v-if="formData.phone" type="button" class="btn_delete" id="id_clear" @click="clearInput('phone')">
               <span class="icon_delete phonedelbtn"><img src="/images/geen/circle-letter-x 1.png" alt="">
               </span>
             </button>
           </div>
+
+          <!-- 필수 약관 -->
+          <div class="agree" :class="{ check: requireAgree }" tabindex="0" role="checkbox"
+            :aria-checked="requireAgree.toString()" @click.stop="requireAgree = !requireAgree"
+            @keydown.enter.space.prevent="requireAgree = !requireAgree">
+            <!-- 실제 체크박스는 숨김 -->
+            <input v-model="requireAgree" class="hidden" />
+
+            <input placeholder="[필수] 인증 약관 전체 동의" v-model="formData.agree" class="agree_icon" alt="체크" />
+
+            <!-- 아래 버튼 -->
+            <button type="button" class="btn_delete agreeToggle" id="id_clear" ref="agreeInput">
+              <span class="icon_delete">
+                <img src="/images/geen/2/chevron-down 1.png" alt="필수약관동의화살표" />
+              </span>
+            </button>
+          </div>
+
+          <!-- 약관리스트 -->
+          <div v-if="requireAgree" class="agreelistDiv">
+            <div class="agreelist">
+              <!-- 왼쪽 (3개) -->
+              <div class="col colleft">
+                <div v-for="(item, index) in conditionAgree.slice(0, 3)" :key="'left-' + index" class="agree-item"  @click="checkedList[index] = !checkedList[index]" >
+                  <img v-if="checkedList[index]" src="/images/geen/1/check 2.svg" />
+                  <img v-else src="/images/geen/1/check 1.svg" />
+                  <span>{{ item.label }}</span>
+                  <img src="/images/geen/1/chevron-down 1.svg" />
+                </div>
+              </div>
+
+              <!-- 오른쪽 (나머지) -->
+              <div class="col colright">
+                <div v-for="(item, index) in conditionAgree.slice(3)" :key="'right-' + index" class="agree-item" @click="checkedList[index+3] = !checkedList[index+3]">
+                  <img v-if="checkedList[index+3]" src="/images/geen/1/check 2.svg" />
+                  <img v-else src="/images/geen/1/check 1.svg" />
+                  <span>{{ item.label }}</span>
+                  <img src="/images/geen/1/chevron-down 1.svg" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="address" @click="mapbtnClick">
+            <input type="text" placeholder="[선택] 주소 입력 (자택배송시 및 경품배송 필요용)" v-model="formData.address"
+              class="address_icon" ref="addressInput" readonly />
+            <button type="button" class="btn_delete addressFind" @click="focusInput('address')" @click.stop>
+              <span class="icon_delete addressFind"><img src="/images/geen/2/map-pin-search 1.svg" alt="주소검색">
+              </span>
+            </button>
+          </div>
+
+          <label for="agree">
+            이용약관 및 <span>개인정보처리방침</span>에 동의합니다.
+          </label>
         </div>
         <!-- 회원가입4영역 선택사항(네이버쇼핑주소미리등록) -->
         <div class="signup4area">
@@ -258,12 +340,7 @@ const signUp = () => {
           <!-- 상세주소 -->
           <input type="text" id="detailInput" placeholder="상세주소 입력" v-model="formData.detail" class="addDetatil_icon" />
         </div>
-        <div class="agree">
-          <input type="checkbox" id="agree" v-model="formData.agreed" />
-          <label for="agree">
-            이용약관 및 <span>개인정보처리방침</span>에 동의합니다.
-          </label>
-        </div>
+
         <!-- 인증요청 -->
         <div class="signup_wrap">
           <div class="signup_header">
@@ -558,21 +635,6 @@ input {
           font-weight: normal;
         }
 
-        .phone_icon {
-          border-radius: 0 !important;
-          background: url("/images/geen/2/device-mobile.svg") no-repeat 8px center;
-          padding-left: 40px !important;
-          padding-right: 40px !important;
-          /* 아이콘 때문에 왼쪽 여백 추가 */
-          background-size: 20px, 15px;
-          font-weight: normal;
-        }
-
-        .phonedelbtn {
-          top: 342px;
-          left: 65%;
-        }
-
         .mobileco_icon {
           border-radius: 0 !important;
           background: url("/images/geen/2/building-broadcast-tower.png") no-repeat 8px center;
@@ -615,7 +677,7 @@ input {
 
 
           h6 {
-            width: 110px;
+            width: 120px;
             padding: 6px 15px;
             text-align: left;
             cursor: pointer;
@@ -671,7 +733,7 @@ input {
             display: flex;
             justify-content: center;
             flex: 1;
-            padding: 6px 0;
+            padding: 10px 0;
             color: #868686;
             font-size: 13px;
             border-radius: 5px;
@@ -713,11 +775,142 @@ input {
     .signup3area {
       width: 100%;
       margin-top: 10px;
+
+      .world_icon {
+        height: 45px;
+        cursor: pointer;
+        border-radius: 5px 5px 0 0;
+        background: url("/images/geen/1/world 1.svg") no-repeat 8px center;
+        padding-left: 40px !important;
+        padding-right: 40px !important;
+        /* 아이콘 때문에 왼쪽 여백 추가 */
+        background-size: 20px, 15px;
+        font-size: 14px;
+        font-weight: normal;
+        caret-color: transparent;
+
+        &:focus {
+          box-shadow: 0 2px 0 0 #0000ff; // 포커스 시 밑줄 강조
+        }
+      }
+.phoneDiv{
+      .phone_icon {
+        height: 45px;
+        cursor: pointer;
+        border-radius: 0 0 5px 5px;
+        border-bottom: 1px solid #ccc;
+        background: url("/images/geen/2/device-mobile 1 (1).svg") no-repeat 8px center;
+        padding-left: 40px !important;
+        padding-right: 40px !important;
+        /* 아이콘 때문에 왼쪽 여백 추가 */
+        background-size: 20px, 15px;
+        font-size: 14px;
+        font-weight: normal;
+        caret-color: transparent;
+
+
+        &:focus {
+          box-shadow: 0 2px 0 0 #0000ff; // 포커스 시 밑줄 강조
+        }
+      }
+
+      .phonedelbtn {
+        top: 342px;
+        left: 65%;
+      }
+    }
+      .agree {
+        font-size: 13px;
+        margin: 12px 0 0;
+        text-align: left;
+
+        span {
+          color: $main-color;
+        }
+
+        &.check .agree_icon {
+          border-radius:5px 5px 0 0;
+          border-color: none;
+          background: url("/images/geen/1/check.png") no-repeat 8px center;
+          background-size: 20px;
+          /* 글자색 변경 */
+          font-weight: bold;
+          filter: invert(12%) sepia(100%) saturate(7500%) hue-rotate(200deg) brightness(100%) contrast(120%);
+        }
+
+        .agree_icon {
+          height: 45px;
+          cursor: pointer;
+          border-radius: 5px;
+          border-bottom: 1px solid #ccc;
+          background: url("/images/geen/1/check.png") no-repeat 8px center;
+          background-size: 17px;
+          padding-left: 40px !important;
+          padding-right: 40px !important;
+
+          /* 아이콘 때문에 왼쪽 여백 추가 */
+          background-size: 20px, 15px;
+          font-size: 14px;
+          font-weight: normal;
+          color: #868686;
+          caret-color: transparent;
+
+          &:focus {
+            box-shadow: 0 2px 0 0 #0000ff; // 포커스 시 밑줄 강조
+          }
+        }
+      }
+
+      .agreelistDiv {
+        position: relative;
+        color: #868686;
+
+        .agreelist {
+          display: flex;
+          text-align: left;
+          background-color: #Fff;
+          border-radius: 0 0 8px 8px;
+          border: 1px solid #ccc;
+          z-index: 1;
+
+          .col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 180px;
+
+            .agree-item {
+              display: flex;
+              gap: 5px;
+              width: 180px;
+              height: 30px;
+              padding: 10px 5px 0 20px;
+            }
+          }
+
+          .colleft {
+            .agree-item {
+              width: 170px;
+
+              img {
+                width: 18px;
+                height: 18px;
+              }
+            }
+          }
+
+          .colright {
+            .agree-item {
+              padding: 10px 20px 0 5px;
+            }
+          }
+        }
+      }
     }
 
     .signup4area {
       width: 100%;
-      margin-top: 30px;
+      margin-top: 20px;
 
       .address {
 
@@ -770,15 +963,7 @@ input {
       }
     }
 
-    .agree {
-      font-size: 13px;
-      margin: 12px 0;
-      text-align: left;
 
-      span {
-        color: $main-color;
-      }
-    }
 
     .btn-main {
       padding: 5px 10px !important;
