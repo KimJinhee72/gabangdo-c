@@ -2,15 +2,11 @@
   <div class="wrap">
     <!-- 페이드 슬라이드 배경 -->
     <div class="slider">
-      <div
-        v-for="(img, index) in images"
-        :key="index"
-        class="slide"
-        :class="{ active: index === currentIndex }"
+      <div v-for="(img, index) in images" :key="index" class="slide" :class="{ active: index === currentIndex }"
         :style="{ backgroundImage: `url(${img})` }"></div>
 
       <!-- 배경 위 글씨 -->
-      <div class="inner">
+      <div class="inner inner1230" :class="{ 'menu-open': layoutStore.isMenuOpen }">
         <div class="container1">
           <div class="contain1">
             <div class="charHead">
@@ -41,39 +37,33 @@
         </div>
         <div class="contain5 flex gap-[50px] mt-[70px]">
           <div class="flex items-center space-x-4">
-            <div
-              class="w-[60px] h-[60px] bg-blue-600 rounded-full flex flex-1 items-center justify-center">
+            <div class="w-[60px] h-[60px] bg-blue-600 rounded-full flex flex-1 items-center justify-center">
               <MapPin class="w-[35px] h-[35px] text-white" />
             </div>
             <div>
-              <h4
-                class="text-white font-semibold text-base text-[22px] pb-[5px]">
+              <h4 class="text-white font-semibold text-base text-[22px] pb-[5px]">
                 어디든 픽업
               </h4>
               <p class="text-m text-white">지하철, 기차, 공항 어디든지</p>
             </div>
           </div>
           <div class="flex items-center space-x-4">
-            <div
-              class="w-[60px] h-[60px] bg-blue-600 rounded-full flex flex-1 items-center justify-center">
+            <div class="w-[60px] h-[60px] bg-blue-600 rounded-full flex flex-1 items-center justify-center">
               <Clock4 class="w-[35px] h-[35px] text-white" />
             </div>
             <div>
-              <h4
-                class="text-white font-semibold text-base text-[22px] pb-[5px]">
+              <h4 class="text-white font-semibold text-base text-[22px] pb-[5px]">
                 실시간 추적
               </h4>
               <p class="text-m text-white">짐의 위치를 실시간으로 확인</p>
             </div>
           </div>
           <div class="flex items-center space-x-4">
-            <div
-              class="w-[60px] h-[60px] bg-blue-600 rounded-full flex flex-1 items-center justify-center">
+            <div class="w-[60px] h-[60px] bg-blue-600 rounded-full flex flex-1 items-center justify-center">
               <Shield class="w-[35px] h-[35px] text-white" />
             </div>
             <div>
-              <h4
-                class="text-white font-semibold text-base text-[22px] pb-[5px]">
+              <h4 class="text-white font-semibold text-base text-[22px] pb-[5px]">
                 안전보장
               </h4>
               <p class="text-m text-white">보험가입으로 안전하게 보관</p>
@@ -139,10 +129,7 @@
       <div class="inner-container">
         <!-- 왼쪽 배너 이미지 -->
         <div class="banner-image">
-          <img
-            :src="images1[currentIndex1]"
-            alt="가방도 배너"
-            class="fade-image" />
+          <img :src="images1[currentIndex1]" alt="가방도 배너" class="fade-image" />
         </div>
 
         <!-- 오른쪽 메뉴 이동 및 예약 버튼 -->
@@ -188,11 +175,12 @@
   <Modal v-if="showModal" @close="showModal = false" />
 </template>
 
-<script setup>
+<script setup>import { useLayoutStore } from "@/stores/useLayoutStore";
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { Clock4, MapPin, Shield } from "lucide-vue-next";
 import Modal from "../b_main/Modal.vue";
 
+const layoutStore = useLayoutStore();
 const showModal = ref(false);
 const images = [
   "/images/yr/mainImg/attraction1.png",
@@ -274,11 +262,9 @@ onBeforeUnmount(() => {
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0.5),
-        rgba(0, 0, 0, 0.3)
-      );
+      background: linear-gradient(to bottom,
+          rgba(0, 0, 0, 0.5),
+          rgba(0, 0, 0, 0.3));
       z-index: 1;
       pointer-events: none;
     }
@@ -529,6 +515,10 @@ onBeforeUnmount(() => {
           }
         }
       }
+    }
+
+    .inner1230.menu-open {
+      margin-left: 80px;
     }
   }
 

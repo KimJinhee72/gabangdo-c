@@ -309,15 +309,23 @@ strong {
   }
 }
 @media screen and (max-width: 1230px) {
+
   .hd_mobileMenu {
     display: block !important;
   }
   .hd_extra1 {
-    width: 17%;
-    margin-top: 5px;
+    width: 100%;
     text-align: right;
-    img {
-      width: 36px;
+    padding: 0 !important;
+    &.show ~ .inner1230 {
+    margin-left: 80px;
+
+  }
+    a {
+      padding: 0 !important;
+      // span {
+      //   font-size: 15px;
+      // }
     }
   }
   .hd_hambar img {
@@ -340,12 +348,30 @@ strong {
   .mavistxt img {
     margin-top: 100px !important;
   }
+  //
+  .hd_mobileRight {
+    width: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    a {
+      flex: 1;
+    }
+    a:nth-child(3) {
+      img {
+        width: 20px;
+      }
+      .customer {
+        position: absolute;
+        top: 25px;
+        right: 10px;
+      }
+    }
+  }
 }
 @media screen and (max-width: 1170px) {
-  .main {
-    padding-top: 50px !important;
-  }
-
   .mavistxt {
     margin: 9% 0 !important;
     width: 30%;
@@ -459,7 +485,7 @@ strong {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.8);
     color: white;
-    padding: 20px;
+    font-size: 14px;
     text-align: center;
     transition: transform 0.3s ease;
     transform: translateX(0);

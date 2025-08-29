@@ -32,22 +32,22 @@
               <router-link to="/yeyaklookup">
                 <img src="/images/cr/lookup.png" alt="예약조회이미지" class="icon-square" />
               </router-link>
-              <router-link to="/login">
+              <router-link to="/login" class="loginA">
                 <img src="/images/cr/login.png" alt="로그인이미지" class="icon-square" />
+                <!-- 고객로그인 -->
+                <div v-if="username && username !== ''" class="customer">
+                  <h6>{{ username }}님</h6>
+                </div>
               </router-link>
             </div>
           </div>
         </div>
-        <!-- 고객로그인 -->
-        <div class="customer">
-          <h6>{{ username }}님, 환영합니다!</h6>
-        </div>
         <!--1230px 및 모바일 메뉴 -->
         <div class="hd_mobileMenu">
           <!-- 헤더 아이콘 영역 -->
-          <nav class="hd_hambar1 hd_extra1">
+          <nav class="hd_hambar1 hd_extra1" :class="{ show: layoutStore.isMenuOpen }">
             <!-- 햄버거바 -->
-            <a href="#" class="hd_hambar" @click.prevent="toggleShortMenu">
+            <a href="#" class="hd_hambar" @click.prevent="toggleExtra">
               <img src="/images/geen/bar_humburger_icon.png" alt="햄버거메뉴" />
             </a>
             <!-- 로고 -->
@@ -62,17 +62,24 @@
               <router-link to="/yeyaklookup">
                 <img src="/images/cr/lookup.png" alt="예약조회이미지" class="icon-square" />
               </router-link>
-              <router-link to="/login">
+              <router-link to="/login" class="loginA">
                 <img src="/images/cr/login.png" alt="로그인이미지" class="icon-square" />
+                <!-- 고객로그인 -->
+                <div v-if="username && username !== ''" class="customer">
+                  <h6>{{ username }}님</h6>
+                </div>
               </router-link>
+
             </div>
             <!-- 1230px 및 모바일에서 열리는 메뉴 파랑바탕-->
-            <div class="hd_menu1" :class="{ show: shortMenu, leave: isLeaving }" v-show="shortMenu"
-              @mouseleave="handleMouseLeave" @mouseenter="clearLeave">
-              <span @click.prevent="closeMobileMenu" role="button">X</span>
+            <div class="hd_menu1" :class="{ show: layoutStore.isMenuOpen, leave: isLeaving }" v-show="shortMenu"
+              @mouseleave="handleMouseLeave" @mouseenter="clearLeave" @click="toggleExtra">
+              <span @click.prevent="closeMobileMenu" role="button"> <img src="/images/geen/1/Vector.svg"
+                  style="margin: 20px auto;" alt="닫기"> </span>
               <ul>
-                <li v-for="(item, index) in menuItems" :key="index">
+                <li v-for="(item, index) in menuItems" :key="index" class="menuLi">
                   <router-link v-if="!item.sub" :to="item.to" @click="handleMenuClick(item)">
+                    <img :src="item.image" :alt="item.label" class="menu-icon" />
                     <span>{{ item.label }}</span>
                   </router-link>
                   <div v-else>
@@ -100,11 +107,34 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch, onBeforeUnmount } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { useAuthStore } from "../stores/auth";
+import { useAuthStore } from "@/stores/auth";
+import { useLayoutStore } from "@/stores/useLayoutStore";
 import { storeToRefs } from "pinia";
+
+import writingIcon from '@/assets/images/writing.svg?components';
+import yogeumIcon from '@/assets/images/yogeum.svg?components';
+import yeyakIcon from '@/assets/images/yeyak.svg?components';
+import sotongIcon from '@/assets/images/sotong.svg?components';
+import yeohaengIcon from '@/assets/images/yeohaeng.svg?components';
+// 햄버거메뉴
+const menuItems = [
+  { label: "방법도", to: "/bangbeob2", image: writingIcon },
+  { label: "요금도", to: "/yogeum", image: yogeumIcon },
+  { label: "예약도", to: "/yeyak", image: yeyakIcon },
+  { label: "소통도", to: "/sotong", image: sotongIcon },
+  { label: "여행도", to: "/yeohaeng", image: yeohaengIcon },
+];
 const route = useRoute();
 // query로 전달된 username 사용
-const username = route.query.username || "";
+// const username = route.query.username || "";
+const username = ref(null);
+
+onMounted(() => {
+  // 페이지가 마운트될 때 쿼리 확인
+  if (route.query.username) {
+    username.value = route.query.username;
+  }
+});
 
 // 모바일 여부 체크용
 const isLeaving = ref(false); // 트랜지션 상태
@@ -161,29 +191,14 @@ const toggleMobileSub = (index) => {
 
 // 메뉴 호버
 const showAllSubMenu = ref(false); // 현재 열린 서브메뉴 li의 index
-const menuItems = [
-  {
-    label: "방법도",
-    to: "/bangbeob2",
-  },
-  {
-    label: "요금도",
-    to: "/yogeum",
-  },
-  {
-    label: "예약도",
-    to: "/yeyak",
-  },
-  {
-    label: "소통도",
-    to: "/sotong",
-  },
-  {
-    label: "여행도",
-    to: "/yeohaeng",
-  },
-];
 
+//
+const layoutStore = useLayoutStore();
+
+function toggleExtra() {
+  layoutStore.toggleMenu();
+  toggleShortMenu(); // shortMenu 토글
+}
 // 햄버거 메뉴 열릴 때 body 스크롤 방지
 watch(shortMenu, (val) => {
   document.body.style.overflow = val ? "hidden" : "auto";
@@ -278,7 +293,7 @@ body.modal-open {
   width: 110px;
 
   img {
-    margin: 8px auto;
+    margin: 8px 0px 8px 50px;
     width: 90px;
   }
 }
@@ -370,43 +385,75 @@ body.modal-open {
 }
 
 .hd_menu1 {
-  pointer-events: none;
   position: fixed;
-  top: 70px;
+  top: 0;
   left: 0;
-  width: 200px;
+  width: 80px; // 폭 80px
   height: 100vh;
   display: flex;
   flex-direction: column;
   gap: 5px;
-  font-size: 20px;
+  font-size: 12px !important;
   border-radius: 10px;
-  transition: all 0.3s ease;
   color: #fff;
   z-index: 9;
   opacity: 0;
-  transform: translateX(-100%);
+  transform: translateX(-100%); // 처음엔 왼쪽 밖으로 숨김
   transition: opacity 0.3s ease, transform 0.3s ease;
   pointer-events: none;
-  background-color: #fff;
   background-color: #279bf4;
 
   &.show {
-    text-align: left;
-    color: #fff;
-    cursor: pointer;
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(0); // 슬라이드 인
     pointer-events: auto;
-    z-index: 9;
   }
 
-  span {
-    height: 30px;
-    text-align: right;
-    color: #fff;
-    cursor: pointer;
+  .menuLi {
+    margin: 20px auto;
+
+    .menu-icon {
+      width: 24px;
+      height: 24px;
+      margin: auto;
+
+    }
+
+      .menuLi:nth-child(1):hover .menu-icon {
+      content: url('/public/images/writing.png');
+    }
+
+    .menuLi:nth-child(2):hover .menu-icon {
+      content: url('/public/images/shopping-cart-dollar.png');
+    }
+
+    .menuLi:nth-child(3):hover .menu-icon {
+      content: url('/public/images/devices-up.png');
+    }
+
+    .menuLi:nth-child(4):hover .menu-icon {
+      content: url('/public/images/replace-user.png');
+    }
+    .menuLi:nth-child(5):hover .menu-icon {
+      content: url('/public/images/building-airport.png');
+    }
   }
+}
+
+// show 상태일 때 내부 콘텐츠 밀기
+.inner1230 {
+  margin-left: 80px;
+}
+
+span {
+  height: 30px;
+  text-align: right;
+  color: #fff;
+  cursor: pointer;
+}
+
+ul {
+  margin: 50px 0;
 
   li {
     width: 100%;
@@ -421,27 +468,31 @@ body.modal-open {
       text-align: center;
       box-sizing: border-box;
       border-radius: 10px;
-      border: 2.5px solid #0066b333;
+
     }
 
     a:hover {
-      border: 2.5px solid $sub-color;
       font-weight: bold;
       border-radius: 10px;
-    }
-  }
 
-  .subMenu {
-    li {
-      a {
-        line-height: 50px;
-        text-align: right;
-        font-size: 18px;
-        padding: 5px;
+      span {
+        color: #000 !important;
       }
     }
   }
 }
+
+.subMenu {
+  li {
+    a {
+      line-height: 50px;
+      text-align: right;
+      font-size: 18px;
+      padding: 5px;
+    }
+  }
+}
+
 
 .hd_menu1 .subMenu.show {
   display: flex;
@@ -565,13 +616,19 @@ body.modal-open {
 
   }
 }
-.customer{
-position: fixed;
-top:28px;
-right: 10px;
- h6 {
-      width: 150px;
+
+.loginA {
+  position: relative;
+
+  .customer {
+    position: absolute;
+    top: 25px;
+    right: -60px;
+
+    h6 {
+      width: 100px;
 
     }
+  }
 }
 </style>
