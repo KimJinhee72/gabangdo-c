@@ -448,7 +448,7 @@ body.modal-open {
 span {
   height: 30px;
   text-align: right;
-  color: #fff;
+  color: #000;
   cursor: pointer;
 }
 
