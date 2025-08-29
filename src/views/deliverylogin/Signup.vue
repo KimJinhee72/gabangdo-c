@@ -198,15 +198,22 @@ const mapbtnClick = () => {
     return;
   }
 
+
   new daum.Postcode({
     oncomplete: (data) => {
       let addr = data.roadAddress ? data.roadAddress : data.jibunAddress;
-      formData.value.address = addr;
 
-      // 상세주소 input에 포커스
-      const detailInput = document.getElementById("detailInput");
-      if (detailInput) detailInput.focus();
-    }
+      // ✅ formData는 reactive 객체이므로 .value 없이 직접 접근합니다.
+      formData.address = addr;
+
+      // ✅ DOM 업데이트를 기다린 후 상세 주소 입력란에 포커스를 줍니다.
+      setTimeout(() => {
+        const detailInput = document.getElementById("detailInput");
+        if (detailInput) {
+          detailInput.focus();
+        }
+      }, 0);
+    },
   }).open();
 };
 
