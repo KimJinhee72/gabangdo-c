@@ -1,7 +1,7 @@
-@use "/src/assets/Reset.scss" as *;
-@use "/src/assets/Variables" as *;
-@use "/src/assets/Home.scss" as *;
-@use "/src/assets/scroll.scss" as *;
+@use "@/assets/Reset.scss" as *;
+@use "@/assets/Variables.scss" as *;
+@use "@/assets/Home.scss" as *;
+@use "@/assets/scroll.scss" as *;
 
 // 푸터 .fixed-buttons 영역을 클릭 투명하게
 :deep(.fixed-buttons) {

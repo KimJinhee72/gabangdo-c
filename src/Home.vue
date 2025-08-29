@@ -16,6 +16,7 @@
 </template>
 
 <script setup>
+import _ from 'lodash';
 import { ref, onMounted, onUnmounted } from "vue";
 
 //  각종 컴포넌트 import
@@ -24,7 +25,8 @@ import Content2 from "@/views/b_main/Content2.vue";
 import Homeswiper2 from "./views/b_main/Homeswiper2.vue";
 import Modal from "@/views/b_main/Modal.vue";
 
-
+const arr = [1,2,3,4,5];
+console.log(_.chunk(arr, 2));  // [[1,2],[3,4],[5]]
 
 //  반응형 관련 상태
 // - isMobile: 현재 화면이 모바일인지 여부 (true: 모바일 화면)

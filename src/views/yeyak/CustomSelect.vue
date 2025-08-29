@@ -113,8 +113,8 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 @use "sass:color";
-@use "/src/assets/Main.scss" as *;
-@use "/src/assets/Variables.scss" as *;
+@use "@/assets/Main.scss" as *;
+@use "@/assets/Variables.scss" as *;
 
 .custom-select {
   overflow: visible;

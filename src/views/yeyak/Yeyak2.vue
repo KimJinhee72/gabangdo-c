@@ -817,8 +817,8 @@ watch(selectedDate, (val) => {
 
 <style lang="scss" scoped>
 @use "sass:color";
-@use "/src/assets/Main.scss" as *;
-@use "/src/assets/Variables.scss" as *;
+@use "@/assets/Main.scss" as *;
+@use "@/assets/Variables.scss" as *;
 
 // 전체 래퍼
 .st_wrap {

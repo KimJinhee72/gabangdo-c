@@ -165,6 +165,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 @use "@/assets/Home.scss" as *;
+
 #app {
   height: 100%;
 }

@@ -324,8 +324,8 @@ watch(activeTab, () => {
 <style lang="scss" scoped>
 @charset "UTF-8";
 @use "sass:color";
-@use "/src/assets/Main" as *;
-@use "/src/assets/Variables" as *;
+@use "@/assets/Main" as *;
+@use "@/assets/Variables" as *;
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
 
 .yh_wrap {
