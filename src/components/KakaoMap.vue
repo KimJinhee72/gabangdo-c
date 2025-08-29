@@ -225,14 +225,14 @@ function loadKakaoMapScript() {
     return Promise.reject("Kakao Map Key missing");
   }
 
-  return new Promise((resolve, reject) => {
+   return new Promise((resolve) => {
     if (window.kakao && window.kakao.maps) {
       resolve();
     } else {
+      const kakaoKey = import.meta.env.VITE_KAKAO_MAP_KEY; // ✅ 여기서 환경변수 가져오기
       const script = document.createElement("script");
-      script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoKey}&autoload=false`;
+      script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoKey}&autoload=false`; // ✅ https 적용
       script.onload = () => window.kakao.maps.load(resolve);
-      script.onerror = () => reject("Kakao Map SDK 로드 실패");
       document.head.appendChild(script);
     }
   });
