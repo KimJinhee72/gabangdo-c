@@ -219,26 +219,25 @@ const positions = [
 ];
 
 function loadKakaoMapScript() {
+  const kakaoKey = import.meta.env.VITE_KAKAO_MAP_KEY;
+  if (!kakaoKey) {
+    console.warn("⚠️ VITE_KAKAO_MAP_KEY 환경변수가 설정되지 않았습니다.");
+    return Promise.reject("Kakao Map Key missing");
+  }
+
   return new Promise((resolve, reject) => {
     if (window.kakao && window.kakao.maps) {
-      resolve(); // ✅ 이미 로드되어 있으면 바로 resolve
+      resolve();
     } else {
       const script = document.createElement("script");
-      // ✅ 스크립트 URL을 HTTPS로 변경 (HTTPS 필수)
-      script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${import.meta.env.VITE_KAKAO_MAP_KEY}&autoload=false`;
-      script.onload = () => {
-        // ✅ autoload=false 사용 시 kakao.maps.load() 호출
-        if (window.kakao && window.kakao.maps) {
-          window.kakao.maps.load(() => resolve());
-        } else {
-          reject("kakao.maps not available"); // ✅ 로드 실패 대비
-        }
-      };
-      script.onerror = () => reject("Failed to load Kakao Map SDK"); // ✅ 로드 실패 대비
+      script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoKey}&autoload=false`;
+      script.onload = () => window.kakao.maps.load(resolve);
+      script.onerror = () => reject("Kakao Map SDK 로드 실패");
       document.head.appendChild(script);
     }
   });
 }
+
 
 onMounted(async () => {
   try {
