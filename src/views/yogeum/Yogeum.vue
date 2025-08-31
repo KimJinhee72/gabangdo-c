@@ -1,23 +1,20 @@
 <template>
   <div class="wrap_total">
-    <div class="yg_container">
-      <ProgressStepper
-        v-show="showStepper"
-        :steps="['요금안내', '결제/환불', '결제안내']"
-        :selectors="['#step1', '#step2', '#step3']"
-        :stepIndex="stepIndex"
-        @go="scrollToSection"
+    <div class="yg_container div">
+      <ProgressStepper v-show="showStepper" :steps="['요금안내', '결제환불', '결제안내']"
+        :selectors="['#step1', '#step2', '#step3']" :stepIndex="stepIndex" @go="scrollToSection"
         class="sticky-stepper hide-controls custom-stepper" />
 
       <div class="inner">
         <!-- 제목 스타일 -->
         <div ref="step1" id="step1" class="step-container">
           <div class="bb_title1">
-            <div class="title_txt1">
-              <h1>요금안내</h1>
+            <div class="title">
+              <p class="title1">요금 안내</p>
+              <p class="title2">사이즈별 안내사항</p>
             </div>
           </div>
-          <Content1 v-if="!isMobile" />
+          <Content1 v-if="!isMobile" class="pd-0"/>
           <Homeswiper1 v-if="isMobile" />
           <!-- 요금 안내 후 알림사항 -->
           <div class="yg_infoWrapper">
@@ -44,7 +41,7 @@
             <!-- 결제환불제목 -->
             <div class="bb_title1 yg_accoutNrefund">
               <div class="title_txt1">
-                <h1>결제 및 환불</h1>
+                <h2>결제 및 환불</h2>
               </div>
               <ul>
                 <li class="yg_refunddLi1">
@@ -62,35 +59,28 @@
         <!-- 구분선 -->
         <div class="line"></div>
         <!-- 결제환불 내용 -->
-        <div ref="step3" id="step3" class="step-container">
-          <div class="yg_accoutNrefundexplain">
-            <p>
-              <strong>결제 계좌 및 카드결제 안내</strong> <br /><br /><span
-                >1. 계좌이체 안내</span
-              >
-              <br />입금 계좌 정보 :<br />
-              <span class="accCard">대구은행 123-456-78910 가방도 도용달</span>
-              <br />입금 시 유의사항 : <br />입금자명과 주문자명이 다를 경우
-              반드시 고객센터로 연락바랍니다. <br />입금 확인은 최대 1시간 내에
-              처리됩니다. <br /><br /><span>2. 카드 결제 안내</span> <br />사용
-              가능한 카드 : <br />VISA, Mastercard, AMEX, 국내 신용/체크카드
-              전부 가능 <br />할부 안내 5만원 이상 결제 시, 2~3개월 무이자 할부
-              가능 (일부 카드사 제외) <br />결제 실패 시 확인 사항 : 카드 한도
-              초과 여부 / 카드사 승인 문자 / 인터넷 결제 차단 여부 확인
+        <div class="yg_accoutNrefundexplain">
+          <p>
+            <strong>결제 계좌 및 카드결제 안내</strong> <br /><br /><span>1. 계좌이체 안내</span>
+            <br />입금 계좌 정보 :<br />
+            <span class="accCard">대구은행 123-456-78910 가방도 도용달</span>
+            <br />입금 시 유의사항 : <br />입금자명과 주문자명이 다를 경우, 반드시
+            고객센터로 연락. 입금 확인은 최대 1시간 내에 처리. <br /><br /><span>2. 카드 결제 안내</span>
+            <br />사용 가능한 카드 : <br />VISA, Mastercard, AMEX, 국내
+            신용/체크카드 전부 가능 <br />할부 안내 5만원 이상 결제 시, 2~3개월
+            무이자 할부 가능 (일부 카드사 제외) <br />결제 실패 시 확인 사항 :
+            카드 한도 초과 여부 / 카드사 승인 문자 / 인터넷 결제 차단 여부 확인
 
-              <br /><br /><span>3. 카드사 간편앱 결제 안내</span> <br />지원하는
-              카드사 간편결제 앱:<br />
-              삼성페이, 네이버페이, 카카오페이, 페이코, L.pay 등
-              <br />결제 방법 결제 단계에서 원하는 간편결제 앱 선택 본인 인증 후
-              결제 진행 결제 완료 후 주문 확인바랍니다. <br />유의사항:<br />
-              일부 간편결제 앱은 특정카드사만 지원됩니다. <br />결제 실패 시, 앱
-              내 카드 등록 상태를 확인바랍니다. <br /><br /><span
-                >4. 기타 결제 관련 문의</span
-              ><br />
-              고객센터: 1234-5678 <br />(운영시간: 평일 09:00~18:00)
-              <br />카카오톡 상담: @○○○ <br />(고객센터 운영시간내 문의 가능)
-            </p>
-          </div>
+            <br /><br /><span>3. 카드사 간편앱 결제 안내</span> <br />지원하는
+            카드사 간편결제 앱:<br />
+            삼성페이, 네이버페이, 카카오페이, 페이코, L.pay 등
+            <br />결제 방법 결제 단계에서 원하는 간편결제 앱 선택 본인 인증 후
+            결제 진행 결제 완료 후 주문 확인 유의사항 일부 간편결제 앱은 특정
+            카드사만 지원. <br />결제 실패 시, 앱 내 카드 등록 상태를 확인.
+            <br /><br /><span>4. 기타 결제 관련 문의</span><br />
+            고객센터: 1234-5678 <br />(운영시간: 평일 09:00~18:00) <br />카카오톡
+            상담: @○○○ <br />(고객센터 운영시간내 문의 가능)
+          </p>
         </div>
       </div>
     </div>
@@ -188,36 +178,73 @@ onUnmounted(() => {
 .yg_container {
   width: 100%;
   max-width: 1100px;
-  h1 {
+
+   // 컨테이너1
+  .title {
+    margin: 0 auto;
     text-align: center;
-    font-size: $title-font-size-m;
+
+    .title1 {
+      font-family: $font-ownglyph;
+      font-size: 40px;
+    }
+
+    .title2 {
+      margin: 40px 0 60px !important;
+      font-family: $font-ownglyph;
+      font-size: 25px;
+      color: #5a5a5a;
+
+      img {
+        width: 100%;
+        height: auto; // 비율 유지
+      }
+    }
+
+    .bb_span {
+      font-size: 20px;
+    }
+
+    span.bb_spanPlus {
+      font-size: 20px;
+    }
   }
 }
-.yg_container > .inner {
+
+.yg_container>.inner {
   width: 100%;
   max-width: 1100px;
   margin: auto;
 }
+
 // 제목
 .bb_title1 {
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
+  width: 100%;
   padding-bottom: 30px;
-  .title_txt1 h1 {
+
+  .title_txt1 h2 {
+    width: 120px;
     font-family: $font-ownglyph;
-    font-size: 40px;
+    font-size: 25px;
+
   }
 }
+
 //    요금안내
-::v-deep(.macontent1_wrap) {
+:deep(.macontent1_wrap) {
   background-color: transparent !important;
 }
-::v-deep(.masize, .masize1) {
+
+:deep(.masize, .masize1) {
+  width: 240px !important;
   border: 2px solid #e5e7eb !important;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
+
 // 요금 안내 후 알림사항
 // 알림 왼쪽(할인)
 .yg_infoWrapper {
@@ -227,13 +254,16 @@ onUnmounted(() => {
   align-items: center;
   text-align: left;
 }
+
 .yg_leftInfo {
   line-height: 25px;
   color: #5a5a5a;
 }
+
 .yg_rightInfocaution {
   width: 45%;
   text-align: right;
+
   a {
     display: block;
     font-weight: bold;
@@ -249,69 +279,66 @@ onUnmounted(() => {
     align-items: center;
     color: #ff6b6b; // 글씨 빨강
     font-size: 14px;
+
     img {
       width: 18px;
       height: 18px;
       margin-right: 6px;
-      filter: brightness(0) saturate(100%) invert(16%) sepia(96%)
-        saturate(7484%) hue-rotate(357deg) brightness(93%) contrast(118%);
+      filter: brightness(0) saturate(100%) invert(16%) sepia(96%) saturate(7484%) hue-rotate(357deg) brightness(93%) contrast(118%);
       // 빨강 필터 효과
     }
   }
 }
+
 // 결제 및 환불
 
 // 다른 클라스 네임 bb_title1  display:flex 해놓음
 // 타이틀
-::v-deep(.bb_title1) {
+:deep(.bb_title1) {
   padding: 0 !important;
   gap: 10px !important;
 }
+
 // 환불 절차
 .yg_refundProcess {
-  margin-top: 60px;
   width: 100%;
-  max-width: 1100px;
-  .yg_accoutNrefund {
-    width: 100%;
-    margin-bottom: 20px;
-    .title_txt1 h1 {
-      font-family: $font-ownglyph;
-      font-size: 40px;
-    }
-  }
+  max-width: 1300px;
+  margin: auto;
+
   ul {
-    width: 80%;
+    width: 100%;
+    line-height: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0;
-    padding: 0;
+
     @media screen and (max-width: 620px) {
       justify-content: space-between;
     }
 
     li {
       display: flex;
+
       @media screen and (max-width: 470px) {
         display: block;
       }
+
       img {
         width: 60%;
+
         @media screen and (max-width: 620px) {
           width: 70%;
         }
       }
+
       a {
-        width: 50%;
+        width: 100%;
         display: block;
-        display: flex;
         text-align: center;
-        align-items: center;
-        justify-content: center;
         border-radius: 30px;
         border: 2px solid $sub-color;
       }
+
       span {
         width: 150px;
         font-size: 30px;
@@ -321,17 +348,18 @@ onUnmounted(() => {
     }
   }
 }
+
 // 환불내용
 .yg_refunddLi1 {
   width: 20%;
-  margin: 0;
-  padding: 0;
 }
+
 @media screen and (max-width: 470px) {
-  ::v-deep(.yg_refunddLi1) {
+  :deep(.yg_refunddLi1) {
     display: none !important;
   }
-  ::v-deep(.yg_refunddLi2) {
+
+  :deep(.yg_refunddLi2) {
     width: 100% !important;
     display: flex !important;
   }
@@ -340,122 +368,94 @@ onUnmounted(() => {
 .yg_refunddLi2 {
   width: 68%;
   font-size: 1.2rem;
+
   @media screen and (max-width: 620px) {
     width: 78%;
   }
+
   a {
     width: 200px;
   }
 }
+
 .yg_accoutNrefundexplain {
   width: 100%;
   height: 70%;
   margin-bottom: 50px;
   background-color: rgba(65, 182, 232, 0.09);
   border-radius: $radius;
+  letter-spacing: 0.1em;
 
   p {
-    padding: 50px 130px !important;
-    font-size: 18px;
+    padding: 40px 80px !important;
+    font-size: 16px;
     color: #5a5a5a;
+    text-align: left;
+    line-height: 25px;
+
     strong {
+      margin-left: -10px !important;
       color: #333;
-      font-size: 25px;
+      font-size: 25px !important;
       line-height: 55px;
       font-weight: bold;
     }
+
     span {
+      margin-left: -10px !important;
       line-height: 45px;
       color: #333;
-      font-size: 23px;
+      font-size: 21px;
       font-weight: 500;
     }
-  }
-}
-// 스텝퍼
-:deep(.stepper) {
-  display: flex;
-  flex-direction: column;
-  z-index: 6500;
-}
 
-.sticky-stepper {
-  position: fixed;
-  top: 120px;
-  left: 0;
-  width: 80px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  z-index: 6500;
-  padding: 10px;
-  color: #555;
-  &.custom-stepper {
-    // only on your custom one
-    left: calc(47.5% - 600px);
-    width: 120px;
-
-    &.hide-controls {
-      // hide the nav & circles only when .hide-controls is present
-      ::v-deep .step-nav,
-      ::v-deep .circle {
-        display: none !important;
-      }
-    }
-
-    // style all your labels
-    ::v-deep .label {
-      margin-top: 6px;
-      font-size: 17px;
-      cursor: pointer;
-      padding: 5px 10px;
-      transition: background 0.2s;
-
-      &:hover {
-        border-bottom: 2px solid rgba($sub-color, 0.3);
-        color: #555;
-        font-weight: bold;
-      }
-    }
-
-    // active-step styles
-    ::v-deep .step.active .label {
-      border-bottom: 2px solid rgba($sub-color, 0.3);
-      color: #555;
-      font-weight: bold;
+    .accCard {
+      margin: -10px 0 0 !important;
+      color: blue;
+      font-size: 18px !important;
+      line-height: 22px !important;
     }
   }
 }
+
+
 @media screen and (max-width: 1170px) {
   .macontent1_wrap {
     width: 100%;
     max-width: 80% !important;
   }
 }
+
 @media screen and (max-width: 974px) {
-  ::v-deep(.macontent1_wrap) {
+  :deep(.macontent1_wrap) {
     width: 100% !important;
     max-width: 100% !important;
     margin: auto;
   }
+
   .macontent1_down {
     width: 200% !important;
   }
-  ::v-deep(.macontent1_wrap) {
+
+  :deep(.macontent1_wrap) {
     width: 93%;
   }
-  ::v-deep(.macontent1_wrap1) {
+
+  :deep(.macontent1_wrap1) {
     display: block;
     background-color: transparent !important;
   }
-  ::v-deep(.masize1) {
-    max-width: 250px !important;
+
+  :deep(.masize1) {
+    max-width: 240px !important;
     border: 2px solid #e5e7eb !important;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   }
+
   .yg_leftInfo {
     font-size: 0.8rem;
   }
+
   .yg_rightInfocaution a {
     font-size: 14px !important;
   }
@@ -465,14 +465,17 @@ onUnmounted(() => {
   .yg_accoutNrefundexplain p {
     padding: 30px 50px !important;
   }
+
   .yg_accoutNrefundexplain {
     p {
       font-size: 15px;
       line-height: 35px;
+
       strong {
         font-size: 22px;
         line-height: 50px;
       }
+
       span {
         line-height: 40px;
         font-size: 20px;
@@ -480,23 +483,28 @@ onUnmounted(() => {
     }
   }
 }
+
 @media screen and (max-width: 570px) {
-  ::v-deep(.yg_infoWrapper) {
+  :deep(.yg_infoWrapper) {
     width: 100%;
     height: 150px;
     padding: 16px;
     flex-direction: column;
     text-align: center !important;
   }
-  ::v-deep(.yg_rightInfocaution a) {
+
+  :deep(.yg_rightInfocaution a) {
     text-align: center;
   }
-  ::v-deep(.yg_rightInfocaution p) {
+
+  :deep(.yg_rightInfocaution p) {
     justify-content: center;
   }
+
   .yg_accoutNrefundexplain p {
     padding: 30px !important;
   }
+
   .accCard {
     font-size: 17px !important;
   }

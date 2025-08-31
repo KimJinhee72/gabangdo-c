@@ -390,7 +390,7 @@ watch(selectedDate, (val) => {
   <!-- 전체 -->
   <div class="wrap_total">
     <!-- 이너 -->
-    <div class="st_wrap">
+    <div class="st_wrap div">
       <!-- 타이틀 -->
       <div class="yy_title1">
         <div class="title_txt1">

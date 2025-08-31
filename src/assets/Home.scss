@@ -74,7 +74,6 @@
 }
 .macontent1_wrap .inner {
   max-width: 1300px;
-  padding: $padding-s 0px;
   margin: auto;
 }
 .macontent1_down {
@@ -311,7 +310,12 @@ strong {
 @media screen and (max-width: 1230px) {
 
   .hd_mobileMenu {
+    width: 100%;
     display: block !important;
+    padding: 0 50px !important;
+    nav{
+      padding: 0 50px;
+    }
   }
   .hd_extra1 {
     width: 100%;
@@ -322,15 +326,24 @@ strong {
 
   }
     a {
+      width: 30px;
+
       padding: 0 !important;
-      // span {
-      //   font-size: 15px;
-      // }
+      img{
+        margin: 0 !important;
+      }
+
+    }
+    .hd_logo{
+      display: flex;
+      justify-content: center;
+    }
+    .hd_mobileRightDiv{
+      display: flex;
+      justify-content: right;
     }
   }
-  .hd_hambar img {
-    margin-left: 20px;
-  }
+
   .hd_man,
   .hd_man img {
     width: calc(34px - 5px) !important;
@@ -350,16 +363,23 @@ strong {
   }
   //
   .hd_mobileRight {
-    width: 120px;
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
-
     a {
-      flex: 1;
+      width: 30px;
+      padding: 0 90px;
+      img{
+        width: 25px;
+        height: 25px;
+        overflow: hidden;
+      }
     }
     a:nth-child(3) {
+
       img {
         width: 20px;
       }
@@ -406,9 +426,6 @@ strong {
   .hd_wideMenu {
     display: none !important;
   }
-  .hd_mobileMenu {
-    display: block !important;
-  }
 }
 @media screen and (max-width: 970px) {
   .ma_visual-wrap > .inner {
@@ -450,13 +467,16 @@ strong {
     justify-content: center !important;
     gap: 0 !important;
   }
+  .yh_wrap{
+    .inner{
+      padding: 0 30px;    }
+
+  }
 }
 
 @media screen and (max-width: 896px) {
   .hd_logo {
-    width: 120px !important;
     text-align: center;
-    margin-left: 15px;
     img {
       width: 120px;
     }
@@ -560,7 +580,13 @@ strong {
     max-width: 1300px;
     margin: 0 !important;
   }
-
+  .hd_extra1 {
+    width: 100% !important;
+    a{
+      margin: 0 !important;
+      img{
+    margin: 0 !important;}}
+  }
   .hd_extra1 {
     width: 32% !important;
   }

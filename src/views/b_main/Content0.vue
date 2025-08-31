@@ -282,7 +282,7 @@ onBeforeUnmount(() => {
 
       @media screen and (max-width: 635px) {
         margin: 80px auto;
-        padding: 0 15px;
+        padding: 80px 15px;
       }
 
       .container1 {
@@ -532,7 +532,7 @@ onBeforeUnmount(() => {
       padding: 0 20px;
 
       @media screen and (max-width: 635px) {
-        padding: 0 15px;
+        padding: 0px 15px;
       }
 
       .section1,

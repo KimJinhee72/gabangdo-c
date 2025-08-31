@@ -43,37 +43,41 @@
           </div>
         </div>
         <!--1230px 및 모바일 메뉴 -->
-        <div class="hd_mobileMenu">
+        <div class="hd_mobileMenu" style="width: 100%; height: 100%; padding-right: 30px;">
           <!-- 헤더 아이콘 영역 -->
           <nav class="hd_hambar1 hd_extra1" :class="{ show: layoutStore.isMenuOpen }">
             <!-- 햄버거바 -->
             <a href="#" class="hd_hambar" @click.prevent="toggleExtra">
-              <img src="/images/geen/bar_humburger_icon.png" alt="햄버거메뉴" />
+              <div><img src="/images/geen/bar_humburger_icon.png" alt="햄버거메뉴" /></div>
             </a>
             <!-- 로고 -->
             <router-link to="/" class="hd_logo">
-              <img src="/images/logo_new.png" alt="로고" />
+              <div><img src="/images/logo_new.png" alt="로고" /></div>
             </router-link>
             <!-- 가방/로그인 아이콘 -->
-            <div class="hd_mobileRight">
-              <router-link to="/delivery">
-                <img src="/images/cr/delivery.png" alt="가방조회이미지" class="icon-square" />
-              </router-link>
-              <router-link to="/yeyaklookup">
-                <img src="/images/cr/lookup.png" alt="예약조회이미지" class="icon-square" />
-              </router-link>
-              <router-link to="/login" class="loginA">
-                <img src="/images/cr/login.png" alt="로그인이미지" class="icon-square" />
-                <!-- 고객로그인 -->
-                <div v-if="username && username !== ''" class="customer">
-                  <h6>{{ username }}님</h6>
+            <a class="hd_searchItem">
+              <div class="hd_mobileRightDiv">
+                <div class="hd_mobileRight">
+                  <router-link to="/delivery">
+                    <img src="/images/cr/delivery.png" alt="가방조회이미지" class="icon-square" />
+                  </router-link>
+                  <router-link to="/yeyaklookup">
+                    <img src="/images/cr/lookup.png" alt="예약조회이미지" class="icon-square" />
+                  </router-link>
+                  <router-link to="/login" class="loginA">
+                    <img src="/images/cr/login.png" alt="로그인이미지" class="icon-square" />
+                    <!-- 고객로그인 -->
+                    <div v-if="username && username !== ''" class="customer">
+                      <h6>{{ username }}님</h6>
+                    </div>
+                  </router-link>
                 </div>
-              </router-link>
+              </div>
 
-            </div>
+            </a>
             <!-- 1230px 및 모바일에서 열리는 메뉴 파랑바탕-->
             <div class="hd_menu1" :class="{ show: layoutStore.isMenuOpen, leave: isLeaving }" v-show="shortMenu"
-              @mouseleave="handleMouseLeave" @mouseenter="clearLeave" @click="toggleExtra">
+              @mouseleave="handleMouseLeave" @mouseenter="clearLeave">
               <span @click.prevent="closeMobileMenu" role="button"> <img src="/images/geen/1/Vector.svg"
                   style="margin: 20px auto;" alt="닫기"> </span>
               <ul>
@@ -147,11 +151,13 @@ const shortMenu = ref(false);
 
 // 마우스를 메뉴 밖으로 벗어났을 때
 function handleMouseLeave() {
+  clearTimeout(leaveTimeout.value); // 기존 타이머 제거
   isLeaving.value = true;
   leaveTimeout.value = setTimeout(() => {
     shortMenu.value = false;
+    layoutStore.isMenuOpen = false;
     isLeaving.value = false;
-  }, 300); // CSS 전환 시간과 동일하게 맞춤
+  }, 300);
 }
 function closeMobileMenu() {
   isLeaving.value = true;
@@ -163,6 +169,9 @@ function closeMobileMenu() {
 
 const handleMenuClick = (item) => {
   if (isMobile.value) {
+    isLeaving.value = true;
+    layoutStore.isMenuOpen = false;
+    // 단, shortMenu도 false로 바꿔주면 클릭 복구가 쉬움
     shortMenu.value = false;
     openedMobileMenu.value = null;
   }
@@ -195,9 +204,15 @@ const showAllSubMenu = ref(false); // 현재 열린 서브메뉴 li의 index
 //
 const layoutStore = useLayoutStore();
 
+// 햄버거 클릭
 function toggleExtra() {
-  layoutStore.toggleMenu();
-  toggleShortMenu(); // shortMenu 토글
+  // leave 상태 초기화 및 타이머 제거
+  clearTimeout(leaveTimeout.value);
+  isLeaving.value = false;
+
+  // 메뉴 토글
+  shortMenu.value = !shortMenu.value;
+  layoutStore.isMenuOpen = shortMenu.value;
 }
 // 햄버거 메뉴 열릴 때 body 스크롤 방지
 watch(shortMenu, (val) => {
@@ -208,9 +223,12 @@ watch(shortMenu, (val) => {
   }
 });
 function toggleShortMenu() {
+  // leave 상태 초기화 및 타이머 제거
+  clearTimeout(leaveTimeout.value);
+  isLeaving.value = false;
+
   shortMenu.value = !shortMenu.value;
 }
-
 // 창 크기 변경 시 모바일 여부 확인 + 창이 커지면 메뉴 닫기
 const updateScreenSize = () => {
   const width = window.innerWidth;
@@ -241,6 +259,7 @@ export default {
 <style lang="scss" scoped>
 @use "/src/assets/Variables" as *;
 
+header{
 .header {
   position: fixed;
   top: 0;
@@ -251,11 +270,11 @@ export default {
   z-index: 999999;
   background-color: #fff;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 0;
 
   a,
   .router-link-active,
   .router-link-exact-active {
-    color: black !important;
     text-decoration: none;
   }
 
@@ -263,8 +282,10 @@ export default {
     color: black; // hover 시에도 동일하게 유지
   }
 }
-
+}
 header .inner {
+  width: 100%;
+  height: 100%;
   max-width: 1300px;
   margin-top: 5px;
   margin: auto;
@@ -275,7 +296,7 @@ header .inner {
 
 .hd_wideMenu {
   width: 100%;
-  height: 6cap;
+  height: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -290,7 +311,6 @@ body.modal-open {
 
 // 로고
 .hd_logo {
-  width: 110px;
 
   img {
     margin: 8px 0px 8px 50px;
@@ -300,6 +320,7 @@ body.modal-open {
 
 .hd_mobileMenu {
   width: 100%;
+  height: 100%;
   display: none;
 }
 
@@ -333,11 +354,16 @@ body.modal-open {
         transition: all 0.3s ease;
         border-radius: 5px;
         font-weight: normal;
+        color: #000;
       }
 
       a:hover {
-        color: #279bf4 !important;
         font-weight: bold;
+
+        span {
+          color: $sub-color !important;
+
+        }
       }
 
       .subMenu {
@@ -374,10 +400,7 @@ body.modal-open {
 }
 
 .icon-square {
-  width: 80%;
-  /* 가로 길이 */
-  height: 80%;
-  /* 세로 길이 (width와 동일) */
+
   object-fit: contain;
   /* 원본 비율 유지하면서 빈 공간이 생기면 여백 처리 */
   /* object-fit: cover; */
@@ -419,7 +442,7 @@ body.modal-open {
 
     }
 
-      .menuLi:nth-child(1):hover .menu-icon {
+    .menuLi:nth-child(1):hover .menu-icon {
       content: url('/public/images/writing.png');
     }
 
@@ -434,6 +457,7 @@ body.modal-open {
     .menuLi:nth-child(4):hover .menu-icon {
       content: url('/public/images/replace-user.png');
     }
+
     .menuLi:nth-child(5):hover .menu-icon {
       content: url('/public/images/building-airport.png');
     }
@@ -448,7 +472,7 @@ body.modal-open {
 span {
   height: 30px;
   text-align: right;
-  color: #000;
+  // color: #000;
   cursor: pointer;
 }
 
@@ -572,21 +596,35 @@ ul {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100% !important;
+  width: 80% !important;
   display: flex;
-  justify-content: space-around;
   align-items: center;
   z-index: 9;
+  padding: 0 50px;
 
-  img {
-    font-weight: 600;
-    max-width: none !important;
+  a {
+    width: 100%;
+    box-sizing: border-box;
+
+    /* 자식 padding */
+    img {
+      font-weight: 600;
+      max-width: none !important;
+    }
+  }
+
+  .hd_searchItem {
+    display: flex;
+    justify-content: flex-end;
   }
 }
 
-.hd_hambar,
-.hd_hambar>img {
-  width: 36px;
+.hd_hambar {
+  display: flex;
+  justify-content: left;
+  img {
+    width: 30px;
+  }
 }
 
 .hd_man,

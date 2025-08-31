@@ -91,7 +91,7 @@
   padding: 0;
   margin-bottom: 20px;
   text-align: left;
-  padding-left: 60px;
+  padding-left: 20px;
 }
 
 .step-list li {

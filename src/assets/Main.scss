@@ -36,7 +36,6 @@ button, a {
 }
 // 전체
 .wrap_total {
-  padding-top: 100px;
   padding-bottom: 100px;
   min-height: 100vh;
   margin: 0 auto;
@@ -47,11 +46,15 @@ button, a {
   flex-direction: column;
   font-family: $font-family;
   box-sizing: border-box;
+  .div{
+    padding: 0 50px;
+    padding-top: 120px;
+  }
 }
 .line {
   width: 80%;
   border: 1px dashed #dcdcdc;
-  margin: 100px 0;
+  margin: 100px auto;
 }
 @media screen and (max-width: 390px) {
   .title_txt1 h1 {

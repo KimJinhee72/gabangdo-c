@@ -34,19 +34,12 @@ function goTo(idx) {
 
       <!-- 실제 스텝바 -->
       <div class="stepper">
-        <div
-          v-for="(label, idx) in steps"
-          :key="idx"
-          :class="[
-            'step',
-            { active: idx === stepIndex - 1, done: idx < stepIndex - 1 },
-          ]">
-          <div
-            class="wrap"
-            tabindex="0"
-            @click="goTo(idx + 1)"
-            @keydown.enter="goTo(idx + 1)">
-            <div class="circle">{{ idx + 1 }}</div>
+        <div v-for="(label, idx) in steps" :key="idx" :class="[
+          'step',
+          { active: idx === stepIndex - 1, done: idx < stepIndex - 1 },
+        ]">
+          <div class="wrap" tabindex="0" @click="goTo(idx + 1)" @keydown.enter="goTo(idx + 1)">
+            <!-- <div class="circle">{{ idx + 1 }}</div>   -->
             <div class="label">{{ label }}</div>
           </div>
         </div>
@@ -67,14 +60,26 @@ function goTo(idx) {
 @use "@/assets/Variables.scss" as *;
 
 .sticky-stepper {
-  top: 85px;
-  left: 0;
+  position: relative;
+  top: 140px;
+  left: 0px;
   right: 0;
+  width: 150px;
   z-index: 6000;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 100px;
+  margin-left: 13%;
+  .stepper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -60px;
+  margin-left: 20px;
+  font-size: 14px !important;
+  background-color: #fff;
+  z-index: 6500;
 }
 
 /* Prev/Next 버튼 */
@@ -86,6 +91,7 @@ function goTo(idx) {
   display: flex;
   align-items: center;
   justify-content: center;
+  display: none;
 
   img {
     width: 25px;
@@ -93,15 +99,12 @@ function goTo(idx) {
     transform: rotate(90deg);
     transition: filter 0.2s;
   }
+
   &:disabled img {
     filter: invert(100%) brightness(80%);
   }
 }
-.stepper {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
+
 }
 
 .step {
@@ -129,31 +132,36 @@ function goTo(idx) {
   justify-content: center;
   overflow: visible;
 }
+
 .step:not(:last-child) .circle::after {
   top: 50%;
   left: 100%;
   transform: translateY(-50%);
-  width: 100px; /* 원하는 만큼 조절 */
+  width: 100px;
+  /* 원하는 만큼 조절 */
   height: 3px;
   background: #ddd;
 }
 
 .label {
-  margin-top: 6px;
-  font-size: 14px;
+  font-size: 14px !important;
+  margin-top: 0 !important;
   color: #555;
   text-align: center;
+  letter-spacing: 0.2em;
 }
 
 .step.done .circle {
   background: #ccc;
   border-color: #ccc;
 }
+
 .step.active .circle {
   background: $sub-color;
   border-color: $sub-color;
   color: #fff;
 }
+
 .step.active .label {
   color: #571563;
   font-weight: bold;
@@ -164,6 +172,7 @@ function goTo(idx) {
   opacity: 0;
   margin-top: -10px;
 }
+
 .stepper-fade-enter-to,
 .stepper-fade-leave-from {
   opacity: 1;

@@ -15,8 +15,7 @@ const swiperRef = ref(null);
 function switchTab(tab) {
   activeTab.value = tab;
   nextTick(() => {
-    swiperRef.value.swiper.update();
-    window.dispatchEvent(new Event("resize"));
+    swiperRef.value.swiper?.updateSize();
   });
 }
 
@@ -89,12 +88,13 @@ const storageData6 = ref([
 ]);
 
 // 스와이퍼 사용
-import { Swiper, SwiperSlide } from "swiper/vue";
+import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Pagination } from "swiper/modules";
 
 // Swiper 스타일
 import "swiper/css";
 import "swiper/css/pagination";
+
 </script>
 
 <template>
@@ -104,21 +104,15 @@ import "swiper/css/pagination";
       <div class="bb_buttonBorder">
         <!-- 버튼3개 -->
         <!-- 지하철버튼 -->
-        <button
-          @click="switchTab('subway')"
-          :class="{ active: activeTab === 'subway' }">
+        <button @click="switchTab('subway')" :class="{ active: activeTab === 'subway' }">
           지하철
         </button>
         <!-- 기차역버튼 -->
-        <button
-          @click="switchTab('train')"
-          :class="{ active: activeTab === 'train' }">
+        <button @click="switchTab('train')" :class="{ active: activeTab === 'train' }">
           기차역
         </button>
         <!-- 공항버튼 -->
-        <button
-          @click="switchTab('airport')"
-          :class="{ active: activeTab === 'airport' }">
+        <button @click="switchTab('airport')" :class="{ active: activeTab === 'airport' }">
           공항
         </button>
       </div>
@@ -127,18 +121,11 @@ import "swiper/css/pagination";
     <!-- tab1 -->
     <div class="bb_StoreContents">
       <div class="bb_StoreContent1" v-show="activeTab === `subway`">
-        <Swiper
-          ref="swiperRef"
-          :modules="[Pagination]"
-          :pagination="{ clickable: true }"
-          :slides-per-view="1"
-          :space-between="30"
-          :autoHeight="true"
-          :observer="true"
-          :observeParents="true"
+        <Swiper :observer="true" :observeParents="true" :resizeObserver="true" ref="swiperRef" :modules="[Pagination]"
+          :pagination="{ clickable: true }" :slides-per-view="1" :space-between="30" :autoHeight="true"
           class="bb_mySwiper">
           <!-- 슬라이드 1 -->
-          <SwiperSlide>
+          <SwiperSlide style="border-radius: 20px;">
             <div class="bb_slide1">
               <h1 class="bb_tabTitle">{{ tabsTitle[0] }}</h1>
 
@@ -151,10 +138,7 @@ import "swiper/css/pagination";
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    class="bb_contentS"
-                    v-for="(item, i) in storageData"
-                    :key="i">
+                  <tr class="bb_contentS" v-for="(item, i) in storageData" :key="i">
                     <td>
                       <div class="bb_cell">{{ item.station }}</div>
                     </td>
@@ -171,7 +155,7 @@ import "swiper/css/pagination";
           </SwiperSlide>
 
           <!-- 슬라이드 2 -->
-          <SwiperSlide>
+          <SwiperSlide style="border-radius: 20px;">
             <div class="bb_slide1">
               <h1 class="bb_tabTitle">{{ tabsTitle[0] }}</h1>
 
@@ -184,10 +168,7 @@ import "swiper/css/pagination";
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    class="bb_contentS"
-                    v-for="(item, i) in storageData2"
-                    :key="i">
+                  <tr class="bb_contentS" v-for="(item, i) in storageData2" :key="i">
                     <td>
                       <div class="bb_cell">{{ item.station }}</div>
                     </td>
@@ -204,7 +185,7 @@ import "swiper/css/pagination";
           </SwiperSlide>
 
           <!-- 슬라이드 3 -->
-          <SwiperSlide>
+          <SwiperSlide style="border-radius: 20px;">
             <div class="bb_slide1">
               <h1 class="bb_tabTitle2">{{ tabsTitle[1] }}</h1>
 
@@ -217,10 +198,7 @@ import "swiper/css/pagination";
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    class="bb_contentS"
-                    v-for="(item, i) in storageData3"
-                    :key="i">
+                  <tr class="bb_contentS" v-for="(item, i) in storageData3" :key="i">
                     <td>
                       <div class="bb_cell">{{ item.station }}</div>
                     </td>
@@ -250,10 +228,7 @@ import "swiper/css/pagination";
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    class="bb_contentS"
-                    v-for="(item, i) in storageData4"
-                    :key="i">
+                  <tr class="bb_contentS" v-for="(item, i) in storageData4" :key="i">
                     <td>
                       <div class="bb_cell">{{ item.station }}</div>
                     </td>
@@ -283,10 +258,7 @@ import "swiper/css/pagination";
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    class="bb_contentS"
-                    v-for="(item, i) in storageData5"
-                    :key="i">
+                  <tr class="bb_contentS" v-for="(item, i) in storageData5" :key="i">
                     <td>
                       <div class="bb_cell">{{ item.station }}</div>
                     </td>
@@ -305,11 +277,7 @@ import "swiper/css/pagination";
       </div>
       <!-- tab2 -->
       <div class="bb_trainContent2" v-show="activeTab === `train`">
-        <Swiper
-          :modules="[Pagination]"
-          :pagination="{ clickable: true }"
-          :slides-per-view="1"
-          :space-between="30"
+        <Swiper :modules="[Pagination]" :pagination="{ clickable: true }" :slides-per-view="1" :space-between="30"
           class="bb_mySwiper">
           <!-- 슬라이드 4-->
           <SwiperSlide>
@@ -325,10 +293,7 @@ import "swiper/css/pagination";
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    class="bb_contentS"
-                    v-for="(item, i) in storageData5"
-                    :key="i">
+                  <tr class="bb_contentS" v-for="(item, i) in storageData5" :key="i">
                     <td>
                       <div class="bb_cell">{{ item.station }}</div>
                     </td>
@@ -347,13 +312,8 @@ import "swiper/css/pagination";
       </div>
       <!-- tab3 -->
       <div class="bb_trainContent3" v-show="activeTab === `airport`">
-        <Swiper
-          :modules="[Pagination]"
-          :pagination="{ clickable: true }"
-          :slides-per-view="1"
-          :space-between="30"
-          :autoHeight="true"
-          class="bb_mySwiper">
+        <Swiper :modules="[Pagination]" :pagination="{ clickable: true }" :slides-per-view="1" :space-between="30"
+          :autoHeight="true" class="bb_mySwiper">
           <!-- 슬라이드 4-->
           <SwiperSlide>
             <div class="bb_slide1">
@@ -368,10 +328,7 @@ import "swiper/css/pagination";
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    class="bb_contentS"
-                    v-for="(item, i) in storageData6"
-                    :key="i">
+                  <tr class="bb_contentS" v-for="(item, i) in storageData6" :key="i">
                     <td>
                       <div class="bb_cell">{{ item.station }}</div>
                     </td>
@@ -399,11 +356,11 @@ import "swiper/css/pagination";
 .bb_StoreTable {
   position: relative;
   width: 100%;
-  //   height: 70%;
+
   background-color: #fff;
-  border: $main-color 1px solid;
   border-radius: 20px;
   overflow: hidden;
+  margin: 0 auto;
 
   // 탭키
   .bb_StoreTabs {
@@ -417,58 +374,135 @@ import "swiper/css/pagination";
     text-align: center;
     justify-content: center;
     line-height: 30px;
-    padding-left: 30%;
-    justify-content: space-between;
+
     .bb_buttonBorder {
       background-color: #fff;
       height: 60px;
-      width: 65%;
+      width: 53%;
       border-radius: 50px;
       display: flex; // 중요!
-      justify-content: space-between; // 버튼들 좌우 벌리기
+      justify-content: space-evenly;
       align-items: center; // 세로 가운데 정렬
       padding: 0 10px; // 양옆 공간 주기
+
       button {
+        display: flex; // 중요!
+        justify-content: center; // 버튼들 좌우 벌리기
+        align-items: center;
+        width: 20%;
+        height: 40px;
         background-color: #fff;
         color: #000000;
         border-radius: 50px;
         line-height: 30px;
         text-align: center;
         border: none;
-        padding: 2% 10% 2% 10%;
         margin-top: 2%;
         margin-bottom: 2%;
         cursor: pointer;
         font-size: 20px;
         font-weight: bold;
+        ;
       }
+
       button.active {
         background-color: $main-color;
         color: #fff;
+        width: 20%;
+        height: 40px;
       }
     }
   }
+
   // 테이블내용
   .bb_StoreContents {
     width: 100%;
     max-width: 1100px;
     height: auto;
+    border: $main-color 1px solid;
+    border-radius: 0 0 20px 20px;
+
     .bb_StoreContent1 {
       width: 100%;
       height: 100%;
+      border-radius: 0 0 20px 20px;
+
       .bb_slide1 {
         width: 100%;
         height: auto;
         padding: 15px;
+
         .bb_tabTitle {
           font-size: 26px;
           color: #ff5c00;
           font-weight: bold;
           padding-bottom: 5px;
         }
+
         .bb_tabTitle2 {
           font-size: 26px;
           color: #159817;
+          font-weight: bold;
+          padding-bottom: 5px;
+          border-radius: 20px;
+        }
+
+        .tabContent1 {
+          width: 100%;
+          border-collapse: separate;
+          border-spacing: 0 12px; // 이게 핵심!
+          border-radius: 20px;
+
+          .bb_tabSubtitle {
+            tr {
+              th {
+                font-size: 20px;
+                font-weight: bold;
+                padding-bottom: 5px;
+                text-align: center;
+              }
+            }
+
+            .bb_contentS {
+              .bb_cell {
+                padding-bottom: 100px;
+                background-color: rgba(255, 0, 0, 0.2);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .bb_trainContent2 {
+      width: 100%;
+      height: 100%;
+      border-radius: 0 0 20px 20px;
+
+      .bb_slide1 {
+        width: 100%;
+        height: auto;
+        padding: 15px;
+        margin: 0 auto;
+        border-radius: 20px;
+
+        .bb_tabTitle {
+          font-size: 26px;
+          color: #ff5c00;
+          font-weight: bold;
+          padding-bottom: 5px;
+        }
+
+        .bb_tabTitle2 {
+          font-size: 26px;
+          color: #159817;
+          font-weight: bold;
+          padding-bottom: 5px;
+        }
+
+        .bb_tabTitle3 {
+          font-size: 26px;
+          color: #0066b3;
           font-weight: bold;
           padding-bottom: 5px;
         }
@@ -477,6 +511,7 @@ import "swiper/css/pagination";
           width: 100%;
           border-collapse: separate;
           border-spacing: 0 12px; // 이게 핵심!
+
           .bb_tabSubtitle {
             tr {
               th {
@@ -486,6 +521,7 @@ import "swiper/css/pagination";
                 text-align: center;
               }
             }
+
             .bb_contentS {
               .bb_cell {
                 padding-bottom: 100px;
@@ -496,89 +532,50 @@ import "swiper/css/pagination";
         }
       }
     }
-    .bb_trainContent2 {
-      width: 100%;
-      height: 100%;
-      .bb_slide1 {
-        width: 100%;
-        height: auto;
-        padding: 15px;
-        .bb_tabTitle {
-          font-size: 26px;
-          color: #ff5c00;
-          font-weight: bold;
-          padding-bottom: 5px;
-        }
-        .bb_tabTitle2 {
-          font-size: 26px;
-          color: #159817;
-          font-weight: bold;
-          padding-bottom: 5px;
-        }
-        .bb_tabTitle3 {
-          font-size: 26px;
-          color: #0066b3;
-          font-weight: bold;
-          padding-bottom: 5px;
-        }
-        .tabContent1 {
-          width: 100%;
-          border-collapse: separate;
-          border-spacing: 0 12px; // 이게 핵심!
-          .bb_tabSubtitle {
-            tr {
-              th {
-                font-size: 20px;
-                font-weight: bold;
-                padding-bottom: 5px;
-                text-align: center;
-              }
-            }
-            .bb_contentS {
-              .bb_cell {
-                padding-bottom: 100px;
-                background-color: rgba(255, 0, 0, 0.2);
-              }
-            }
-          }
-        }
-      }
-    }
+
     .bb_trainContent3 {
       width: 100%;
       height: 100%;
+      border-radius: 0 0 20px 20px;
+
       .bb_slide1 {
         width: 100%;
         height: auto;
         padding: 15px;
+
         .bb_tabTitle {
           font-size: 26px;
           color: #ff5c00;
           font-weight: bold;
           padding-bottom: 5px;
         }
+
         .bb_tabTitle2 {
           font-size: 26px;
           color: #159817;
           font-weight: bold;
           padding-bottom: 5px;
         }
+
         .bb_tabTitle3 {
           font-size: 26px;
           color: #0066b3;
           font-weight: bold;
           padding-bottom: 5px;
         }
+
         .bb_tabTitle4 {
           font-size: 26px;
           color: #2aaae2;
           font-weight: bold;
           padding-bottom: 5px;
         }
+
         .tabContent1 {
           width: 100%;
           border-collapse: separate;
           border-spacing: 0 12px; // 이게 핵심!
+
           .bb_tabSubtitle {
             tr {
               th {
@@ -588,6 +585,7 @@ import "swiper/css/pagination";
                 text-align: center;
               }
             }
+
             .bb_contentS {
               .bb_cell {
                 padding-bottom: 100px;
@@ -605,6 +603,7 @@ import "swiper/css/pagination";
 #app {
   height: 100%;
 }
+
 html,
 body {
   position: relative;
@@ -621,8 +620,13 @@ body {
 }
 
 .swiper {
+  width: 100% !important;
+  height: auto;
+  border-radius: 20px;
+}
+
+.swiper-wrapper {
   width: 100%;
-  height: 100%;
 }
 
 .swiper-slide {
@@ -643,18 +647,23 @@ body {
     width: 100%;
     height: 700px;
   }
+
   .bb_StoreTable .bb_StoreContents {
     height: 600px;
   }
+
   .bb_tabTitle {
     font-size: 20px !important;
   }
+
   th {
     font-size: 15px !important;
   }
+
   .bb_cell {
     font-size: 15px !important;
   }
+
   button {
     font-size: 15px !important;
   }
@@ -666,12 +675,15 @@ body {
     width: 100%;
     height: 600px;
   }
+
   .bb_StoreTable .bb_StoreContents {
     height: 550px;
   }
+
   .bb_StoreTabs {
     padding-left: 2% !important;
   }
+
   button {
     font-size: 12px !important;
     padding: 1% !important;

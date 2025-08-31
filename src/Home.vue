@@ -55,6 +55,8 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .main {
+  position: relative;
   padding-bottom: 100px;
+
 }
 </style>

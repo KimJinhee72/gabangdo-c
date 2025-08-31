@@ -76,15 +76,12 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="wrap_total">
-    <div class="yh_wrap">
+    <div class="yh_wrap div ">
       <!-- 스텝퍼 네비바 -->
-      <ProgressStepper
-        v-show="showStepper"
-        :steps="['대구축제', '순환버스', '테마버스']"
-        :selectors="['#step1', '#step2', '#step3']"
-        :stepIndex="stepIndex"
-        @go="scrollToSection"
+      <ProgressStepper v-show="showStepper" :steps="['대구축제', '순환버스', '테마버스']"
+        :selectors="['#step1', '#step2', '#step3']" :stepIndex="stepIndex" @go="scrollToSection"
         class="sticky-stepper hide-controls custom-stepper" />
+
       <!-- 여행도 전체영역 -->
       <div class="inner">
         <div ref="step1" id="step1" class="step-container">
@@ -93,42 +90,41 @@ onBeforeUnmount(() => {
             <Yh_Festival />
           </transition>
         </div>
-      </div>
-      <!-- 구분선 -->
-      <div class="line"></div>
-      <!-- 시티투어버스 전체영역 -->
-      <!-- 순환버스 -->
-      <div class="yh_roundBus">
-        <div ref="step2" id="step2" class="step-container">
-          <!-- 순환버스 제목 -->
-          <div class="bb_title1">
-            <div class="title_txt1">
-              <h1>순환버스</h1>
+
+        <!-- 구분선 -->
+        <div class="line"></div>
+        <!-- 시티투어버스 전체영역 -->
+        <!-- 순환버스 -->
+        <div class="yh_roundBus">
+          <div ref="step2" id="step2" class="step-container">
+            <!-- 순환버스 제목 -->
+            <div class="bb_title1">
+              <div class="title_txt1">
+                <h1>순환버스</h1>
+              </div>
             </div>
-          </div>
-          <!-- 순환버스 이미지 -->
-          <div class="yh_content-box">
-            <a
-              href="https://www.daegucitytour.com/bbs/page.php?hid=guide_1"
-              target="_blank">
-              <img v-if="imgSrc" :src="imgSrc" alt="순환버스지도" />
-            </a>
+            <!-- 순환버스 이미지 -->
+            <div class="yh_content-box">
+              <a href="https://www.daegucitytour.com/bbs/page.php?hid=guide_1" target="_blank">
+                <img v-if="imgSrc" :src="imgSrc" alt="순환버스지도" />
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- 구분선 -->
-      <div class="line"></div>
-      <!-- 테마버스 -->
-      <div class="yh_themaBus">
-        <div ref="step3" id="step3" class="step-container">
-          <!-- 테마버스 제목 -->
-          <div class="bb_title1">
-            <div class="title_txt1">
-              <h1>테마버스</h1>
+        <!-- 구분선 -->
+        <div class="line"></div>
+        <!-- 테마버스 -->
+        <div class="yh_themaBus">
+          <div ref="step3" id="step3" class="step-container">
+            <!-- 테마버스 제목 -->
+            <div class="bb_title1">
+              <div class="title_txt1">
+                <h1>테마버스</h1>
+              </div>
             </div>
+            <!-- 테마버스 이미지 -->
+            <YeohaengSwiper />
           </div>
-          <!-- 테마버스 이미지 -->
-          <YeohaengSwiper />
         </div>
       </div>
     </div>
@@ -141,65 +137,25 @@ onBeforeUnmount(() => {
 @use "@/assets/Variables.scss" as *;
 
 // 전체
+.yh_wrap {
+  .step-container {
+    max-width: 900px;
+    .img{
+      width: 90%;
+    }
+  }
+}
+@media screen and (max-width: 940px){
+  .step-container{
+    width: 100% !important;
+  }
+}
 .inner {
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
 }
-// 스텝퍼
-:deep(.stepper) {
-  display: flex;
-  flex-direction: column;
-  z-index: 6500;
-}
 
-.sticky-stepper {
-  position: fixed;
-  top: 120px;
-  left: 0;
-  width: 80px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  z-index: 6500;
-  padding: 10px;
-  color: #555;
-  &.custom-stepper {
-    // only on your custom one
-    left: calc(47.5% - 600px);
-    width: 120px;
-
-    &.hide-controls {
-      // hide the nav & circles only when .hide-controls is present
-      ::v-deep .step-nav,
-      ::v-deep .circle {
-        display: none !important;
-      }
-    }
-
-    // style all your labels
-    ::v-deep .label {
-      margin-top: 6px;
-      font-size: 17px;
-      cursor: pointer;
-      padding: 5px 10px;
-      transition: background 0.2s;
-
-      &:hover {
-        border-bottom: 2px solid rgba($sub-color, 0.3);
-        color: #555;
-        font-weight: bold;
-      }
-    }
-
-    // active-step styles
-    ::v-deep .step.active .label {
-      border-bottom: 2px solid rgba($sub-color, 0.3);
-      color: #555;
-      font-weight: bold;
-    }
-  }
-}
 // 제목
 .bb_title1 {
   display: flex;
@@ -207,24 +163,29 @@ onBeforeUnmount(() => {
   justify-content: center;
   text-align: center;
   padding-bottom: 30px;
+
   .title_txt1 h1 {
     font-family: $font-ownglyph;
     font-size: 40px;
   }
 }
+
 // 대구축제 탭
 .yh_tab-container {
   width: 100%;
   height: 100%;
 }
+
 .yh_tab-container .inner {
   padding: 20px;
 }
+
 @media (max-width: 1170px) {
   .yh_tab-container .inner {
     padding: 40px 0 0;
   }
 }
+
 .yh_tab {
   flex: 1;
   text-align: center;
@@ -247,6 +208,7 @@ onBeforeUnmount(() => {
     color: white;
   }
 }
+
 @media (max-width: 600px) {
   .yh_tab {
     flex-direction: column;
@@ -254,12 +216,14 @@ onBeforeUnmount(() => {
     font-size: 16px;
   }
 }
+
 @media (max-width: 376px) {
   .yh_tab {
     padding: 12px 0;
     font-size: 15px;
   }
 }
+
 .yh_tab-bar {
   display: flex;
   justify-content: space-around;
@@ -267,6 +231,7 @@ onBeforeUnmount(() => {
   border-radius: $radius;
   overflow: hidden;
 }
+
 // 시티투어
 // 시티투어 전체 영역
 @media screen and (max-width: 760px) {
@@ -274,6 +239,7 @@ onBeforeUnmount(() => {
     margin: 0 20px;
   }
 }
+
 .yh_content-box {
   width: 100%;
   max-width: 900px;
@@ -285,7 +251,12 @@ onBeforeUnmount(() => {
   width: 100%;
   height: auto;
   max-width: 100%;
-  display: block; /* 불필요한 공간 제거 */
+  display: block;
+  /* 불필요한 공간 제거 */
+}
+
+.line {
+  margin: 100px auto;
 }
 
 .fade-enter-active,
@@ -297,9 +268,30 @@ onBeforeUnmount(() => {
 .fade-leave-to {
   opacity: 0;
 }
+
 // 시티투어버스
 .yh_themaBus {
+  width: 100%;
   margin: 0 auto;
   margin-bottom: 50px;
+
+}
+
+.swiper .swiper-initialized {
+  width: 100% !important;
+}
+
+.swiper-slide {
+  width: 100%;
+  margin-right: 0 !important;
+
+  a {
+    width: 100%;
+
+    img {
+
+      margin-left: 30px !important;
+    }
+  }
 }
 </style>

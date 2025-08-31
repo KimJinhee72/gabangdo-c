@@ -547,7 +547,7 @@ const closeModal = () => {
 
 <template>
   <div class="wrap_total">
-    <div class="st_wrap">
+    <div class="st_wrap div">
       <!-- 스텝퍼 네비바 -->
       <ProgressStepper
         v-show="showStepper"
@@ -781,7 +781,6 @@ const closeModal = () => {
   max-width: 1100px;
   margin: 0 auto;
   display: flex;
-  align-items: center;
   text-align: center;
   justify-content: center;
   flex-direction: column;
@@ -800,60 +799,9 @@ const closeModal = () => {
     font-family: $font-ownglyph;
   }
 }
-// 스텝퍼
-:deep(.stepper) {
-  display: flex;
-  flex-direction: column;
-  z-index: 6500;
-}
 
-.sticky-stepper {
-  position: fixed;
-  top: 120px;
-  left: 0;
-  width: 80px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  z-index: 6500;
-  padding: 10px;
-  color: #555;
-  &.custom-stepper {
-    // only on your custom one
-    left: calc(47.5% - 600px);
-    width: 120px;
 
-    &.hide-controls {
-      // hide the nav & circles only when .hide-controls is present
-      ::v-deep .step-nav,
-      ::v-deep .circle {
-        display: none !important;
-      }
-    }
 
-    // style all your labels
-    ::v-deep .label {
-      margin-top: 6px;
-      font-size: 17px;
-      cursor: pointer;
-      padding: 5px 10px;
-      transition: background 0.2s;
-
-      &:hover {
-        border-bottom: 2px solid rgba($sub-color, 0.3);
-        color: #555;
-        font-weight: bold;
-      }
-    }
-
-    // active-step styles
-    ::v-deep .step.active .label {
-      border-bottom: 2px solid rgba($sub-color, 0.3);
-      color: #555;
-      font-weight: bold;
-    }
-  }
-}
 // 고객센터섹션
 .st_customer {
   display: flex;

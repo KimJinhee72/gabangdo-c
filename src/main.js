@@ -24,6 +24,11 @@ app.use(i18n);
 if (import.meta.env.DEV) {
   app.config.devtools = true;
 }
+// Swiper CSS
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+
 
 // 앱 마운트
 app.mount("#app");
