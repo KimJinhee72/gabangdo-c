@@ -91,7 +91,7 @@
       </div>
     </div>
 
-    <KakaoMap v-if="showMap" class="flex-shrink-0" />
+    <client-only><KakaoMap v-if="showMap" class="flex-shrink-0" /></client-only>
 
     <!-- 버튼필터 -->
     <div class="bg-gray-900 text-white py-4 flex-shrink-0">
