@@ -75,31 +75,31 @@
               </div>
 
             </a>
-            <!-- 1230px 및 모바일에서 열리는 메뉴 파랑바탕-->
-            <div class="hd_menu1" :class="{ show: layoutStore.isMenuOpen, leave: isLeaving }" v-show="shortMenu"
-              @mouseleave="handleMouseLeave" @mouseenter="clearLeave">
-              <span @click.prevent="closeMobileMenu" role="button"> <img src="/images/geen/1/Vector.svg"
-                  style="margin: 20px auto;" alt="닫기"> </span>
-              <ul>
-                <li v-for="(item, index) in menuItems" :key="index" class="menuLi">
-                  <router-link v-if="!item.sub" :to="item.to" @click="handleMenuClick(item)">
-                    <img :src="item.image" :alt="item.label" class="menu-icon" />
-                    <span>{{ item.label }}</span>
-                  </router-link>
-                  <div v-else>
-                    <a href="#" @click.prevent="toggleMobileSub(index)">
-                      {{ item.label }}
-                    </a>
-                    <ul v-if="openedMobileMenu === index" class="subMenu show">
-                      <li v-for="(sub, idx) in item.sub" :key="idx">
-                        <router-link :to="sub.to" @click="handleMenuClick(item)">{{ sub.label }}</router-link>
-                      </li>
-                    </ul>
-                  </div>
-                </li>
-              </ul>
-            </div>
           </nav>
+          <!-- 1230px 및 모바일에서 열리는 메뉴 파랑바탕-->
+          <div class="hd_menu1" :class="{ show: layoutStore.isMenuOpen, leave: isLeaving }" v-show="shortMenu"
+            @mouseleave="handleMouseLeave" @mouseenter="clearLeave">
+            <span @click.prevent="closeMobileMenu" role="button"> <img src="/images/geen/1/Vector.svg"
+                style="margin: 20px auto;" alt="닫기"> </span>
+            <ul>
+              <li v-for="(item, index) in menuItems" :key="index" class="menuLi">
+                <router-link v-if="!item.sub" :to="item.to" @click="handleMenuClick(item)">
+                  <img :src="item.image" :alt="item.label" class="menu-icon" />
+                  <span>{{ item.label }}</span>
+                </router-link>
+                <div v-else>
+                  <a href="#" @click.prevent="toggleMobileSub(index)">
+                    {{ item.label }}
+                  </a>
+                  <ul v-if="openedMobileMenu === index" class="subMenu show">
+                    <li v-for="(sub, idx) in item.sub" :key="idx">
+                      <router-link :to="sub.to" @click="handleMenuClick(item)">{{ sub.label }}</router-link>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -122,11 +122,11 @@ import sotongIcon from '@/assets/images/sotong.svg?components';
 import yeohaengIcon from '@/assets/images/yeohaeng.svg?components';
 // 햄버거메뉴
 const menuItems = [
-  { label: "방법도", to: "/bangbeob2", image: writingIcon },
   { label: "요금도", to: "/yogeum", image: yogeumIcon },
   { label: "예약도", to: "/yeyak", image: yeyakIcon },
-  { label: "소통도", to: "/sotong", image: sotongIcon },
   { label: "여행도", to: "/yeohaeng", image: yeohaengIcon },
+  { label: "방법도", to: "/bangbeob2", image: writingIcon },
+  { label: "소통도", to: "/sotong", image: sotongIcon },
 ];
 const route = useRoute();
 // query로 전달된 username 사용
@@ -406,7 +406,7 @@ body.modal-open {
   /* object-fit: cover; */
   /* 꽉 채워서 자르려면 이 옵션을 사용 */
 }
-
+// 1230 햄버거바 메뉴 왼쪽
 .hd_menu1 {
   position: fixed;
   top: 0;

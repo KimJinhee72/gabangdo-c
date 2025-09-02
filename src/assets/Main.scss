@@ -29,7 +29,8 @@ body,
 div,
 label,
 span,
-button, a {
+button,
+a {
   outline: none;
   user-select: none;
   cursor: default; /* 선택 불가 커서 */
@@ -46,10 +47,14 @@ button, a {
   flex-direction: column;
   font-family: $font-family;
   box-sizing: border-box;
-  .div{
-    padding: 0 50px;
+  .div {
+    padding: 0 35px;
     padding-top: 120px;
   }
+}
+// 햄버거 바 나오면 오른쪽으로 80px밀기
+:is(.container2ndDiv, .ft_footer .inner ,.inner1230).menu-open {
+  margin-left: 80px;
 }
 .line {
   width: 80%;

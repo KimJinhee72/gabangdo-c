@@ -1,7 +1,8 @@
 <template>
   <div class="wrap">
+    <!-- container1st 영역 -->
     <!-- 페이드 슬라이드 배경 -->
-    <div class="slider">
+    <div class="slider container1stDiv">
       <div v-for="(img, index) in images" :key="index" class="slide" :class="{ active: index === currentIndex }"
         :style="{ backgroundImage: `url(${img})` }"></div>
 
@@ -73,99 +74,101 @@
       </div>
     </div>
 
-    <!-- container2 등 다른 섹션은 여기 아래에 이어서 -->
-    <!-- 컨테인2 -->
-    <div class="container2">
-      <div class="inner">
-        <div class="section1">
-          <!-- 이미지 -->
-          <div class="section1-1">
-            <img src="/images/yongdal1.png" alt="" />
-          </div>
-          <!-- 텍스트 -->
-          <div class="section1-2">
-            <p>쉽고 가벼운 여행도</p>
-            <span>원하는 곳에 짐맡기고<br />편하게 이동하자</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- 컨테인3 -->
-    <div class="container3">
-      <div class="inner">
-        <div class="section3">
-          <!-- 왼쪽 텍스트 -->
-          <div class="section3-1">
-            <p>짐보관도 부담없이</p>
-            <span>지하철, 기차, 공항<br />어디든지 짐 맡기자</span>
-          </div>
-          <!-- 오른쪽 이미지 -->
-          <div class="section3-2">
-            <img src="/images/yongdal3.png" alt="" />
+    <!-- container2nd 영역 등 다른 섹션은 여기 아래에 이어서 -->
+    <div class="container2ndDiv" :class="{ 'menu-open': layoutStore.isMenuOpen }">
+      <!-- 컨테인2 -->
+      <div class="container2">
+        <div class="inner">
+          <div class="section1">
+            <!-- 이미지 -->
+            <div class="section1-1">
+              <img src="/images/yongdal1.png" alt="" />
+            </div>
+            <!-- 텍스트 -->
+            <div class="section1-2">
+              <p>쉽고 가벼운 여행도</p>
+              <span>원하는 곳에 짐맡기고<br />편하게 이동하자</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- 컨테인4 -->
-    <div class="container4">
-      <div class="inner">
-        <div class="section4">
-          <!-- 이미지 -->
-          <div class="section4-1">
-            <img src="/images/yongdal4.png" alt="" />
-          </div>
-          <!-- 텍스트 -->
-          <div class="section4-2">
-            <p>실시간 배송조회도</p>
-            <span>짐이 어디있는지 한눈에<br />실시간 확인하기</span>
+      <!-- 컨테인3 -->
+      <div class="container3">
+        <div class="inner">
+          <div class="section3">
+            <!-- 왼쪽 텍스트 -->
+            <div class="section3-1">
+              <p>짐보관도 부담없이</p>
+              <span>지하철, 기차, 공항<br />어디든지 짐 맡기자</span>
+            </div>
+            <!-- 오른쪽 이미지 -->
+            <div class="section3-2">
+              <img src="/images/yongdal3.png" alt="" />
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 배너 및 메뉴 이동 섹션 -->
-    <div class="banner-section">
-      <div class="inner-container">
-        <!-- 왼쪽 배너 이미지 -->
-        <div class="banner-image">
-          <img :src="images1[currentIndex1]" alt="가방도 배너" class="fade-image" />
+      <!-- 컨테인4 -->
+      <div class="container4">
+        <div class="inner">
+          <div class="section4">
+            <!-- 이미지 -->
+            <div class="section4-1">
+              <img src="/images/yongdal4.png" alt="" />
+            </div>
+            <!-- 텍스트 -->
+            <div class="section4-2">
+              <p>실시간 배송조회도</p>
+              <span>짐이 어디있는지 한눈에<br />실시간 확인하기</span>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <!-- 오른쪽 메뉴 이동 및 예약 버튼 -->
-        <div class="menu-box">
-          <!-- 2x2 메뉴 -->
-          <div class="menu-grid">
-            <router-link to="/bangbeob2">
-              <div class="menu-item">
-                <p class="menu-title">이용안내</p>
-                <p class="menu-desc">짐운송, 짐안내 이용안내 확인하기</p>
-              </div>
-            </router-link>
-            <router-link to="/yogeum">
-              <div class="menu-item">
-                <p class="menu-title">이용요금</p>
-                <p class="menu-desc">짐운송 이용요금 확인하기</p>
-              </div>
-            </router-link>
-            <router-link to="/sotong2">
-              <div class="menu-item">
-                <p class="menu-title">이용후기</p>
-                <p class="menu-desc">고객 이용후기 확인하기</p>
-              </div>
-            </router-link>
-            <router-link to="/yh_festival">
-              <div class="menu-item">
-                <p class="menu-title">축제안내</p>
-                <p class="menu-desc">대구시 축제 확인하기</p>
-              </div>
-            </router-link>
+      <!-- 배너 및 메뉴 이동 섹션 -->
+      <div class="banner-section">
+        <div class="inner-container">
+          <!-- 왼쪽 배너 이미지 -->
+          <div class="banner-image">
+            <img :src="images1[currentIndex1]" alt="가방도 배너" class="fade-image" />
           </div>
 
-          <!-- 예약 버튼 -->
-          <router-link to="/yeyak">
-            <button class="reserve-button">예약하기</button>
-          </router-link>
+          <!-- 오른쪽 메뉴 이동 및 예약 버튼 -->
+          <div class="menu-box">
+            <!-- 2x2 메뉴 -->
+            <div class="menu-grid">
+              <router-link to="/yogeum">
+                <div class="menu-item">
+                  <p class="menu-title">이용요금</p>
+                  <p class="menu-desc">짐운송 이용요금 확인하기</p>
+                </div>
+              </router-link>
+              <router-link to="/bangbeob2">
+                <div class="menu-item">
+                  <p class="menu-title">이용안내</p>
+                  <p class="menu-desc">짐운송, 짐안내 이용안내 확인하기</p>
+                </div>
+              </router-link>
+              <router-link to="/sotong2">
+                <div class="menu-item">
+                  <p class="menu-title">이용후기</p>
+                  <p class="menu-desc">고객 이용후기 확인하기</p>
+                </div>
+              </router-link>
+              <router-link to="/yh_festival">
+                <div class="menu-item">
+                  <p class="menu-title">축제안내</p>
+                  <p class="menu-desc">대구시 축제 확인하기</p>
+                </div>
+              </router-link>
+            </div>
+
+            <!-- 예약 버튼 -->
+            <router-link to="/yeyak">
+              <button class="reserve-button">예약하기</button>
+            </router-link>
+          </div>
         </div>
       </div>
     </div>
@@ -175,7 +178,8 @@
   <Modal v-if="showModal" @close="showModal = false" />
 </template>
 
-<script setup>import { useLayoutStore } from "@/stores/useLayoutStore";
+<script setup>
+import { useLayoutStore } from "@/stores/useLayoutStore";
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { Clock4, MapPin, Shield } from "lucide-vue-next";
 import Modal from "../b_main/Modal.vue";
@@ -222,7 +226,12 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
+@use "sass:color";
+@use "/src/assets/Main.scss" as *;
+@use "@/assets/_Variables.scss" as *;
+@use "/src/assets/Home.scss" as *;
+
 .wrap {
   margin-top: 70px;
 
@@ -267,6 +276,11 @@ onBeforeUnmount(() => {
           rgba(0, 0, 0, 0.3));
       z-index: 1;
       pointer-events: none;
+    }
+
+    // 햄버거 바 나오면 오른쪽으로 80px밀기
+    :is(.container2ndDiv, .ft_footer .inner, .inner1230).menu-open {
+      margin-left: 80px;
     }
 
     .inner {
@@ -517,10 +531,8 @@ onBeforeUnmount(() => {
       }
     }
 
-    .inner1230.menu-open {
-      margin-left: 80px;
-    }
   }
+
 
   // 컨텐츠 섹션 공통 스타일
   .container2,

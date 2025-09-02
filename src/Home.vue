@@ -7,7 +7,7 @@
       <!-- 635이하 전용 콘텐츠 -->
       <!-- <Homeswiper1 v-if="isMobile"/> -->
       <Content0 />
-      <Content2 />
+      <Content2 class="ml-[80px]"/>
       <Homeswiper2 />
       <Modal />
     </main>

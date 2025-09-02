@@ -248,11 +248,11 @@ onUnmounted(() => {
 // 요금 안내 후 알림사항
 // 알림 왼쪽(할인)
 .yg_infoWrapper {
-  padding-bottom: 60px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   text-align: left;
+  margin-top: 30px;
 }
 
 .yg_leftInfo {
@@ -306,11 +306,12 @@ onUnmounted(() => {
   margin: auto;
 
   ul {
-    width: 100%;
-    line-height: 50px;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+    width: 100%;
+    padding: 0 5px;
+    line-height: 50px;
 
     @media screen and (max-width: 620px) {
       justify-content: space-between;
@@ -352,6 +353,7 @@ onUnmounted(() => {
 // 환불내용
 .yg_refunddLi1 {
   width: 20%;
+  justify-content: end;
 }
 
 @media screen and (max-width: 470px) {

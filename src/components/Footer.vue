@@ -1,8 +1,8 @@
 <template>
   <div class="ft_footer">
-    <div class="inner">
+    <div class="inner" :class="{ 'menu-open': layoutStore.isMenuOpen }">
       <!-- 풋터 상단 -->
-      <div class="ft_footerTop">
+      <div class="ft_footerTop" >
         <!-- 풋터 상단 왼쪽 : 회사정보 -->
         <div class="ft_topLeft">
           <div class="ft_serviceInfo">
@@ -52,13 +52,23 @@
   </div> -->
 </template>
 
-<script setup></script>
+<script setup>
+import { useLayoutStore } from "@/stores/useLayoutStore";
+const layoutStore = useLayoutStore();
+</script>
 <script>
 export default {
   name: "FooterComponent",
 };
 </script>
 <style lang="scss" scoped>
+@use "sass:color";
+@use "@/assets/Main.scss" as *;
+@use "@/assets/_Variables.scss" as *;
+@use "/src/assets/Home.scss" as *;
+
+
+
 .ft_footer {
   width: 100%;
   background-color: #f5f5f5;
