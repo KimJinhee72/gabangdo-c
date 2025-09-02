@@ -11,9 +11,8 @@
 
 <script setup>
 defineProps({
-  visible: Boolean,
+  visible: Boolean, // 부모가 전달하는 prop
 });
-defineEmits(["close"]);
 </script>
 
 <style scoped>
