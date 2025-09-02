@@ -407,7 +407,7 @@ body.modal-open {
   /* 꽉 채워서 자르려면 이 옵션을 사용 */
 }
 // 1230 햄버거바 메뉴 왼쪽
-.hd_menu1 {
+.hd_menu1{
   position: fixed;
   top: 0;
   left: 0;
@@ -421,7 +421,7 @@ body.modal-open {
   color: #fff;
   z-index: 9;
   opacity: 0;
-  transform: translateX(-100%); // 처음엔 왼쪽 밖으로 숨김
+  transform: translateX(-80px); // 처음엔 왼쪽 밖으로 숨김
   transition: opacity 0.3s ease, transform 0.3s ease;
   pointer-events: none;
   background-color: #279bf4;
