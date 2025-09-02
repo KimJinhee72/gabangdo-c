@@ -10,3 +10,4 @@ This template should help get you started developing with Vue 3 in Vite.
 2.버셀에 settings로 가서 **"Environment Variables"**를 선택 후 VITE_KAKAO_MAP_KEY 앞 JavaScript 키 뒤블랭크에 넣고 저장
 3.다시 개발자로그인 후 일반에 앱키 아래 플랫폼 아래 web 부분을 http://localhost:5173엔터후 https://gabangdo-c.vercel.app 10개까지 저장가능
 4. 버셀에 3번째 Deployments로가서 클릭후 ...클릭후 Redeploy해서 마지막것 재배포 하면 됨
+5. 지도가 혹시 안보이면 카카오 버전 문제로 그럴수 있으니 <client-only><파이명/></client-only>으로 하면 버셀에서도 지도가 보임
