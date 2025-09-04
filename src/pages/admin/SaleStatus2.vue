@@ -1,13 +1,14 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
-    <div class="max-w-7xl mx-auto space-y-6">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 ">
+    <div class="mx-auto space-y-6">
       <!-- 헤더 -->
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">매출 현황 대시보드</h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-1">실시간 매출 현황과 수익 분석을 확인할 수 있습니다.</p>
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">매출 관리</h1>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">실시간 매출 현황과 수익 분석을 확인할 수 있습니다.</p>
         </div>
         <div class="flex gap-2">
+          <canvas v-if="chartVisible" ref="myChartRef" class="h-1"></canvas>
           <button @click="showDateRangeModal = true"
             class="flex items-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800">
             <i class="fas fa-calendar mr-2"></i>
@@ -18,7 +19,6 @@
             <i class="fas fa-file-alt mr-2"></i>
             매출 보고서
           </button>
-          
         </div>
       </div>
 
@@ -122,24 +122,14 @@
 
       <!-- 차트 섹션 -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- 기간별 매출 현황 -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ getChartTitle('period') }}</h3>
-            <p class="text-sm text-gray-600 dark:text-gray-400">{{ getChartDescription('period') }}</p>
-          </div>
-          <div class="p-6">
-            <div style="height: 300px;">
-              <Pie :data="filteredChartData.period" :options="pieChartOptions" />
-            </div>
-          </div>
-        </div>
+        <!-- 매출 현황 -->
+        <MonthlySale class="!dark:bg-gray-600" />
 
-        <!-- 서비스별 매출 분포 -->
+        <!-- 픽업지역별 매출 분포 -->
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
           <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">서비스별 매출 분포</h3>
-            <p class="text-sm text-gray-600 dark:text-gray-400">선택된 기간 내 각 서비스별 매출 비중을 확인할 수 있습니다.</p>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">픽업위치별 매출 분포</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">{{ getChartDescription('trend') }} (픽업위치별 매출 비중)</p>
           </div>
           <div class="p-6">
             <div style="height: 300px;">
@@ -153,7 +143,7 @@
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
         <div class="p-6 border-b border-gray-200 dark:border-gray-700">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ getChartTitle('trend') }}</h3>
-          <p class="text-sm text-gray-600 dark:text-gray-400">{{ getChartDescription('trend') }}</p>
+          <p class="text-sm text-gray-600 dark:text-white">{{ getChartDescription('trend') }}</p>
         </div>
         <div class="p-6">
           <div style="height: 300px;">
@@ -162,33 +152,6 @@
         </div>
       </div>
 
-      <!-- 검색 및 필터 -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-        <div class="flex flex-col md:flex-row gap-4">
-          <div class="flex-1">
-            <div class="relative">
-              <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
-              <input type="text" v-model="searchQuery" placeholder="고객명 또는 거래번호로 검색"
-                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
-            </div>
-          </div>
-          <div class="flex gap-2">
-            <select v-model="statusFilter"
-              class="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-              <option value="all">전체 상태</option>
-              <option value="completed">완료</option>
-              <option value="processing">처리중</option>
-              <option value="cancelled">취소</option>
-              <option value="refunded">환불</option>
-            </select>
-            <button
-              class="flex items-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
-              <i class="fas fa-filter mr-2"></i>
-              필터
-            </button>
-          </div>
-        </div>
-      </div>
 
       <!-- 거래 내역 (기간 필터링 적용) -->
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
@@ -205,10 +168,38 @@
               총 매출: {{formatCurrency(filteredTransactions.reduce((sum, t) => sum + t.amount, 0))}}
             </div>
           </div>
+          <!-- 검색 및 필터 -->
+          <div class="bg-white shadow dark:bg-gray-800 dark:shadow-none rounded-lg  p-4 pt-8">
+            <div class="flex flex-col md:flex-row gap-4">
+              <div class="flex-1">
+                <div class="relative">
+                  <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                  <input type="text" v-model="searchQuery" placeholder="고객명 또는 거래번호로 검색"
+                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" />
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <select v-model="statusFilter"
+                  class="border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white">
+                  <option value="all">전체 상태</option>
+                  <option value="completed">완료</option>
+                  <option value="processing">처리중</option>
+                  <option value="cancelled">취소</option>
+                  <option value="refunded">환불</option>
+                </select>
+                <button
+                  class="flex items-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                  <i class="fas fa-filter mr-2"></i>
+                  필터
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="p-6">
           <div class="space-y-4">
             <div v-for="transaction in paginatedTransactions" :key="transaction.id"
+              @click="openCreditedList(transaction)"
               class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700 transition-colors">
               <div class="flex items-center space-x-4">
                 <div class="p-2 rounded-full bg-green-100 dark:bg-green-900">
@@ -217,22 +208,24 @@
                 <div>
                   <div class="flex items-center space-x-2">
                     <span class="font-medium text-gray-900 dark:text-white">{{ transaction.customerName }}</span>
-                    <span class="text-sm text-gray-500">{{ transaction.id }}</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">{{ transaction.id }}</span>
                   </div>
-                  <div class="flex items-center space-x-4 text-sm text-gray-500">
+                  <div class="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
                     <span>{{ transaction.service }}</span>
                     <span class="font-semibold text-gray-900 dark:text-white">
                       {{ formatCurrency(transaction.amount) }}
                     </span>
-                    <span>{{ formatDateTime(transaction.date) }}</span>
+                    <span class="dark:text-gray-400">{{ formatDateTime(transaction.date) }}</span>
                   </div>
                 </div>
               </div>
               <div class="flex items-center space-x-2">
-                <span :class="getPaymentMethodClass(transaction.paymentMethod)" class="px-2 py-1 text-xs rounded-full">
+                <span :class="getPaymentMethodClass(transaction.paymentMethod)"
+                  class="w-16 h-6 px-2 py-1 text-xs rounded-full text-center">
                   {{ transaction.paymentMethod }}
                 </span>
-                <span :class="getStatusClass(transaction.status)" class="px-2 py-1 text-xs rounded-full">
+                <span :class="getStatusClass(transaction.status)"
+                  class="w-16 h-6 px-2 py-1 text-xs rounded-full text-center">
                   {{ transaction.status }}
                 </span>
               </div>
@@ -242,14 +235,14 @@
           <!-- 페이지네이션 -->
           <div v-if="totalPages > 1" class="flex justify-center items-center space-x-2 mt-6">
             <button @click="currentPage--" :disabled="currentPage === 1"
-              class="px-3 py-1 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700">
+              class="px-3 py-1 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700">
               이전
             </button>
             <span class="text-sm text-gray-600 dark:text-gray-400">
               {{ currentPage }} / {{ totalPages }}
             </span>
             <button @click="currentPage++" :disabled="currentPage === totalPages"
-              class="px-3 py-1 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700">
+              class="px-3 py-1 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700">
               다음
             </button>
           </div>
@@ -312,7 +305,7 @@
             </div>
           </div>
         </div>
-        <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 flex justify-end space-x-3">
+        <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 flex justify-end space-x-3">
           <button @click="showDateRangeModal = false"
             class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600">
             취소
@@ -408,7 +401,7 @@
             </div>
           </div>
         </div>
-        <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 flex justify-end space-x-3">
+        <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 flex justify-end space-x-3">
           <button @click="showReportModal = false"
             class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600">
             취소
@@ -421,29 +414,122 @@
         </div>
       </div>
     </div>
+    <!-- 고객 결제 상세 모달 -->
+    <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+      <div class="bg-white dark:bg-gray-800 p-8 rounded-lg w-96">
+        <h2 class="text-lg font-semibold mb-4 dark:text-gray-300">거래 상세 정보</h2>
+
+        <div v-if="selectedTransaction" class="space-y-2 text-sm">
+          <div class="flex">
+            <strong class="w-20 text-gray-700 dark:text-gray-300">고객 이름:</strong>
+            <span class="text-left dark:text-gray-300">{{ selectedTransaction.customerName }}</span>
+          </div>
+          <div class="flex">
+            <strong class="w-20 text-gray-700 dark:text-gray-300">서비스 명:</strong>
+            <span class="text-left dark:text-gray-300">{{ selectedTransaction.service }}</span>
+          </div>
+          <div class="flex">
+            <strong class="w-20 text-gray-700 dark:text-gray-300">결제 금액:</strong>
+            <span class="text-left dark:text-gray-300">{{ formatCurrency(selectedTransaction.amount) }}</span>
+          </div>
+          <div class="flex">
+            <strong class="w-20 text-gray-700 dark:text-gray-300">거래 일시:</strong>
+            <span class="text-left dark:text-gray-300">{{ formatDateTime(selectedTransaction.date) }}</span>
+          </div>
+          <div class="flex">
+            <strong class="w-20 text-gray-700 dark:text-gray-300">결제 수단:</strong>
+            <span v-if="selectedTransaction.paymentMethod" :class="getPaymentMethodClass(selectedTransaction.paymentMethod)" class="text-left rounded px-2 py-1">{{
+              selectedTransaction.paymentMethod }}</span>
+            <span v-else class="text-left dark:text-gray-300">-</span>
+          </div>
+          <div class="flex">
+            <strong class="w-20 text-gray-700 dark:text-gray-300">결제 상태:</strong>
+            <span v-if="selectedTransaction.status" :class="getStatusClass(selectedTransaction.status)" class="text-left rounded px-2 py-1">{{
+              selectedTransaction.status }}</span>
+            <span v-else class="text-left dark:text-gray-300">-</span>
+          </div>
+        </div>
+
+        <button @click="isModalOpen = false"
+          class="mt-6 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 w-full text-center">
+          닫기
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive, watch } from 'vue'
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+import MonthlySale from './components/MonthlySale.vue'
+import { useAppStore } from '../../stores/useAppStore'
+import { ref, computed, reactive, watch, nextTick, onMounted } from 'vue'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale ,ChartConfiguration  } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import { Pie, Bar } from 'vue-chartjs'
+import {
+  Chart,
+  LineElement,
+  PointElement,
+} from 'chart.js'
+
+
+Chart.register(
+  ChartDataLabels,
+  BarElement,
+  LineElement,
+  PointElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend
+)
 
 // Chart.js 등록
 ChartJS.register(ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ChartDataLabels)
 
-// 반응형 데이터
+const myChartRef = ref<HTMLCanvasElement | null>(null);
+
+const chartVisible = ref(false); // 차트 렌더링 제어
+let myChart: Chart | null = null;
+
+// 예: 데이터 준비 후 차트 표시
+const chartDataReady = ref(false);
+
+watch(chartDataReady, (ready) => {
+  if (ready && myChartRef.value && !myChart) {
+    const config: ChartConfiguration = {
+      type: 'bar',
+      data: {
+        labels: ['A', 'B', 'C'],
+        datasets: [{ label: 'Test', data: [1,2,3] }]
+      }
+    };
+    myChart = new Chart(myChartRef.value, config);
+  }
+});
+
+onMounted(() => {
+  chartVisible.value = true; // DOM 렌더링
+  chartDataReady.value = true; // 차트 생성 트리거
+});
+
+// 반응형 데이터 - 모든 ref/reactive 호출을 최상단에 배치
 const searchQuery = ref('')
 const statusFilter = ref('all')
 const isLoadingData = ref(false)
 const currentPage = ref(1)
-const itemsPerPage = 10
+const itemsPerPage = 5
 
 // 모달 상태
 const showDateRangeModal = ref(false)
 const showReportModal = ref(false)
 const isGeneratingReport = ref(false)
+
+// 고객 결제 상세 모달
+const isModalOpen = ref(false)
+const selectedTransaction = ref<any>(null)
+
+
 
 // 기간 설정 관련
 const selectedDateRange = ref({
@@ -466,13 +552,17 @@ const reportIncludes = ref({
   analysis: false
 })
 
+
 // 전체 데이터 (실제로는 API에서 가져올 데이터)
 const allTransactions = ref([
+  // 기본 20개 데이터 (날짜 6월 이전, service 포함)
   {
     id: 'TXN-001',
     customerName: '김철수',
-    service: '출국 운반',
-    amount: 150000,
+    service: '대구공항',
+    bagCount: "2",
+    bagSize: "extrasizebag-1,largebag-1",
+    amount: 36000, // 20000*1 + 16000*1
     date: '2025-01-15 10:30',
     status: '완료',
     paymentMethod: '카드',
@@ -480,8 +570,10 @@ const allTransactions = ref([
   {
     id: 'TXN-002',
     customerName: '박영희',
-    service: '입국 운반',
-    amount: 120000,
+    service: '동대구역',
+    bagCount: "3",
+    bagSize: "mediumbag-2,smallbag-1",
+    amount: 294000, // 140000*2 + 12000*1
     date: '2025-01-20 09:15',
     status: '완료',
     paymentMethod: '현금',
@@ -489,8 +581,10 @@ const allTransactions = ref([
   {
     id: 'TXN-003',
     customerName: '이민수',
-    service: '특급 서비스',
-    amount: 200000,
+    service: '서대구역',
+    bagCount: "1",
+    bagSize: "smallbag-1",
+    amount: 12000,
     date: '2025-02-05 08:45',
     status: '완료',
     paymentMethod: '카드',
@@ -498,8 +592,10 @@ const allTransactions = ref([
   {
     id: 'TXN-004',
     customerName: '최지혜',
-    service: '당일 배송',
-    amount: 80000,
+    service: '숙소',
+    bagCount: "4",
+    bagSize: "extrasizebag-2,largebag-1,smallbag-1",
+    amount: 72000, // 20000*2 + 16000*1 + 12000*1
     date: '2025-02-10 16:20',
     status: '완료',
     paymentMethod: '계좌이체',
@@ -507,8 +603,10 @@ const allTransactions = ref([
   {
     id: 'TXN-005',
     customerName: '정유진',
-    service: '출국 운반',
-    amount: 150000,
+    service: '대구공항',
+    bagCount: "2",
+    bagSize: "mediumbag-1,largebag-1",
+    amount: 156000, // 140000*1 + 16000*1
     date: '2025-03-01 14:10',
     status: '처리중',
     paymentMethod: '카드',
@@ -516,8 +614,10 @@ const allTransactions = ref([
   {
     id: 'TXN-006',
     customerName: '홍길동',
-    service: '입국 운반',
-    amount: 130000,
+    service: '동대구역',
+    bagCount: "3",
+    bagSize: "largebag-2,smallbag-1",
+    amount: 44000, // 16000*2 + 12000*1
     date: '2025-03-15 11:30',
     status: '완료',
     paymentMethod: '카드',
@@ -525,8 +625,10 @@ const allTransactions = ref([
   {
     id: 'TXN-007',
     customerName: '김영수',
-    service: '당일 배송',
-    amount: 90000,
+    service: '서대구역',
+    bagCount: "1",
+    bagSize: "extrasizebag-1",
+    amount: 20000,
     date: '2025-04-02 13:45',
     status: '완료',
     paymentMethod: '현금',
@@ -534,8 +636,10 @@ const allTransactions = ref([
   {
     id: 'TXN-008',
     customerName: '이영희',
-    service: '특급 서비스',
-    amount: 220000,
+    service: '숙소',
+    bagCount: "5",
+    bagSize: "mediumbag-3,smallbag-2",
+    amount: 444000, // 140000*3 + 12000*2
     date: '2025-04-18 16:00',
     status: '완료',
     paymentMethod: '카드',
@@ -543,8 +647,10 @@ const allTransactions = ref([
   {
     id: 'TXN-009',
     customerName: '박민수',
-    service: '출국 운반',
-    amount: 160000,
+    service: '대구공항',
+    bagCount: "2",
+    bagSize: "largebag-2",
+    amount: 32000,
     date: '2025-05-05 09:20',
     status: '완료',
     paymentMethod: '계좌이체',
@@ -552,13 +658,200 @@ const allTransactions = ref([
   {
     id: 'TXN-010',
     customerName: '최수진',
-    service: '입국 운반',
-    amount: 140000,
+    service: '동대구역',
+    bagCount: "3",
+    bagSize: "extrasizebag-1,mediumbag-2",
+    amount: 300000, // 20000*1 + 140000*2
     date: '2025-05-25 15:30',
     status: '완료',
     paymentMethod: '카드',
   },
-])
+  {
+    id: 'TXN-011',
+    customerName: '조하나',
+    service: '서대구역',
+    bagCount: "1",
+    bagSize: "smallbag-1",
+    amount: 12000,
+    date: '2025-06-01 12:10',
+    status: '완료',
+    paymentMethod: '현금',
+  },
+  {
+    id: 'TXN-012',
+    customerName: '서준',
+    service: '숙소',
+    bagCount: "2",
+    bagSize: "extrasizebag-1,largebag-1",
+    amount: 36000,
+    date: '2025-06-10 09:40',
+    status: '처리중',
+    paymentMethod: '카드',
+  },
+  {
+    id: 'TXN-013',
+    customerName: '강민',
+    service: '대구공항',
+    bagCount: "4",
+    bagSize: "mediumbag-2,smallbag-2",
+    amount: 304000,
+    date: '2025-06-15 14:25',
+    status: '완료',
+    paymentMethod: '계좌이체',
+  },
+  {
+    id: 'TXN-014',
+    customerName: '윤서',
+    service: '동대구역',
+    bagCount: "3",
+    bagSize: "largebag-3",
+    amount: 48000,
+    date: '2025-06-20 08:50',
+    status: '완료',
+    paymentMethod: '카드',
+  },
+  {
+    id: 'TXN-015',
+    customerName: '한결',
+    service: '서대구역',
+    bagCount: "5",
+    bagSize: "extrasizebag-2,largebag-1,smallbag-2",
+    amount: 88000,
+    date: '2025-06-25 10:15',
+    status: '완료',
+    paymentMethod: '현금',
+  },
+  {
+    id: 'TXN-016',
+    customerName: '김하늘',
+    service: '숙소',
+    bagCount: "2",
+    bagSize: "mediumbag-2",
+    amount: 280000,
+    date: '2025-06-27 11:00',
+    status: '완료',
+    paymentMethod: '카드',
+  },
+  {
+    id: 'TXN-017',
+    customerName: '이준',
+    service: '대구공항',
+    bagCount: "3",
+    bagSize: "extrasizebag-1,largebag-2",
+    amount: 52000,
+    date: '2025-06-28 15:30',
+    status: '완료',
+    paymentMethod: '계좌이체',
+  },
+  {
+    id: 'TXN-018',
+    customerName: '박서연',
+    service: '동대구역',
+    bagCount: "1",
+    bagSize: "extrasizebag-1",
+    amount: 20000,
+    date: '2025-06-29 09:45',
+    status: '완료',
+    paymentMethod: '카드',
+  },
+  {
+    id: 'TXN-019',
+    customerName: '최민준',
+    service: '서대구역',
+    bagCount: "2",
+    bagSize: "largebag-2",
+    amount: 32000,
+    date: '2025-06-29 16:20',
+    status: '완료',
+    paymentMethod: '현금',
+  },
+  {
+    id: 'TXN-020',
+    customerName: '한지민',
+    service: '숙소',
+    bagCount: "4",
+    bagSize: "mediumbag-3,smallbag-1",
+    amount: 432000,
+    date: '2025-06-30 14:10',
+    status: '완료',
+    paymentMethod: '계좌이체',
+  },
+
+  // 나머지 100개 랜덤 생성 (날짜 2025-01-01 ~ 2025-06-30, service 랜덤)
+  ...Array.from({ length: 100 }).map((_, i) => {
+    const idNum = i + 21;
+    const id = `TXN-${String(idNum).padStart(3, '0')}`;
+
+    const customers = [
+      '김철수', '박영희', '이민수', '최지혜', '정유진', '홍길동',
+      '김영수', '이영희', '박민수', '최수진', '조하나', '서준',
+      '강민', '윤서', '한결', '김하늘', '이준', '박서연',
+      '최민준', '한지민', '서연', '동현', '민재', '수빈',
+    ];
+    const statuses = ['완료', '처리중', '취소'];
+    const paymentMethods = ['카드', '현금', '계좌이체'];
+    const services = ['대구공항', '동대구역', '서대구역', '숙소'];
+
+    const year = 2025;
+    const month = Math.floor(Math.random() * 6) + 1; // 1~6월 (6월까지)
+    const day = Math.floor(Math.random() * 28) + 1;
+    const hour = Math.floor(Math.random() * 9) + 8;
+    const minute = Math.floor(Math.random() * 60);
+
+    const date = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+
+    const customerName = customers[Math.floor(Math.random() * customers.length)];
+    const status = statuses[Math.floor(Math.random() * statuses.length)];
+    const paymentMethod = paymentMethods[Math.floor(Math.random() * paymentMethods.length)];
+    const service = services[Math.floor(Math.random() * services.length)];
+
+    const bagSizes = ['extrasizebag', 'largebag', 'mediumbag', 'smallbag'];
+    const priceMap = {
+      extrasizebag: 20000,
+      largebag: 16000,
+      mediumbag: 140000,
+      smallbag: 12000,
+    };
+
+    const totalBags = Math.floor(Math.random() * 5) + 1; // 1~5개 가방
+    const numSizesUsed = Math.floor(Math.random() * Math.min(3, totalBags)) + 1;
+
+    let counts = new Array(numSizesUsed).fill(1);
+    let remain = totalBags - numSizesUsed;
+    while (remain > 0) {
+      counts[Math.floor(Math.random() * numSizesUsed)]++;
+      remain--;
+    }
+
+    let selectedSizes = [];
+    while (selectedSizes.length < numSizesUsed) {
+      const candidate = bagSizes[Math.floor(Math.random() * bagSizes.length)];
+      if (!selectedSizes.includes(candidate)) selectedSizes.push(candidate);
+    }
+
+    const bagSizeArr = selectedSizes.map((size, i) => `${size}-${counts[i]}`);
+    const bagSizeStr = bagSizeArr.join(',');
+
+    let amount = 0;
+    for (let i = 0; i < numSizesUsed; i++) {
+      amount += priceMap[selectedSizes[i]] * counts[i];
+    }
+    const extra = Math.floor(Math.random() * 5) * 1000;
+    amount += extra;
+
+    return {
+      id,
+      customerName,
+      service,
+      bagCount: totalBags.toString(),
+      bagSize: bagSizeStr,
+      amount,
+      date,
+      status,
+      paymentMethod,
+    };
+  }),
+]);
 
 // 기간에 따른 데이터 필터링
 const filteredTransactions = computed(() => {
@@ -568,7 +861,7 @@ const filteredTransactions = computed(() => {
   if (selectedDateRange.value.start && selectedDateRange.value.end) {
     const startDate = new Date(selectedDateRange.value.start)
     const endDate = new Date(selectedDateRange.value.end)
-    endDate.setHours(23, 59, 59, 999) // 종료일 끝까지 포함
+    endDate.setHours(23, 59, 59, 999)
 
     result = result.filter(transaction => {
       const transactionDate = new Date(transaction.date)
@@ -637,6 +930,7 @@ const filteredStats = computed(() => {
 // 기간별 차트 데이터 생성
 const filteredChartData = computed(() => {
   const transactions = filteredTransactions.value
+  const trend = generateTrendData(transactions)
 
   // 기간별 매출 분석
   const periodData = generatePeriodData(transactions)
@@ -650,6 +944,7 @@ const filteredChartData = computed(() => {
   return {
     period: {
       labels: periodData.map(item => item.label),
+
       datasets: [{
         backgroundColor: ['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899'],
         data: periodData.map(item => item.amount),
@@ -666,19 +961,51 @@ const filteredChartData = computed(() => {
       labels: trendData.map(item => item.period),
       datasets: [
         {
+          type: 'bar',
           label: '매출액',
           backgroundColor: '#3B82F6',
           data: trendData.map(item => item.revenue),
+          yAxisID: 'y',
+          datalabels: {
+            color: '#3B82F6',
+            anchor: 'end',
+            align: 'top',
+            font: {
+              weight: 'bold',
+            },
+            formatter: value => value.toLocaleString()
+          }
         },
         {
+          type: 'line',
           label: '주문 건수',
-          backgroundColor: '#10B981',
           data: trendData.map(item => item.orders),
+          borderColor: '#10B981',
+          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+          pointBackgroundColor: '#10B981',
+          pointBorderColor: '#10B981',
+          pointRadius: 4,
+          tension: 0.4,
+          fill: false,
+          yAxisID: 'y1',
+          datalabels: {
+            color: '#10B981', // 초록색
+            anchor: 'end',
+            align: 'top',
+            font: {
+              weight: 'bold',
+            },
+            formatter: value => `${value}건`
+          }
         }
       ]
     }
   }
 })
+
+
+
+
 
 // 기간별 데이터 생성 함수
 const generatePeriodData = (transactions: any[]) => {
@@ -815,113 +1142,83 @@ const generateServiceData = (transactions: any[]) => {
 }
 
 const generateTrendData = (transactions: any[]) => {
+  const defaultData = [
+    { period: '1주', revenue: 1800000, orders: 45 },
+    { period: '2주', revenue: 2100000, orders: 52 },
+    { period: '3주', revenue: 1950000, orders: 48 },
+    { period: '4주', revenue: 2300000, orders: 58 },
+    { period: '5주', revenue: 2050000, orders: 51 },
+    { period: '6주', revenue: 2400000, orders: 62 },
+  ]
+
+  // 날짜 범위 없을 때 기본 주차 데이터 반환
   if (!selectedDateRange.value.start || !selectedDateRange.value.end) {
-    // 기본 주별 데이터
-    return [
-      { period: '1주', revenue: 1800000, orders: 45 },
-      { period: '2주', revenue: 2100000, orders: 52 },
-      { period: '3주', revenue: 1950000, orders: 48 },
-      { period: '4주', revenue: 2300000, orders: 58 },
-      { period: '5주', revenue: 2050000, orders: 51 },
-      { period: '6주', revenue: 2400000, orders: 62 },
-    ]
+    return defaultData
   }
 
-  // 선택된 기간에 따른 추이 데이터 생성
   const startDate = new Date(selectedDateRange.value.start)
   const endDate = new Date(selectedDateRange.value.end)
   const daysDiff = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
 
+  // 일별 추이 (1주 이하)
   if (daysDiff <= 7) {
     return generateDailyTrend(transactions, startDate, endDate)
-  } else {
-    return generateWeeklyTrend(transactions, startDate, endDate)
   }
+
+  // 주별 추이 (8일 이상)
+  return generateWeeklyTrend(transactions, startDate, endDate)
 }
 
-const generateDailyTrend = (transactions: any[], startDate: Date, endDate: Date) => {
-  const trendData: any[] = []
-  const currentDate = new Date(startDate)
+const generateDailyTrend = (transactions: any[], start: Date, end: Date) => {
+  const result: { period: string; revenue: number; orders: number }[] = []
 
-  while (currentDate <= endDate) {
-    const dateStr = currentDate.toISOString().split('T')[0]
-    const dayTransactions = transactions.filter(t => t.date.startsWith(dateStr))
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    const dayKey = d.toISOString().split('T')[0]
 
-    trendData.push({
-      period: `${currentDate.getMonth() + 1}/${currentDate.getDate()}`,
-      revenue: dayTransactions.reduce((sum, t) => sum + t.amount, 0),
-      orders: dayTransactions.length
+    const filtered = transactions.filter(tx => tx.date === dayKey)
+    const revenue = filtered.reduce((sum, tx) => sum + tx.amount, 0)
+    const orders = filtered.length
+
+    result.push({
+      period: `${d.getMonth() + 1}/${d.getDate()}`,
+      revenue,
+      orders,
     })
-
-    currentDate.setDate(currentDate.getDate() + 1)
   }
 
-  return trendData
+  return result
 }
 
-const generateWeeklyTrend = (transactions: any[], startDate: Date, endDate: Date) => {
-  const trendData: any[] = []
-  let weekStart = new Date(startDate)
-  let weekNum = 1
+const generateWeeklyTrend = (transactions: any[], start: Date, end: Date) => {
+  const result: { period: string; revenue: number; orders: number }[] = []
+  let weekIndex = 1
 
-  while (weekStart <= endDate) {
-    const weekEnd = new Date(weekStart)
+  for (let d = new Date(start); d <= end;) {
+    const weekStart = new Date(d)
+    const weekEnd = new Date(d)
     weekEnd.setDate(weekEnd.getDate() + 6)
 
-    const weekTransactions = transactions.filter(t => {
-      const tDate = new Date(t.date)
-      return tDate >= weekStart && tDate <= weekEnd
+    const filtered = transactions.filter(tx => {
+      const txDate = new Date(tx.date)
+      return txDate >= weekStart && txDate <= weekEnd
     })
 
-    trendData.push({
-      period: `${weekNum}주차`,
-      revenue: weekTransactions.reduce((sum, t) => sum + t.amount, 0),
-      orders: weekTransactions.length
+    const revenue = filtered.reduce((sum, tx) => sum + tx.amount, 0)
+    const orders = filtered.length
+
+    result.push({
+      period: `${weekIndex}주`,
+      revenue,
+      orders,
     })
 
-    weekStart.setDate(weekStart.getDate() + 7)
-    weekNum++
+    d.setDate(d.getDate() + 7)
+    weekIndex++
   }
 
-  return trendData
+  return result
 }
-
 // 차트 옵션
-const pieChartOptions = reactive({
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    datalabels: {
-      color: '#000000',
-      font: {
-        weight: 'normal',
-        size: 10,
-      },
-      formatter: (value: number, context: any) => {
-        const label = context.chart.data.labels[context.dataIndex]
-        return [label, formatCurrency(value)]
-      },
-      anchor: 'center',
-      align: 'center',
-    },
-    legend: {
-      position: 'bottom',
-      labels: {
-        color: '#374151',
-        usePointStyle: true,
-        padding: 20,
-      },
-    },
-    tooltip: {
-      callbacks: {
-        label: function (context: any) {
-          return `${context.label}: ${formatCurrency(context.parsed)}`
-        }
-      }
-    }
-  },
-})
-
 const barChartOptions = reactive({
   responsive: true,
   maintainAspectRatio: false,
@@ -929,14 +1226,14 @@ const barChartOptions = reactive({
     legend: {
       position: 'top',
       labels: {
-        color: '#374151',
+        color: '#444',
         usePointStyle: true,
       },
     },
     tooltip: {
       callbacks: {
-        label: function (context: any) {
-          if (context.datasetIndex === 0) {
+        label(context: any) {
+          if (context.dataset.label === '매출액') {
             return `매출액: ${formatCurrency(context.parsed.y)}`
           } else {
             return `주문 건수: ${context.parsed.y}건`
@@ -947,24 +1244,180 @@ const barChartOptions = reactive({
   },
   scales: {
     y: {
+      type: 'linear',
+      position: 'left',
       beginAtZero: true,
       grid: {
-        color: '#E5E7EB',
+        color: '#444',
       },
       ticks: {
-        color: '#6B7280',
+        color: '#444',
+      },
+      title: {
+        display: true,
+        text: '매출액',
+        color: '#444',
+      },
+    },
+    y1: {
+      type: 'linear',
+      position: 'right',
+      beginAtZero: true,
+      grid: {
+        drawOnChartArea: false,
+      },
+      ticks: {
+        color: '#444',
+      },
+      title: {
+        display: true,
+        text: '주문 건수',
+        color: '#444',
       },
     },
     x: {
       grid: {
-        color: '#E5E7EB',
+        color: '#444',
       },
       ticks: {
-        color: '#6B7280',
+        color: '#444',
+      },
+    }
+  }
+})
+
+const barChartData = ref({
+  labels: ['1월', '2월', '3월', '4월', '5월'],
+  datasets: [
+    {
+      label: '매출액',
+      data: [1000000, 1500000, 1200000, 1800000, 1300000],
+      backgroundColor: '#4BC0C0',
+      yAxisID: 'y',
+    },
+    {
+      label: '주문 건수',
+      data: [120, 140, 110, 160, 130],
+      backgroundColor: '#FF6384',
+      yAxisID: 'y1',
+    }
+  ]
+})
+// 도넛 차트
+const pieChartOptions = reactive({
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    datalabels: {
+      color: '#FFFFFF',
+      font: {
+        weight: 'normal',
+      },
+      formatter: (value, context) => {
+        const label = context.chart.data.labels[context.dataIndex]
+        return [label, formatCurrency(value)]
+      },
+      anchor: 'center',   // 데이터 라벨을 중간에 붙임
+      align: 'center',    // 중간 정렬
+      offset: 10       // 도넛에서 얼마나 떨어질지 (px)
+    },
+    legend: {
+      position: 'bottom',
+      labels: {
+        color: '#aaa',
+        usePointStyle: true,
+        padding: 20,
       },
     },
+    tooltip: {
+      callbacks: {
+        label: function (context) {
+          return `${context.label}: ${formatCurrency(context.parsed)}`
+        }
+      }
+    }
   },
 })
+const pieChartData = reactive({
+  labels: ['A', 'B', 'C'],
+  datasets: [
+    {
+      data: [10, 20, 30],
+      backgroundColor: ['#f00', '#0f0', '#00f'],
+    }
+  ]
+})
+
+// 픽업별 도넛차트 속 글자색 다크시 흰색
+const chartInstance = ref(null)
+
+// 다크모드 당겨오기
+ const appStore = useAppStore()
+const isDarkMode = computed(() => appStore.isDarkMode)
+
+// watch
+// barchart darkmode
+watch(isDarkMode, async (dark) => {
+  console.log('다크모드 변경됨:', dark)
+  const colorMain = dark ? '#aaa' : '#444'
+  const legendColor = dark ? '#fff' : '#444'
+
+  const scales = barChartOptions.scales
+  barChartOptions.plugins.legend.labels.color = legendColor
+
+  scales.x.ticks.color = colorMain
+  scales.x.grid.color = colorMain
+
+  scales.y.ticks.color = colorMain
+  scales.y.grid.color = colorMain
+  scales.y.title.color = colorMain
+
+  scales.y1.ticks.color = colorMain
+  scales.y1.title.color = colorMain
+
+  await nextTick()
+
+  if (chartInstance.value) {
+    chartInstance.value.destroy()
+  }
+
+  const ctx = document.getElementById('barChart')
+  if (!ctx) return
+
+  chartInstance.value = new Chart(ctx, {
+    type: 'bar',
+    data: barChartData,
+    options: barChartOptions,
+  })
+}, { immediate: true })
+
+// dounught darkmode
+ watch(isDarkMode, async (dark) => {
+  // 픽업위치별 도넛 차트 다크 옵션 업데이트
+  pieChartOptions.plugins.datalabels.color = dark ? '#ffffff' : '#ffffff'
+  pieChartOptions.plugins.legend.labels.color = dark ? '#aaa' : '#444'
+
+
+  await nextTick()
+
+  // 기존 차트 제거
+  if (chartInstance.value) {
+    chartInstance.value.destroy()
+  }
+
+  // 새 차트 생성
+ const ctx = document.getElementById('myChart')
+if (!ctx) {
+  console.warn('myChart element not found')
+  return
+}
+  chartInstance.value = new Chart(ctx, {
+    type: 'doughnut',
+    data: pieChartData,
+    options: pieChartOptions,
+    plugins: [ChartDataLabels],
+  })
+}, { immediate: true })
 
 // 기간 설정 함수들
 const setQuickDateRange = (period: string) => {
@@ -1054,7 +1507,16 @@ const generateReport = async () => {
     }
 
     console.log('보고서 생성 완료:', reportData)
-    alert(`${reportFormat.value.toUpperCase()} 형식의 보고서가 생성되었습니다.\n기간: ${selectedDateRange.value.start || '전체'} ~ ${selectedDateRange.value.end || '현재'}\n거래 건수: ${filteredTransactions.value.length}건`)
+
+    if (reportFormat.value === 'pdf') {
+      downloadPDFReport(reportData)
+    } else if (reportFormat.value === 'excel') {
+      downloadExcelReport(reportData)
+    } else if (reportFormat.value === 'csv') {
+      downloadCSVReport(reportData)
+    }
+
+    alert(`${reportFormat.value.toUpperCase()} 형식의 보고서가 다운로드되었습니다.\n기간: ${selectedDateRange.value.start || '전체'} ~ ${selectedDateRange.value.end || '현재'}\n거래 건수: ${filteredTransactions.value.length}건`)
 
     showReportModal.value = false
   } catch (error) {
@@ -1064,6 +1526,131 @@ const generateReport = async () => {
     isGeneratingReport.value = false
   }
 }
+
+const downloadPDFReport = (reportData: any) => {
+  const htmlContent = `
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <title>매출 보고서</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          .header { text-align: center; margin-bottom: 30px; }
+          .stats { display: flex; justify-content: space-around; margin: 20px 0; }
+          .stat-item { text-align: center; }
+          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+          th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+          th { background-color: #f2f2f2; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>매출 보고서</h1>
+          <p>기간: ${reportData.dateRange.start || '전체'} ~ ${reportData.dateRange.end || '현재'}</p>
+          <p>생성일: ${new Date(reportData.generatedAt).toLocaleString('ko-KR')}</p>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>거래번호</th>
+              <th>고객명</th>
+              <th>서비스</th>
+              <th>금액</th>
+              <th>날짜</th>
+              <th>상태</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filteredTransactions.value.slice(0, 50).map(transaction => `
+              <tr>
+                <td>${transaction.id}</td>
+                <td>${transaction.customerName}</td>
+                <td>${transaction.service}</td>
+                <td>${transaction.amount.toLocaleString()}원</td>
+                <td>${transaction.date}</td>
+                <td>${transaction.status}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </body>
+    </html>
+  `
+
+  const blob = new Blob([htmlContent], { type: 'text/html' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `매출보고서_${new Date().toISOString().split('T')[0]}.html`
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}
+
+const downloadExcelReport = (reportData: any) => {
+  const csvContent = [
+    ['매출 보고서'],
+    [`기간: ${reportData.dateRange.start || '전체'} ~ ${reportData.dateRange.end || '현재'}`],
+    [`생성일: ${new Date(reportData.generatedAt).toLocaleString('ko-KR')}`],
+    [''],
+    ['거래 내역'],
+    ['거래번호', '고객명', '서비스', '금액', '날짜', '상태'],
+    ...filteredTransactions.value.map(transaction => [
+      transaction.id,
+      transaction.customerName,
+      transaction.service,
+      transaction.amount,
+      transaction.date,
+      transaction.status
+    ])
+  ]
+
+  const csvString = csvContent.map(row =>
+    row.map(cell => `"${cell}"`).join(',')
+  ).join('\n')
+
+  const blob = new Blob(['\uFEFF' + csvString], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `매출보고서_${new Date().toISOString().split('T')[0]}.csv`
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}
+
+const downloadCSVReport = (reportData: any) => {
+  const csvContent = [
+    ['거래번호', '고객명', '서비스', '금액', '날짜', '상태'],
+    ...filteredTransactions.value.map(transaction => [
+      transaction.id,
+      transaction.customerName,
+      transaction.service,
+      transaction.amount,
+      transaction.date,
+      transaction.status
+    ])
+  ]
+
+  const csvString = csvContent.map(row =>
+    row.map(cell => `"${cell}"`).join(',')
+  ).join('\n')
+
+  const blob = new Blob(['\uFEFF' + csvString], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `매출보고서_${new Date().toISOString().split('T')[0]}.csv`
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}
+
+// 함수들
 
 // 유틸리티 함수들
 const formatCurrency = (amount: number): string => {
@@ -1078,6 +1665,7 @@ const formatDate = (dateString: string): string => {
 }
 
 const formatDateTime = (dateString: string): string => {
+  const date = new Date(dateString)
   return new Date(dateString).toLocaleString('ko-KR')
 }
 
@@ -1090,7 +1678,7 @@ const getDaysDifference = (): number => {
 
 const getStatTitle = (type: string): string => {
   if (!selectedDateRange.value.start || !selectedDateRange.value.end) {
-    return type === 'revenue' ? '오늘 매출' : '오늘 주문'
+    return type === 'revenue' ? '전체 매출' : '전체 주문'
   }
 
   if (isAllPeriod.value) {
@@ -1106,7 +1694,7 @@ const getStatTitle = (type: string): string => {
 
 const getChartTitle = (type: string): string => {
   if (!selectedDateRange.value.start || !selectedDateRange.value.end) {
-    return type === 'period' ? '월별 매출 현황' : '주간 매출 추이'
+    return type === 'period' ? '매출 현황' : '매출 추이'
   }
 
   if (isAllPeriod.value) {
@@ -1116,18 +1704,20 @@ const getChartTitle = (type: string): string => {
   const days = getDaysDifference()
   if (type === 'period') {
     if (days === 1) return '일별 매출 현황'
-    if (days <= 7) return '일별 매출 현황'
-    if (days <= 31) return '주별 매출 현황'
-    return '월별 매출 현황'
+    if (days <= 7) return '주별 매출 현황'
+    if (days <= 31) return '월별 매출 현황'
+    return '매출 현황'
   } else {
-    if (days <= 7) return '일별 매출 추이'
-    return '주별 매출 추이'
+    if (days === 1) return '일별 매출 추이'
+    if (days <= 7) return '주별 매출 추이'
+      if (days <= 31) return '월별 매출 추이'
+    return '매출 추이'
   }
 }
 
 const getChartDescription = (type: string): string => {
   if (!selectedDateRange.value.start || !selectedDateRange.value.end) {
-    return type === 'period' ? '최근 6개월간 매출 추이를 확인할 수 있습니다.' : '최근 6주간의 매출과 주문 건수 추이를 확인할 수 있습니다.'
+    return type === 'period' ? '최근 6개월간 매출 현황를 확인할 수 있습니다.' : '최근 6주간의 매출과 주문 건수 추이를 확인할 수 있습니다.'
   }
 
   if (isAllPeriod.value) {
@@ -1176,11 +1766,9 @@ const isAllPeriod = computed(() => {
 
   return selectedDateRange.value.start === oldestDate && selectedDateRange.value.end === today
 })
-</script>
 
-<style scoped>
-.fas {
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
+const openCreditedList = (transaction: any) => {
+  selectedTransaction.value = transaction
+  isModalOpen.value = true
 }
-</style>
+</script>

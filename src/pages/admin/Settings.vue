@@ -234,8 +234,6 @@ import { useAppStore } from "@/stores/useAppStore";
 
 // i18n 설정
 const { t, locale } = useI18n();
-const translated = t('some.key');
-console.log(typeof t)
 
 // 토스트 메시지 표시 여부
 const showToast = ref(false);
@@ -364,4 +362,5 @@ const saveSettings = () => {
 .animate-slide-in {
   animation: slide-in 0.3s ease-out;
 }
+
 </style>

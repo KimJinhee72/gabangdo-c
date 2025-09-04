@@ -1,7 +1,8 @@
 <template>
   <div class="space-y-6 text-gray-800 dark:text-gray-200 rounded">
     <!-- 페이지 헤더 -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div
+      class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
       <div>
         <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
           예약관리
@@ -11,7 +12,8 @@
         </p>
       </div>
       <!--새 운반 예약 추가  -->
-      <button @click="showAddCustomerModal"
+      <button
+        @click="showAddCustomerModal"
         class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center">
         <i class="fas fa-plus mr-2"></i>예약추가
       </button>
@@ -19,54 +21,77 @@
 
     <!-- 통계 카드 -->
     <div class="grid grid-rows-1 md:w-full grid-cols-3 gap-6">
-      <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow dark:bg-gray-800">
+      <div
+        class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow dark:bg-gray-800">
         <div class="flex items-center">
           <div class="icon-box p-3 rounded-full bg-blue-100 text-blue-600">
             <i class="suitcase fas fa-suitcase text-2xl"></i>
           </div>
           <div class="ml-0 min-[900px]:ml-4">
-            <h3 class="block max-[510px]:hidden text-sm font-medium text-ray-500 dark:text-white">
+            <h3
+              class="block max-[510px]:hidden text-sm font-medium text-ray-500 dark:text-white">
               전체예약<span class="text-xs text-gray-500 dark:text-white">
-                / 예약변화</span>
+                / 예약변화</span
+              >
             </h3>
-            <h3 class="hidden max-[510px]:block text-sm font-medium text-gray-500 dark:text-white">
+            <h3
+              class="hidden max-[510px]:block text-sm font-medium text-gray-500 dark:text-white">
               예약<span class="text-xs text-gray-500 dark:text-white">
-                / 변화</span>
+                / 변화</span
+              >
             </h3>
-            <p class="text-2xl max-[510px]:text-lg leading-9 font-semibold text-gray-800 dark:text-white">
+            <p
+              class="text-2xl max-[510px]:text-lg leading-9 font-semibold text-gray-800 dark:text-white">
               120
-              <span class="text-lg max-[510px]:text-sm font-semibold text-gray-800 dark:text-white">/ +15
+              <span
+                class="text-lg max-[510px]:text-sm font-semibold text-gray-800 dark:text-white"
+                >/ +15
               </span>
             </p>
-            <span class="span text-sm text-green-600 dark:text-green-300">+12%</span>
+            <span class="span text-sm text-green-600 dark:text-green-300"
+              >+12%</span
+            >
           </div>
         </div>
       </div>
       <!-- 기사카드 -->
-      <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow dark:bg-gray-800">
+      <div
+        class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow dark:bg-gray-800">
         <div class="flex items-center">
-          <div class="icon-box p-3 rounded-full bg-green-100 text-green-600 dark:text-green-300">
+          <div
+            class="icon-box p-3 rounded-full bg-green-100 text-green-600 dark:text-green-300">
             <i class="user fas fa-check-circle text-2xl"></i>
           </div>
           <div class="ml-0 min-[900px]:ml-4">
-            <h3 class="block max-[510px]:hidden text-sm font-medium text-gray-500 dark:text-white">
+            <h3
+              class="block max-[510px]:hidden text-sm font-medium text-gray-500 dark:text-white">
               운반완료
-              <span class="text-xs text-gray-500 dark:text-white">/ 전체예약</span>
+              <span class="text-xs text-gray-500 dark:text-white"
+                >/ 전체예약</span
+              >
             </h3>
-            <h3 class="hidden max-[510px]:block text-sm font-medium text-gray-500 dark:text-white">
+            <h3
+              class="hidden max-[510px]:block text-sm font-medium text-gray-500 dark:text-white">
               완료<span class="text-xs text-gray-500 dark:text-white">
-                / 예약</span>
+                / 예약</span
+              >
             </h3>
-            <p class="text-2xl max-[510px]:text-lg font-semibold text-gray-800 dark:text-white">
-              18<span class="text-lg max-[510px]:text-sm font-semibold text-gray-800 dark:text-white">
-                / 120</span>
+            <p
+              class="text-2xl max-[510px]:text-lg font-semibold text-gray-800 dark:text-white">
+              18<span
+                class="text-lg max-[510px]:text-sm font-semibold text-gray-800 dark:text-white">
+                / 120</span
+              >
             </p>
-            <span class="span text-sm text-green-600 dark:text-green-300">+15%</span>
+            <span class="span text-sm text-green-600 dark:text-green-300"
+              >+15%</span
+            >
           </div>
         </div>
       </div>
       <!-- 대기중상태카드 -->
-      <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow dark:bg-gray-800">
+      <div
+        class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow dark:bg-gray-800">
         <div class="flex items-center">
           <div class="icon-box p-3 rounded-full bg-gray-300 text-yellow-600">
             <i class="star fas fa-clock text-2xl"></i>
@@ -75,7 +100,8 @@
             <h3 class="text-sm font-medium text-gray-500 dark:text-white">
               예약대기중
             </h3>
-            <p class="text-2xl max-[510px]:text-lg font-semibold text-gray-800 dark:text-white">
+            <p
+              class="text-2xl max-[510px]:text-lg font-semibold text-gray-800 dark:text-white">
               6건
             </p>
             <span class="text-sm text-green-600 dark:text-green-300">+2건</span>
@@ -89,13 +115,18 @@
       <div class="flex flex-col md:flex-row gap-4">
         <div class="flex-1">
           <div class="relative">
-            <input type="text" v-model="searchQuery" @input="handleInput" placeholder="고객명 또는 예약번호로 검색"
+            <input
+              type="text"
+              v-model="searchQuery"
+              @input="handleInput"
+              placeholder="고객명 또는 예약번호로 검색"
               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
             <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
           </div>
         </div>
         <div class="flex gap-2">
-          <select v-model="statusFilter"
+          <select
+            v-model="statusFilter"
             class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
             <option value="all">전체 상태</option>
             <option value="waiting">대기중</option>
@@ -103,7 +134,8 @@
             <option value="completed">완료</option>
             <option value="cancelled">취소</option>
           </select>
-          <select v-model="sortBy"
+          <select
+            v-model="sortBy"
             class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
             <option value="date-desc">날짜순 (최신순)</option>
             <option value="date-asc">날짜순 (오래된순)</option>
@@ -115,16 +147,20 @@
 
     <!-- 예약 목록 -->
     <!-- 예약 현황 -->
-    <ReservationList :reservations="filteredReservations" />
+   <ReservationList :reservations="reservations" />
     <!-- 예약추가/수정 모달 -->
-    <div v-if="showCustomerForm" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4">
+    <div
+      v-if="showCustomerForm"
+      class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4">
       <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
         <div class="p-6 border-b border-gray-200">
           <div class="flex justify-between items-center">
             <h3 class="text-lg font-medium text-gray-900">
               {{ editingCustomer ? "예약 수정" : "예약 추가" }}
             </h3>
-            <button @click="closeCustomerForm" class="text-gray-400 hover:text-gray-500">
+            <button
+              @click="closeCustomerForm"
+              class="text-gray-400 hover:text-gray-500">
               <i class="fas fa-times"></i>
             </button>
           </div>
@@ -132,26 +168,43 @@
         <form @submit.prevent="saveCustomer" class="p-6 space-y-4">
           <div>
             <label class="block text-sm font-medium text-gray-700">이름</label>
-            <input type="text" v-model="customerForm.name" required
+            <input
+              type="text"
+              v-model="customerForm.name"
+              required
               class="mt-1 py-0.5 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
           </div>
           <!-- 연락처 -->
           <div>
-            <label class="block text-sm font-medium text-gray-700">연락처</label>
-            <input type="tel" v-model="customerForm.phone" required
+            <label class="block text-sm font-medium text-gray-700"
+              >연락처</label
+            >
+            <input
+              type="tel"
+              v-model="customerForm.phone"
+              required
               class="mt-1 py-0.5 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
           </div>
           <!-- 날짜,시간 -->
           <div>
-            <label class="block text-sm font-medium text-gray-700">예약일시</label>
-            <input type="datetime" v-model="selectedDate" :format="'yyyy-MM-dd HH:mm'" placeholder="예약일시를 선택하세요"
+            <label class="block text-sm font-medium text-gray-700"
+              >예약일시</label
+            >
+            <input
+              type="datetime"
+              v-model="selectedDate"
+              :format="'yyyy-MM-dd HH:mm'"
+              placeholder="예약일시를 선택하세요"
               input-class="your-input-class"
               class="mt-1 py-0.5 pl-4 block w-full rounded-md text-gray-500 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
           </div>
           <!-- 픽업/도착 위치 -->
           <div>
-            <label class="block text-sm font-medium text-gray-700">픽업위치</label>
-            <select v-model="selectedReservation.location"
+            <label class="block text-sm font-medium text-gray-700"
+              >픽업위치</label
+            >
+            <select
+              v-model="selectedReservation.location"
               class="w-full border border-gray-100 rounded-md px-3 py-0.5 text-gray-500 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
               <option value="">대구공항</option>
               <option value="동대구역">동대구역</option>
@@ -160,17 +213,23 @@
           </div>
           <!-- 가방수 -->
           <div>
-            <label class="block text-sm font-medium text-gray-700">가방수</label>
-            <input type="text" v-model="customerForm.bagCount"
+            <label class="block text-sm font-medium text-gray-700"
+              >가방수</label
+            >
+            <input
+              type="text"
+              v-model="customerForm.bagCount"
               class="mt-1 py-0.5 pl-4 block w-full rounded-md text-gray-500 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
           </div>
         </form>
         <div class="px-6 py-4 bg-gray-50 flex justify-end space-x-3">
-          <button @click="openResevDeleteModal(customer)"
+          <button
+            @click="openResevDeleteModal(customer)"
             class="aaa px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-red-600 hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
             예약취소
           </button>
-          <button @click="saveReservation"
+          <button
+            @click="saveReservation"
             class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium hover:text-white hover:bg-indigo-600 text-indigo-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
             저장
           </button>
@@ -179,12 +238,16 @@
     </div>
 
     <!-- 삭제 확인 모달 -->
-    <div v-if="showDeleteModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4">
+    <div
+      v-if="showDeleteModal"
+      class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4">
       <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
         <div class="p-6 border-b border-gray-200">
           <div class="flex justify-between items-center">
             <h3 class="text-lg font-medium text-gray-900">고객 삭제</h3>
-            <button @click="closeDeleteModal" class="text-gray-400 hover:text-gray-500">
+            <button
+              @click="closeDeleteModal"
+              class="text-gray-400 hover:text-gray-500">
               <i class="fas fa-times"></i>
             </button>
           </div>
@@ -198,11 +261,13 @@
           </p>
         </div>
         <div class="px-6 py-4 bg-gray-50 flex justify-end space-x-3">
-          <button @click="closeDeleteModal"
+          <button
+            @click="closeDeleteModal"
             class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
             취소
           </button>
-          <button @click="deleteCustomer"
+          <button
+            @click="deleteCustomer"
             class="px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-red-600 hover:bg-red-700">
             삭제
           </button>
@@ -445,7 +510,7 @@ const filteredTechnicians = computed(() => {
     const matchesRate =
       technicianSearchFilters.value.settlementRate === "all" ||
       tech.settlementRate.toString() ===
-      technicianSearchFilters.value.settlementRate;
+        technicianSearchFilters.value.settlementRate;
     const matchesArea =
       technicianSearchFilters.value.area === "all" ||
       tech.area === technicianSearchFilters.value.area;
@@ -567,10 +632,7 @@ const saveReservation = () => {
     alert("필수 항목을 모두 입력해주세요.");
     return;
   }
-  if (!selectedReservation.value.customerName || !selectedReservation.value.phone) {
-    alert("고객명과 연락처는 필수입니다.");
-    return;
-  }
+
   // 저장 로직 구현
   console.log("저장된 예약 정보:", selectedReservation.value);
   closeModal();
@@ -606,42 +668,45 @@ const prevPage = () => {
 const pagedReservations = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage.value;
   const end = start + itemsPerPage.value;
-  return reservations.value.slice(start, end);
+  return filteredReservations.value.slice(start, end);
 });
 
-const filteredReservations = computed(() => {
-  let result = [...reservations.value];
 
-  // 검색어 필터
-  if (searchQuery.value) {
-    const q = searchQuery.value.toLowerCase()
-    result = result.filter(
-      r =>
-        r.user.toLowerCase().includes(q) ||
-        r.id.toString().includes(q)
-    )
-  }
+// const filteredReservations = computed(() => {
+//   let result = [...reservations.value]
 
-  // 상태 필터
-  if (statusFilter.value !== "all") {
-    result = result.filter((r) => r.status === statusFilter.value);
-  }
+//   // 검색어 필터
+//   if (searchQuery.value) {
+//     const q = searchQuery.value.toLowerCase()
+//     result = result.filter(r =>
+//       (r.user?.toLowerCase() ?? "").includes(q) ||
+//       (r.id?.toString() ?? "").includes(q)
+//     )
+//   }
 
-  // 정렬
-  switch (sortBy.value) {
-    case "date-asc":
-      result.sort((a, b) => new Date(a.date) - new Date(b.date));
-      break;
-    case "date-desc":
-      result.sort((a, b) => new Date(b.date) - new Date(a.date));
-      break;
-    case "name-asc":
-      result.sort((a, b) => a.user.localeCompare(b.user));
-      break;
-  }
+//   // 상태 필터
+//   if (statusFilter.value !== "all") {
+//     result = result.filter(r => (r.status ?? "") === statusFilter.value)
+//   }
 
-  return result;
-});
+//   // 정렬
+//   switch (sortBy.value) {
+//     case "date-asc":
+//       result.sort((a, b) => new Date(a.date ?? 0) - new Date(b.date ?? 0))
+//       break
+//     case "date-desc":
+//       result.sort((a, b) => new Date(b.date ?? 0) - new Date(a.date ?? 0))
+//       break
+//     case "name-asc":
+//       result.sort((a, b) =>
+//         (a.user ?? "").localeCompare(b.user ?? "", undefined, { sensitivity: "base" })
+//       )
+//       break
+//   }
+
+//   return result
+// })
+
 
 const formatDate = (date) => {
   return new Date(date).toLocaleDateString("ko-KR", {
@@ -729,41 +794,35 @@ const cancelReservation = () => {
 function handleInput(event) {
   searchQuery.value = event.target.value;
 }
+
 </script>
 <style scoped>
 .rounded-full {
   width: 54px;
 }
-
 .icon-box i {
-  font-size: 1.5rem;
-  /* text-xl 정도 */
+  font-size: 1.5rem; /* text-xl 정도 */
   padding-left: 0;
   margin-left: 3px;
   color: rgb(53, 184, 24);
   align-items: center;
 }
-
 .icon-box .suitcase {
   margin-left: 4px;
 }
-
 .icon-box .user {
   color: blue;
 }
-
 .icon-box .star {
   color: yellow;
   margin-left: 4px;
 }
-
 /* /20 span */
 .man {
   font-size: 15px;
 }
-
-@media screen and (max-width: 1260px) {}
-
+@media screen and (max-width: 1260px) {
+}
 @media screen and (max-width: 1010px) {
   .icon-box {
     all: unset;
@@ -774,25 +833,20 @@ function handleInput(event) {
   }
 
   .icon-box i {
-    font-size: 1.5rem;
-    /* text-xl 정도 */
+    font-size: 1.5rem; /* text-xl 정도 */
     padding-left: 0;
     color: rgb(53, 184, 24);
   }
-
   .icon-box .user {
     color: blue;
   }
-
   .icon-box .star {
     color: yellow;
   }
-
   .transition-shadow {
     padding: 15px;
   }
 }
-
 @media screen and (max-width: 900px) {
   .flex {
     width: 100%;
@@ -800,31 +854,25 @@ function handleInput(event) {
     align-items: center;
     text-align: center;
   }
-
   .text-2xl p {
     text-align: center;
   }
-
   .span {
     margin-right: 5px;
   }
-
   .icon-box {
     display: none;
   }
-
   .man {
     padding: 0 !important;
   }
 }
-
 @media screen and (max-width: 768px) {
   .flex {
     width: 90%;
     display: flex;
     justify-content: center !important;
   }
-
   .transition-shadow {
     padding: 20px;
   }
@@ -836,16 +884,13 @@ function handleInput(event) {
     align-items: center;
     text-align: center;
   }
-
   .icon-box {
     display: none;
   }
-
   .man {
     padding: 0 !important;
   }
 }
-
 @media screen and (max-width: 430px) {
   .transition-shadow {
     padding: 10px;

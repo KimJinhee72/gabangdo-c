@@ -30,10 +30,9 @@ import Settings from "../pages/admin/Settings.vue";
 import Settings1 from "@/pages/admin/Settings1.vue";
 import Workers from "../pages/admin/Workers.vue";
 import Reservations from "../pages/admin/Reservations.vue";
-import SaleStatus from "@/pages/admin/SaleStatus.vue";
+import SaleStatus2 from "../pages/admin/SaleStatus2.vue";
 const routes = [
-  { path: "/:locale" }, // ex) /en, /ko
-
+  { path: "/:locale", redirect: "/" }, // locale 처리용 리다이렉트
   { path: "/", component: Home },
   { path: "/bangbeob2", component: Bangbeob2 },
   { path: "/yeyak", component: Yeyak },
@@ -86,19 +85,14 @@ const routes = [
   // 관리자페이지
   {
     path: "/admin",
-    name: "LoginAdmin",
-    component: LoginAdmin,
-  },
-  // 관리자 로그인후
-  {
-    path: "/admin",
     component: AdminHome,
     redirect: "/admin/dashboard",
     children: [
+      { path: "", component: LoginAdmin }, // 로그인 페이지
       {
         path: "dashboard",
         component: Dashboard,
-      },
+      }, // 관리자 로그인후
       {
         path: "customers",
         component: Customers,
@@ -119,7 +113,7 @@ const routes = [
         path: "reservations",
         component: Reservations,
       },
-      { path: "salestatus", component: SaleStatus },
+      { path: "salestatus", component: SaleStatus2},
     ],
   },
 ];

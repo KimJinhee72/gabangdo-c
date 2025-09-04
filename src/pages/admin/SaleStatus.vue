@@ -142,7 +142,7 @@
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
         <div class="p-6 border-b border-gray-200 dark:border-gray-700">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ getChartTitle('trend') }}</h3>
-          <p class="text-sm text-gray-600 dark:text-white">{{ getChartDescription('trend') }}</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-white">{{ getChartDescription('trend') }}</p>
         </div>
         <div class="p-6">
           <div style="height: 300px;">
@@ -471,7 +471,9 @@ import {
   LineElement,
   PointElement,
 } from 'chart.js'
-
+import jsPDF from 'jspdf'; // PDF용
+import 'jspdf-autotable';  // PDF 테이블
+import * as XLSX from 'xlsx'; // Excel/CSV용
 
 Chart.register(
   ChartDataLabels,
@@ -523,12 +525,13 @@ const tempDateRange = ref({
 // 보고서 설정
 const reportType = ref('summary')
 const reportFormat = ref('pdf')
-const reportIncludes = ref({
+const reportIncludes = reactive({
   sales: true,
   transactions: true,
   charts: true,
-  analysis: false
+  analysis: true
 })
+
 
 
 // 전체 데이터 (실제로는 API에서 가져올 데이터)
@@ -1323,54 +1326,79 @@ const pieChartData = reactive({
   ]
 })
 
+
+
 // 픽업별 도넛차트 속 글자색 다크시 흰색
 const chartInstance = ref(null)
 
 // 다크모드 당겨오기
- const appStore = useAppStore()
+const appStore = useAppStore()
 const isDarkMode = computed(() => appStore.isDarkMode)
 
-// watch
+//
+onMounted(() => {
+  const ctx = document.getElementById('myChart') as HTMLCanvasElement | null
+  if (!ctx) {
+    console.warn('myChart element not found')
+    return
+  }
+
+  chartInstance.value = new Chart(ctx, {
+    type: 'doughnut',
+    data: pieChartData,
+    options: pieChartOptions,
+    plugins: [ChartDataLabels],
+  })
+})
+
 // barchart darkmode
 watch(isDarkMode, async (dark) => {
+  await nextTick() // DOM 렌더링 완료 후 실행
   console.log('다크모드 변경됨:', dark)
   const colorMain = dark ? '#aaa' : '#444'
   const legendColor = dark ? '#fff' : '#444'
 
-  const scales = barChartOptions.scales
+  // 2️⃣ Bar 차트 옵션 업데이트
   barChartOptions.plugins.legend.labels.color = legendColor
+  barChartOptions.scales.x.ticks.color = colorMain
+  barChartOptions.scales.y.ticks.color = colorMain
+  barChartOptions.scales.y1.ticks.color = colorMain
 
-  scales.x.ticks.color = colorMain
-  scales.x.grid.color = colorMain
-
-  scales.y.ticks.color = colorMain
-  scales.y.grid.color = colorMain
-  scales.y.title.color = colorMain
-
-  scales.y1.ticks.color = colorMain
-  scales.y1.title.color = colorMain
+  // 3️⃣ Pie 차트 옵션 업데이트
+  pieChartOptions.plugins.datalabels.color = dark ? '#ffffff' : '#000000'
+  pieChartOptions.plugins.legend.labels.color = legendColor
 
   await nextTick()
+  // 4️⃣ 기존 차트 제거
+  if (chartInstance.value) chartInstance.value.destroy()
+  if (barChartInstance.value) barChartInstance.value.destroy()
+  if (pieChartInstance.value) pieChartInstance.value.destroy()
 
-  if (chartInstance.value) {
-    chartInstance.value.destroy()
+  // 5️⃣ 새 차트 생성
+  const ctx = document.getElementById('myChart') as HTMLCanvasElement | null
+  if (!ctx) {
+    console.warn('myChart element not found')
+    return
   }
 
-  const ctx = document.getElementById('barChart')
-  if (!ctx) return
-
   chartInstance.value = new Chart(ctx, {
-    type: 'bar',
-    data: barChartData,
-    options: barChartOptions,
+    type: 'doughnut',
+    data: pieChartData,
+    options: pieChartOptions,
+    plugins: [ChartDataLabels],
   })
 }, { immediate: true })
 
 // dounught darkmode
- watch(isDarkMode, async (dark) => {
+const barChartInstance = ref<ChartJS | null>(null)
+const pieChartInstance = ref<ChartJS | null>(null)
+
+
+watch(isDarkMode, async (dark) => {
   // 픽업위치별 도넛 차트 다크 옵션 업데이트
   pieChartOptions.plugins.datalabels.color = dark ? '#ffffff' : '#ffffff'
   pieChartOptions.plugins.legend.labels.color = dark ? '#aaa' : '#444'
+
 
 
   await nextTick()
@@ -1379,13 +1407,15 @@ watch(isDarkMode, async (dark) => {
   if (chartInstance.value) {
     chartInstance.value.destroy()
   }
-
+  if (barChartInstance.value) barChartInstance.value.destroy()
+  if (pieChartInstance.value) pieChartInstance.value.destroy()
   // 새 차트 생성
- const ctx = document.getElementById('myChart')
-if (!ctx) {
-  console.warn('myChart element not found')
-  return
-}
+  const ctx = document.getElementById('myChart') as HTMLCanvasElement | null
+  if (!ctx) {
+    console.warn('myChart element not found')
+    return
+  }
+
   chartInstance.value = new Chart(ctx, {
     type: 'doughnut',
     data: pieChartData,
@@ -1469,22 +1499,67 @@ const generateReport = async () => {
   isGeneratingReport.value = true
 
   try {
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    // 1. 기존 로직 유지 (데이터 준비)
+    await new Promise(resolve => setTimeout(resolve, 500)) // 임시 대기
 
-    const reportData = {
-      type: reportType.value,
-      dateRange: selectedDateRange.value,
-      format: reportFormat.value,
-      includes: reportIncludes.value,
-      stats: filteredStats.value,
-      transactionCount: filteredTransactions.value.length,
-      generatedAt: new Date().toISOString()
+    // 2. filteredStats 객체를 배열 형태로 변환 (테이블용)
+    const stats = filteredStats.value
+    // reportData 배열의 타입 지정
+    interface ReportRow {
+      [key: string]: string | number
+    }
+    const reportData: ReportRow[] = []
+    const row: ReportRow = {}
+    if (reportIncludes.sales) row['총 매출'] = stats.totalRevenue
+    if (reportIncludes.transactions) row['총 거래 건수'] = stats.totalOrders
+    if (reportIncludes.analysis) {
+      row['평균 주문 금액'] = stats.avgOrderAmount
+      row['활성 고객 수'] = stats.activeCustomers
+      row['매출 성장률(%)'] = stats.revenueGrowth
+      row['주문 성장률(%)'] = stats.ordersGrowth
+      row['평균 성장률(%)'] = stats.avgGrowth
+      row['고객 성장률(%)'] = stats.customersGrowth
     }
 
-    console.log('보고서 생성 완료:', reportData)
-    alert(`${reportFormat.value.toUpperCase()} 형식의 보고서가 생성되었습니다.\n기간: ${selectedDateRange.value.start || '전체'} ~ ${selectedDateRange.value.end || '현재'}\n거래 건수: ${filteredTransactions.value.length}건`)
+    reportData.push(row)  // ✅ 최소 1개의 객체 넣기
 
+    // 3. 파일 생성
+    if (reportFormat.value === 'pdf') {
+      const doc = new jsPDF()
+      doc.text(`매출 보고서 (${reportType.value})`, 14, 20)
+
+      const tableData = reportData.map(d => Object.values(d))
+      const headers = Object.keys(reportData[0] || {})
+        ; (doc as any).autoTable({
+          head: [headers],
+          body: tableData,
+          startY: 30
+        })
+      doc.save(`매출_보고서_${Date.now()}.pdf`)
+    }
+
+    else if (reportFormat.value === 'excel') {
+      const ws = XLSX.utils.json_to_sheet(reportData)
+      const wb = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(wb, ws, 'Report')
+      XLSX.writeFile(wb, `매출_보고서_${Date.now()}.xlsx`)
+    }
+    else if (reportFormat.value === 'csv') {
+      const ws = XLSX.utils.json_to_sheet(reportData)
+      const csv = XLSX.utils.sheet_to_csv(ws)
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(blob)
+      link.setAttribute('download', `매출_보고서_${Date.now()}.csv`)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    }
+
+    // 4. 완료 알림
+    alert(`${reportFormat.value.toUpperCase()} 형식의 보고서가 생성되었습니다.\n기간: ${selectedDateRange.value.start || '전체'} ~ ${selectedDateRange.value.end || '현재'}\n거래 건수: ${filteredTransactions.value.length}건`)
     showReportModal.value = false
+
   } catch (error) {
     console.error('보고서 생성 실패:', error)
     alert('보고서 생성 중 오류가 발생했습니다.')
@@ -1551,7 +1626,7 @@ const getChartTitle = (type: string): string => {
   } else {
     if (days === 1) return '일별 매출 추이'
     if (days <= 7) return '주별 매출 추이'
-      if (days <= 31) return '월별 매출 추이'
+    if (days <= 31) return '월별 매출 추이'
     return '매출 추이'
   }
 }

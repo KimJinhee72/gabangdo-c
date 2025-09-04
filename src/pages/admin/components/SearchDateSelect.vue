@@ -18,12 +18,21 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 
 const props = defineProps({
   label: String,
-  startDate: String,
-  endDate: String,
+  startDate: {
+    type: String,
+    default: () => {
+      const today = new Date()
+      return today.toISOString().split('T')[0] // "YYYY-MM-DD"
+    },
+  },
+  endDate: {
+    type: String,
+    default: '',
+  },
 })
 
 const emit = defineEmits(['update:startDate', 'update:endDate', 'change'])
@@ -37,13 +46,18 @@ const localEndDate = computed({
   set: (val) => emit('update:endDate', val),
 })
 
-// 변경 감지 시 두 값이 모두 존재하면 change 발생
 const onStartInput = (e) => {
   emit('update:startDate', e.target.value)
-  if (e.target.value && props.endDate) emit('change')
+  if (e.target.value && localEndDate.value) emit('change')
 }
 const onEndInput = (e) => {
   emit('update:endDate', e.target.value)
-  if (e.target.value && props.startDate) emit('change')
+  if (e.target.value && localStartDate.value) emit('change')
 }
+
+// props 변경 감지 → change 자동 발생
+watch([() => props.startDate, () => props.endDate], ([start, end]) => {
+  if (start && end) emit('change')
+})
 </script>
+
